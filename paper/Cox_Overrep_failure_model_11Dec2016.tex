@@ -1,0 +1,189 @@
+% style
+% style
+
+
+\documentclass[a4paper, 12pt]{article}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{graphicx}
+\usepackage{amsmath, amsthm, amssymb}
+\usepackage{setspace}
+\usepackage{indentfirst}
+\usepackage{vmargin}
+\usepackage{multirow}
+\usepackage{natbib}
+\usepackage{tabularx}
+\usepackage{url}
+\usepackage{bm}
+\usepackage[top=1in, bottom=1in, left=1in, right=1in]{geometry}
+\usepackage{endnotes}
+\usepackage{epsfig}
+\usepackage{psfrag}
+\usepackage{amsfonts}
+\usepackage[T1]{fontenc}
+\usepackage{color}
+\usepackage{rotating}
+\usepackage{longtable}
+\usepackage{graphics}
+\usepackage{morefloats}
+\usepackage{mathrsfs}
+\usepackage{subfig}
+
+\setcounter{MaxMatrixCols}{10}
+%TCIDATA{OutputFilter=LATEX.DLL}
+%TCIDATA{Version=5.50.0.2960}
+%TCIDATA{<META NAME="SaveForMode" CONTENT="1">}
+%TCIDATA{BibliographyScheme=BibTeX}
+%TCIDATA{LastRevised=Sunday, December 11, 2016 07:02:25}
+%TCIDATA{<META NAME="GraphicsSave" CONTENT="32">}
+%TCIDATA{Language=American English}
+
+\newcommand {\dsum}{\displaystyle \sum}
+\newcommand {\dprod}{\displaystyle \prod}
+\setlength{\LTcapwidth}{5in}
+\def\p3s{\phantom{xxx}}
+\setpapersize{USletter}
+\flushbottom
+\setcounter{secnumdepth}{-2}
+  \makeatletter
+  \renewcommand{\section}{\@startsection
+    {section}    {1}    {0mm}    {-0.7\baselineskip}    {0.08\baselineskip}    {\normalfont\large\sc\center\bf}}
+  \renewcommand{\subsection}{\@startsection
+    {subsection}    {2}    {0mm}    {-0.5\baselineskip}    {0.01\baselineskip}    {\normalfont\normalsize\itshape\center}}
+  \makeatother
+\setmarginsrb{1.0in}{1.0in}{1.0in}{0.40in}{0in}{0in}{0in}{0.6in}
+\input{tcilatex}
+\begin{document}
+
+\date{\today }
+\title{Droughts, Land Appropriation, and Rebel Violence in The Developing
+World\thanks{%
+Note: authors appear in alphabetical order.}}
+\author{Benjamin E. Bagozzi,\thanks{%
+Department of Political Science, University of Minnesota. Email: \texttt{%
+bbagozzi@umn.edu} \texttt{\ koren044@umn.edu}.} ~ Ore Koren,$^\dagger$ ~ and
+Bumba Mukherjee\thanks{%
+Department of Political Science, Penn State University. Email: \texttt{%
+sxm73@psu.edu}.}}
+\maketitle
+
+\clearpage \pagebreak \renewcommand{\thefigure}{\arabic{figure}} %
+\setcounter{figure}{0} \renewcommand{\thepage}{\arabic{page}} %
+\setcounter{page}{1} \pagestyle{plain} \doublespace
+
+\section{Split Popn Cox Overrep Failure}
+
+\subsection{Likelihood function}
+
+\noindent Recall from Ben's "Parametric Zombie Survival Model" that the
+probability of misclassification (that is, subset of non-censured failure
+outcomes that are being misclassified) is%
+\begin{equation}
+\alpha =\Pr (C_{i}=1|\widetilde{C}_{i}=0)
+\end{equation}
+
+The unconditional density is thus given by the combination of an
+observation's misclassification probability and its probability of
+experiencing an actual failure conditional on not being misclassified,%
+\begin{equation}
+\alpha _{i}+(1-\alpha _{i})\ast f(t_{i})
+\end{equation}
+
+And the unconditional survival function is therefore%
+\begin{equation}
+(1-\alpha _{i})\ast S(t_{i})
+\end{equation}
+
+where%
+\begin{equation}
+\alpha _{i}=\frac{\exp (\mathbf{Z}\gamma )}{1+\exp (\mathbf{Z}\gamma )}
+\end{equation}
+
+The likeihood function of the Parametric Zombie Survival Model is from
+equation 7 in Ben's document is defined as 
+\begin{equation}
+L=\dprod\limits_{i=1}^{N}[\alpha _{i}+(1-\alpha _{i})f(t_{i}|X,\beta
+)]^{C_{i}}[(1-\alpha _{i})S(t_{i}|\mathbf{X,}\beta )]^{1-C_{i}}
+\end{equation}
+
+And the log likelihood is%
+\begin{equation}
+L=\dsum\limits_{i=1}^{N}\{C_{i}\ln [\alpha _{i}+(1-\alpha
+_{i})f(t_{i}|X,\beta )]+(1-C_{i})\ln [(1-\alpha _{i})S(t_{i}|\mathbf{X,}%
+\beta )]
+\end{equation}
+
+\bigskip We extend these definitions and notation from the Parametric Zombie
+Survival Model to the Cox PH framework. To this end, first note that the
+conditional hazard function in the Cox PH model in this case is 
+\begin{equation}
+h(t|\mathbf{X)}=h_{0}(t)e^{\mathbf{X}\beta }
+\end{equation}
+
+where $h_{0}(t)$ is the unknown baseline hazard hazard function. Using
+equation (4), the description of $\emph{\alpha }_{i}$ and the survival
+function, failure density and the conditional hazard function (see equation
+6) of the Cox model, we can define the likelihood function of the split popn
+Cox-Overrep Failure (OF) model as follows,%
+\begin{equation}
+L=\dprod\limits_{i=1}^{N}\left[ \alpha _{i}+(1-\alpha _{i})h_{0}(t_{i})e^{%
+\mathbf{X}\beta }\exp \left\{ -\exp (\mathbf{X}\beta
+)\dint\nolimits_{0}^{t_{i}}h_{0}(u)du\right\} \right] ^{C_{i}}\left[
+(1-\alpha _{i})\exp \left\{ -\exp (\mathbf{X}\beta
+)\dint\nolimits_{0}^{t_{i}}h_{0}(u)du\right\} \right] ^{1-C_{i}}
+\end{equation}%
+The log-likelihood from this expression is%
+\begin{equation}
+\ln L=\dsum\limits_{i=1}^{N}\left( C_{i}\ln \left[ \alpha _{i}+(1-\alpha
+_{i})h_{0}(t_{i})e^{\mathbf{X}\beta }\exp \left\{ -\exp (\mathbf{X}\beta
+)\dint\nolimits_{0}^{t_{i}}h_{0}(u)du\right\} \right] \right) +\left(
+(1-C_{i})\ln \left[ (1-\alpha _{i})\exp \left\{ -\exp (\mathbf{X}\beta
+)\dint\nolimits_{0}^{t_{i}}h_{0}(u)du\right\} \right] \right) 
+\end{equation}
+
+where $\dint\nolimits_{0}^{t_{i}}h_{0}(u)du$ is the cumulative baseline
+hazard function that can be estimated by a non-parametic step function. To
+see this, let $u_{0}<u_{1}<....u_{k}$ denote the distinct uncensored
+observations. If the baseline hazard is constant between these values, then
+an estimator for the baseline hazard can be defined as%
+\begin{equation}
+\dint\nolimits_{0}^{t_{i}}\widehat{h}_{0}(u)du=\dsum%
+\limits_{j=1}^{k}H_{j}I(u_{j}\leq t)
+\end{equation}%
+To simplify notation, let $\Lambda
+(t)=\dsum\limits_{j=1}^{k}H_{j}I(u_{j}\leq t)$. Then the likelihood in (8)
+can be written as%
+\begin{equation}
+L=\dprod\limits_{i=1}^{N}\left[ \alpha _{i}+(1-\alpha _{i})h_{0}(t_{i})e^{%
+\mathbf{X}\beta }\exp \left\{ -e^{\mathbf{X}\beta }\Lambda (t)\right\} %
+\right] ^{C_{i}}\left[ (1-\alpha _{i})\exp \left\{ -e^{\mathbf{X}\beta
+}\Lambda (t)\right\} \right] ^{1-C_{i}}
+\end{equation}%
+And the corresponding log likelihood as%
+\begin{equation}
+\ln L=\dprod\limits_{i=1}^{N}\left( C_{i}\ln \left[ \alpha _{i}+(1-\alpha
+_{i})h_{0}(t_{i})e^{\mathbf{X}\beta }\exp \left\{ -e^{\mathbf{X}\beta
+}\Lambda (t)\right\} \right] \right) +\left( (1-C_{i})\ln \left[ (1-\alpha
+_{i})\exp \left\{ -e^{\mathbf{X}\beta }\Lambda (t)\right\} \right] \right) 
+\end{equation}
+
+While these likelihood and log-likelihood expressions look complicated,it
+should be(in theory)relatively easy to estimate using logit for $\alpha $
+and separately fitting a Cox PH model for the survival part.
+
+Finally, the following is clearly not necessary for the paper -- but I think
+(am not sure about this), the integral in the contribution of either the
+censored \textit{or }uncensored observations in the likelihood and thus
+log-likelihood function can be treated as zero. If so, then the expression
+for the full log likelihood function can be fully derived and written
+completely more easily after making the necessary substitutions and taking
+logs. *If* this can be done mathematically, then I can try to differentiate
+the fully defined log likelihood, solve the score equations and define the
+"profile likelihood" that only depends on the parameters $\gamma $ and $%
+\beta $. This will allow us to study the full profile likelihood that in any
+case will (likely) confirm using logit for $\alpha $ and separately fitting
+a Cox PH model for the survival part. And this in effect means that standard
+conclusions from asymptotic theory can be used (or cited) from the logit and
+Cox PH model to demonstrate that the parameter estimates from the split popn
+Cox-overrep failure are consistent and asymptotically normally distributed.
+
+\end{document}
