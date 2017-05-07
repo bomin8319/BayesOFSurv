@@ -1,0 +1,179 @@
+% style
+% style
+
+
+\documentclass[a4paper, 12pt]{article}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{graphicx}
+\usepackage{amsmath, amsthm, amssymb}
+\usepackage{setspace}
+\usepackage{indentfirst}
+\usepackage{vmargin}
+\usepackage{multirow}
+\usepackage{natbib}
+\usepackage{tabularx}
+\usepackage{url}
+\usepackage{bm}
+\usepackage[top=1in, bottom=1in, left=1in, right=1in]{geometry}
+\usepackage{endnotes}
+\usepackage{epsfig}
+\usepackage{psfrag}
+\usepackage{amsfonts}
+\usepackage[T1]{fontenc}
+\usepackage{color}
+\usepackage{rotating}
+\usepackage{longtable}
+\usepackage{graphics}
+\usepackage{morefloats}
+\usepackage{mathrsfs}
+\usepackage{subfig}
+
+\setcounter{MaxMatrixCols}{10}
+%TCIDATA{OutputFilter=LATEX.DLL}
+%TCIDATA{Version=5.50.0.2960}
+%TCIDATA{<META NAME="SaveForMode" CONTENT="1">}
+%TCIDATA{BibliographyScheme=BibTeX}
+%TCIDATA{LastRevised=Sunday, December 11, 2016 07:02:25}
+%TCIDATA{<META NAME="GraphicsSave" CONTENT="32">}
+%TCIDATA{Language=American English}
+
+\newcommand {\dsum}{\displaystyle \sum}
+\newcommand {\dprod}{\displaystyle \prod}
+\setlength{\LTcapwidth}{5in}
+\def\p3s{\phantom{xxx}}
+\setpapersize{USletter}
+\setcounter{secnumdepth}{-2}
+\makeatletter
+\renewcommand{\section}{\@startsection
+	{section}    {1}    {0mm}    {-0.7\baselineskip}    {0.08\baselineskip}    {\normalfont\large\sc\center\bf}}
+\renewcommand{\subsection}{\@startsection
+	{subsection}    {2}    {0mm}    {-0.5\baselineskip}    {0.01\baselineskip}    {\normalfont\normalsize\itshape\center}}
+\makeatother
+\setmarginsrb{1.0in}{1.0in}{1.0in}{0.40in}{0in}{0in}{0in}{0.6in}
+\input{tcilatex}
+\begin{document}
+\date{\today }
+\title{Bayesian Inference on \\Parametric Zombie Survival Model}
+\author{Bomin Kim}
+\maketitle
+\setstretch{1.5}
+\begin{abstract}
+	\noindent In this paper, we implement Bayesian Inference on the new split population survival model, that explicitly models the misclassification probability of failure (vs. right censored) events. This includes two parametric survival models (Exponential and Weibull) and (possibly) Cox proportional hazards regression model. 
+\end{abstract}
+\clearpage \pagebreak \renewcommand{\thefigure}{\arabic{figure}} %
+\setcounter{figure}{0} \renewcommand{\thepage}{\arabic{page}} %
+\setcounter{page}{1} \pagestyle{plain} \doublespacing
+\section{Review on Parametric Zombie Survival Model}
+\subsection{Likelihood function}
+\noindent Recall from Ben's "Parametric Zombie Survival Model" that the
+probability of misclassification (that is, subset of non-censured failure
+outcomes that are being misclassified) is%
+\begin{equation}
+\alpha =\Pr (C_{i}=1|\widetilde{C}_{i}=0).
+\end{equation}
+The unconditional density is thus given by the combination of an
+observation's misclassification probability and its probability of
+experiencing an actual failure conditional on not being misclassified,%
+\begin{equation}
+\alpha _{i}+(1-\alpha _{i})\ast f(t_{i})
+\end{equation}
+And the unconditional survival function is therefore%
+\begin{equation}
+(1-\alpha _{i})\ast S(t_{i}),
+\end{equation}
+where
+\begin{equation}
+\alpha _{i}=\frac{\exp (\mathbf{Z}\gamma )}{1+\exp (\mathbf{Z}\gamma )}.
+\end{equation}
+The likeihood function of the Parametric Zombie Survival Model is defined as 
+\begin{equation}
+L=\dprod\limits_{i=1}^{N}[\alpha _{i}+(1-\alpha _{i})f(t_{i}|\mathbf{X},\mathbf{\beta}
+)]^{C_{i}}[(1-\alpha _{i})S(t_{i}|\mathbf{X,}\mathbf{\beta})]^{1-C_{i}}
+\end{equation}
+And the log likelihood is%
+\begin{equation}
+lnL=\dsum\limits_{i=1}^{N}\{C_{i}\ln [\alpha _{i}+(1-\alpha
+_{i})f(t_{i}|\mathbf{X},\mathbf{\beta})]+(1-C_{i})\ln [(1-\alpha _{i})S(t_{i}|\mathbf{X,}%
+\mathbf{\beta})]\}.
+\end{equation}
+\iffalse
+Equivalently, if define $\delta = 1 - \alpha$ and substitute this quantity into Equation (6), the log-likelihood would be defined as:
+\begin{equation}
+lnL=\dsum\limits_{i=1}^{N}\{C_{i}\ln [(1-\delta _{i})+\delta
+_{i}f(t_{i}|\mathbf{X},\mathbf{\beta})]+(1-C_{i})\ln [\delta _{i}S(t_{i}|\mathbf{X,}%
+\mathbf{\beta})]\},
+\end{equation}
+which is symmetric to the log likelihood of the cure (i.e., split-population) survival model.
+\fi
+\section{Bayesian Analysis of Parametric Zombie Survival Models}
+\iffalse\noindent The parametric survival models, also known as accelerated failure time models (AFT models), includes exponential, log-normal, log-logistic, and Weibull distributions. Although the classical approach is the maximum likelihood for parameter estimation, here we use Bayesian analysis to model Exponential and Weibull cases.\fi
+\subsection{Exponential}
+\noindent 
+For exponential survival model, the density function and survival function are
+\begin{equation}
+\begin{aligned}
+f(t_i|X_i, \mathbf{\beta}) &= \mbox{exp}(X_i\mathbf{\beta})\mbox{exp}(- \mbox{exp}(X_i\mathbf{\beta})t_i)\\
+S(t_i|X_i, \mathbf{\beta}) &= \mbox{exp}(- \mbox{exp}(X_i\mathbf{\beta})t_i).
+\end{aligned}
+\end{equation}
+Then, the likelihood function of Exponential Zombie survival model is
+\begin{equation}
+\begin{aligned}
+L(\mathbf{\beta}, \mathbf{\gamma})=\dprod\limits_{i=1}^{N}[\alpha _{i}+(1-\alpha _{i})\mbox{exp}(X_i\mathbf{\beta})\mbox{exp}(- \mbox{exp}(X_i\mathbf{\beta})t_i)]^{C_{i}}[(1-\alpha _{i})\mbox{exp}(- \mbox{exp}(X_i\mathbf{\beta})t_i)]^{1-C_{i}}
+\end{aligned}
+\end{equation}
+where $X_i$ is the $i^{th}$ row of the covariate matrix $\mathbf{X}$.\\ \newline
+In the exponential survival model, we assume the prior of $\mathbf{\beta}=\{\beta_1,...,\beta_{p_1}\}$ as
+\begin{equation}
+\mathbf{\beta} \sim \mbox{MVN}_{p_1}(\mathbf{\mu}_{\beta}, \Sigma_{\beta}),
+\end{equation}
+thus the conditional posterior distribution for $\mathbf{\beta}$ parameters is given by
+\begin{equation}
+\pi(\mathbf{\beta}|\mathbf{C}, \mathbf{\alpha}, \mathbf{X}, \mathbf{Z}, \mathbf{t}, \mathbf{\gamma}) \propto L(\mathbf{\beta}|\mathbf{C}, \mathbf{\alpha}, \mathbf{X}, \mathbf{Z}, \mathbf{t}, \mathbf{\gamma})\times \pi(\mathbf{\beta}|\mathbf{\mu}_{\beta}, \Sigma_{\beta}).
+\end{equation}
+Moreover, we can also assign mutivariate Normal prior to $\mathbf{\gamma}=\{\gamma_1,...,\gamma_{p_2}\}$,
+\begin{equation}
+\mathbf{\gamma} \sim \mbox{MVN}_{p_2}(\mathbf{\mu}_{\gamma}, \Sigma_{\gamma}),
+\end{equation}
+and the corresponding conditional posterior distribution of $\mathbf{\gamma}$ becomes 
+\begin{equation}
+\pi(\mathbf{\gamma}|\mathbf{C}, \mathbf{X}, \mathbf{Z}, \mathbf{t}, \mathbf{\beta}) \propto L(\mathbf{\gamma}|\mathbf{C}, \mathbf{X}, \mathbf{Z}, \mathbf{t}, \mathbf{\beta})\times \pi(\mathbf{\gamma}|\mathbf{\mu}_{\gamma}, \Sigma_{\gamma}).
+\end{equation}
+\subsection{Weibull}
+\noindent 
+If the survival time $t$ has a Weibull distribution of $W(t|\lambda, X_i\mathbf{\beta})$, the density function and survival function are
+\begin{equation}
+\begin{aligned}
+f(t_i|\lambda, X_i, \mathbf{\beta}) &= \lambda t_i^{\lambda - 1} \mbox{exp}(X_i\mathbf{\beta}-\mbox{exp}(X_i\mathbf{\beta})t_i^{\lambda})\\
+S(t_i|\lambda, X_i, \mathbf{\beta}) &= \mbox{exp}(-\mbox{exp}(X_i\mathbf{\beta})t_i^{\lambda}),
+\end{aligned}
+\end{equation}
+which shows that $\lambda=1$ reduces to Exponential survival model, which is a well-known property. The likelihood function of Weibull Zombie survival model is
+\begin{equation}
+\begin{aligned}
+L(\lambda, \mathbf{\beta}, \mathbf{\gamma})=\dprod\limits_{i=1}^{N}[\alpha _{i}+(1-\alpha _{i})\lambda t_i^{\lambda - 1} \mbox{exp}(X_i\mathbf{\beta}-\mbox{exp}(X_i\mathbf{\beta})t_i^{\lambda})]^{C_{i}}[(1-\alpha _{i})\mbox{exp}(-\mbox{exp}(X_i\mathbf{\beta})t_i^{\lambda})]^{1-C_{i}}.
+\end{aligned}
+\end{equation}
+For the two parameters $\lambda$ and $\mathbf{\beta}=\{\beta_1,...,\beta_{p_1}\}$, we assign prior to each parameter as
+\begin{equation}
+\begin{aligned}
+\lambda &\sim \mbox{Gamma}(a_{\lambda}, b_{\lambda})\\
+\mathbf{\beta} &\sim \mbox{MVN}_{p_1}(\mathbf{\mu}_{\beta}, \Sigma_{\beta}),
+\end{aligned}
+\end{equation}
+where the conditional distribution for $\lambda$ and $\mathbf{\beta}$ parameters are given by
+\begin{equation}
+\begin{aligned}
+\pi(\lambda|\mathbf{C}, \mathbf{\alpha}, \mathbf{X}, \mathbf{Z}, \mathbf{t}, \mathbf{\beta}, \mathbf{\gamma}) &\propto L(\lambda|\mathbf{C}, \mathbf{\alpha}, \mathbf{X}, \mathbf{Z}, \mathbf{t}, \mathbf{\beta}, \mathbf{\gamma})\times \pi(\lambda|a_{\lambda}, b_{\lambda})\\
+\pi(\mathbf{\beta}|\mathbf{C}, \mathbf{\alpha}, \mathbf{X}, \mathbf{Z}, \mathbf{t}, \mathbf{\gamma}, \lambda) &\propto L(\mathbf{\beta}|\mathbf{C}, \mathbf{\alpha}, \mathbf{X}, \mathbf{Z}, \mathbf{t}, \mathbf{\gamma}, \lambda)\times \pi(\mathbf{\beta}|\mathbf{\mu}_{\beta}, \Sigma_{\beta}).
+\end{aligned}
+\end{equation}
+Same as Exponential case, we can assign mutivariate Normal prior to $\mathbf{\gamma}=\{\gamma_1,...,\gamma_{p_2}\}$,
+\begin{equation}
+\mathbf{\gamma} \sim \mbox{MVN}_{p_2}(\mathbf{\mu}_{\gamma}, \Sigma_{\gamma}),
+\end{equation}
+and the corresponding joint posterior distribution becomes 
+\begin{equation}
+\pi(\mathbf{\gamma}|\mathbf{C}, \mathbf{X}, \mathbf{Z}, \mathbf{t}, \mathbf{\beta}, \lambda) \propto L(\mathbf{\gamma}|\mathbf{C}, \mathbf{X}, \mathbf{Z}, \mathbf{t}, \mathbf{\beta}, \lambda)\times \pi(\mathbf{\gamma}|\mathbf{\mu}_{\gamma}, \Sigma_{\gamma}).
+\end{equation}
+\end{document}
