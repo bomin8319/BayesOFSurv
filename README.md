@@ -1,2 +1,2 @@
-# SplitPopulationSurv
-Split-population Survival model 
+# Zombie Surv
+Split-population Zombie Survival model 
