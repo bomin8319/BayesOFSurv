@@ -129,7 +129,7 @@ In the exponential survival model, we assume the prior of $\mathbf{\beta}=\{\bet
 \end{equation}
 thus the conditional posterior distribution for $\mathbf{\beta}$ parameters is given by
 \begin{equation}
-\pi(\mathbf{\beta}|\mathbf{C}, \mathbf{\alpha}, \mathbf{X}, \mathbf{Z}, \mathbf{t}, \mathbf{\gamma}) \propto L(\mathbf{\beta}|\mathbf{C}, \mathbf{\alpha}, \mathbf{X}, \mathbf{Z}, \mathbf{t}, \mathbf{\gamma})\times \pi(\mathbf{\beta}|\mathbf{\mu}_{\beta}, \Sigma_{\beta}).
+\pi(\mathbf{\beta}|\mathbf{C}, \mathbf{X}, \mathbf{Z}, \mathbf{t}, \mathbf{\gamma}) \propto L(\mathbf{\beta}|\mathbf{C}, \mathbf{X}, \mathbf{Z}, \mathbf{t}, \mathbf{\gamma})\times \pi(\mathbf{\beta}|\mathbf{\mu}_{\beta}, \Sigma_{\beta}).
 \end{equation}
 Moreover, we can also assign mutivariate Normal prior to $\mathbf{\gamma}=\{\gamma_1,...,\gamma_{p_2}\}$,
 \begin{equation}
@@ -172,8 +172,52 @@ Same as Exponential case, we can assign mutivariate Normal prior to $\mathbf{\ga
 \begin{equation}
 \mathbf{\gamma} \sim \mbox{MVN}_{p_2}(\mathbf{\mu}_{\gamma}, \Sigma_{\gamma}),
 \end{equation}
-and the corresponding joint posterior distribution becomes 
+and the corresponding conditional posterior distribution becomes 
 \begin{equation}
 \pi(\mathbf{\gamma}|\mathbf{C}, \mathbf{X}, \mathbf{Z}, \mathbf{t}, \mathbf{\beta}, \lambda) \propto L(\mathbf{\gamma}|\mathbf{C}, \mathbf{X}, \mathbf{Z}, \mathbf{t}, \mathbf{\beta}, \lambda)\times \pi(\mathbf{\gamma}|\mathbf{\mu}_{\gamma}, \Sigma_{\gamma}).
 \end{equation}
+\subsection{Markov chain Monte Carlo (MCMC) algorithm}
+\noindent Since we do not have any informative prior for parametric Zombie survival model, we can follow the common approach and specify our hyperparameters as below:  
+\begin{equation}
+\begin{aligned}
+&\mathbf{\mu}_{\beta} = \mathbf{0}, \Sigma_{\beta} \sim \mbox{IW}(\mathbf{I}_{p_1}, \nu_1),\\
+& \mathbf{\mu}_{\gamma} = \mathbf{0}, \Sigma_{\gamma} \sim \mbox{IW}(\mathbf{I}_{p_2}, \nu_2), \\
+& a_{\lambda} =  b_{\lambda} = 0.001,
+\end{aligned}
+\end{equation}
+where we use hierarchical Bayesian modeling to esitmate $\Sigma_{\beta}$ and $\Sigma_{\gamma}$ using Inverse-Wishart distribution. Note that if this step seems to be unnecessary, we can instead simply fix those such as $\Sigma_{\beta} =\Sigma_{\gamma} = 10^4\mathbf{I}$. \\ \newline
+In the survival regression setting, closed forms for the posterior
+distribution of $\mathbf{\beta}$ (as well as $\mathbf{\gamma}$ in our model) are generally not available (which is also our cases: Equation (10), (12), (16), (18)), and therefore one needs to use numerical integration or Markov chain Monte Carlo (MCMC) methods. Here we will use MCMC methods with following update scheme:
+\begin{itemize}
+	\item[] {\textbf{Step 0.}} Choose an arbitrary starting point $\mathbf{\beta}_0, \mathbf{\gamma}_0$, and $\lambda_0$ (if Weibull) and set $i = 0$.
+	\item[] {\textbf{Step 1.}} Update $\Sigma_{\beta} \sim \pi(\Sigma_{\beta}|\mathbf{\beta}_i)$ and $\Sigma_{\gamma} \sim \pi(\Sigma_{\gamma}|\mathbf{\gamma}_i)$ using Gibbs sampler.
+	\item[] {\textbf{Step 2.}} Update $\mathbf{\beta}\sim \pi(\mathbf{\beta}|\mathbf{C}, \mathbf{X}, \mathbf{Z}, \mathbf{t}, \mathbf{\gamma}, \lambda, \mathbf{\mu}_{\beta}, \Sigma_{\beta})$ and $\mathbf{\gamma}\sim \pi(\mathbf{\gamma}|\mathbf{C}, \mathbf{X}, \mathbf{Z}, \mathbf{t}, \mathbf{\beta}, \lambda, \mathbf{\mu}_{\gamma}, \Sigma_{\gamma})$ using Metropolis-Hastings algorithm or slice sampler. 
+		\item[] {\textbf{Step $\mathbf{2}^\prime$.}} If Weibull, update $\lambda \sim \pi(\lambda|\mathbf{C}, \mathbf{\alpha}, \mathbf{X}, \mathbf{Z}, \mathbf{t}, \mathbf{\beta}, \mathbf{\gamma}, a_{\lambda}, b_{\lambda})$  using Metropolis-Hastings algorithm or slice sampler.
+	\item[] {\textbf{Step 3.}} Set $i = i + 1$, and go to Step 1.
+\end{itemize}
+The closed form of $\pi(\Sigma_{\beta}|\mathbf{\beta}_i)$ and $\pi(\Sigma_{\gamma}|\mathbf{\gamma}_i)$ in Step 1 are derived in APPENDIX A. Detailed procedure of Metropolis-Hastings algorithm or slice sampler will be illustrated later.
+\section{APPENDIX}
+\subsection{APPENDIX A: Derivation of the full conditional distributions}
+	\begin{itemize}
+		\item [1.] $\Sigma_{\beta}$:
+			\begin{equation*}
+			\begin{aligned}
+		\pi(\Sigma_{\beta}|\mathbf{\beta}) 	&\propto \pi(\mathbf{\beta}|\mathbf{\mu}_{\beta} = \mathbf{0}, \Sigma_{\beta}) \times \pi(\Sigma_{\beta}) \\
+			&\propto |\Sigma_{\beta}|^{-\frac{1}{2}}\mbox{exp}\Big\{-\frac{1}{2}\Big(\mathbf{\beta}^\prime \Sigma_{\beta}^{-1}\mathbf{\beta}\Big)\Big\}\times |\Sigma_{\beta}|^{-\frac{\nu_1 + p_1 + 1}{2}}\mbox{exp}\Big\{-\frac{1}{2}\mbox{tr}\Big(\mathbf{I}_{p_1}\Sigma_{\beta}^{-1}\Big)\Big\}\\
+			& = |\Sigma_{\beta}|^{-\frac{1 + \nu_1 + p_1 +1}{2}}\mbox{exp}\Big\{-\frac{1}{2}\mbox{tr}\Big(\mathbf{\beta}\mathbf{\beta}^\prime \Sigma_{\beta}^{-1}\Big)\Big\}\times \mbox{exp}\Big\{-\frac{1}{2}\mbox{tr}\Big(\mathbf{I}_{p_1}\Sigma_{\beta}^{-1}\Big)\Big\}\\
+			& = |\Sigma_{\beta}|^{-\frac{1 + \nu_1 + p_1 +1}{2}}\mbox{exp}\Big\{-\frac{1}{2}\mbox{tr}\Big((\mathbf{\beta}\mathbf{\beta}^\prime + \mathbf{I}_{p_1})\Sigma_{\beta}^{-1}\Big) \Big\}\\
+						&\sim \mbox{IW}(\mathbf{\beta}\mathbf{\beta}^\prime + \mathbf{I}_{p_1},\quad 1 + \nu_1)	
+			\end{aligned}
+			\end{equation*} 
+				\item [2.] $\Sigma_{\gamma}$:
+				\begin{equation*}
+				\begin{aligned}
+				\pi(\Sigma_{\gamma}|\mathbf{\gamma}) 	&\propto \pi(\mathbf{\gamma}|\mathbf{\mu}_{\gamma} = \mathbf{0}, \Sigma_{\gamma}) \times \pi(\Sigma_{\gamma}) \\
+				&\propto |\Sigma_{\gamma}|^{-\frac{1}{2}}\mbox{exp}\Big\{-\frac{1}{2}\Big(\mathbf{\gamma}^\prime \Sigma_{\gamma}^{-1}\mathbf{\gamma}\Big)\Big\}\times |\Sigma_{\gamma}|^{-\frac{\nu_1 + p_2 + 1}{2}}\mbox{exp}\Big\{-\frac{1}{2}\mbox{tr}\Big(\mathbf{I}_{p_2}\Sigma_{\gamma}^{-1}\Big)\Big\}\\
+				& = |\Sigma_{\gamma}|^{-\frac{1 + \nu_2 + p_2 +1}{2}}\mbox{exp}\Big\{-\frac{1}{2}\mbox{tr}\Big(\mathbf{\gamma}\mathbf{\gamma}^\prime \Sigma_{\gamma}^{-1}\Big)\Big\}\times \mbox{exp}\Big\{-\frac{1}{2}\mbox{tr}\Big(\mathbf{I}_{p_2}\Sigma_{\gamma}^{-1}\Big)\Big\}\\
+				& = |\Sigma_{\gamma}|^{-\frac{1 + \nu_2 + p_2 +1}{2}}\mbox{exp}\Big\{-\frac{1}{2}\mbox{tr}\Big((\mathbf{\gamma}\mathbf{\gamma}^\prime + \mathbf{I}_{p_2})\Sigma_{\gamma}^{-1}\Big) \Big\}\\
+				&\sim \mbox{IW}(\mathbf{\gamma}\mathbf{\gamma}^\prime + \mathbf{I}_{p_2},\quad 1 + \nu_2)	
+				\end{aligned}
+				\end{equation*}
+	\end{itemize}
 \end{document}
