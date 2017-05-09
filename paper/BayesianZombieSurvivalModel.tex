@@ -144,14 +144,14 @@ and the corresponding conditional posterior distribution of $\mathbf{\gamma}$ be
 If the survival time $t$ has a Weibull distribution of $W(t|\lambda, X_i\mathbf{\beta})$, the density function and survival function are
 \begin{equation}
 \begin{aligned}
-f(t_i|\lambda, X_i, \mathbf{\beta}) &= \lambda t_i^{\lambda - 1} \mbox{exp}(X_i\mathbf{\beta}-\mbox{exp}(X_i\mathbf{\beta})t_i^{\lambda})\\
-S(t_i|\lambda, X_i, \mathbf{\beta}) &= \mbox{exp}(-\mbox{exp}(X_i\mathbf{\beta})t_i^{\lambda}),
+f(t_i|\lambda, X_i, \mathbf{\beta}) &= \lambda(\mbox{exp}(X_i\mathbf{\beta})) (\mbox{exp}(X_i\mathbf{\beta})t_i)^{\lambda - 1} \mbox{exp}(-(\mbox{exp}(X_i\mathbf{\beta})t_i)^{\lambda})\\
+S(t_i|\lambda, X_i, \mathbf{\beta}) &= \mbox{exp}(-(\mbox{exp}(X_i\mathbf{\beta})t_i)^{\lambda}),
 \end{aligned}
 \end{equation}
 which shows that $\lambda=1$ reduces to Exponential survival model, which is a well-known property. The likelihood function of Weibull Zombie survival model is
 \begin{equation}
 \begin{aligned}
-L(\lambda, \mathbf{\beta}, \mathbf{\gamma})=\dprod\limits_{i=1}^{N}[\alpha _{i}+(1-\alpha _{i})\lambda t_i^{\lambda - 1} \mbox{exp}(X_i\mathbf{\beta}-\mbox{exp}(X_i\mathbf{\beta})t_i^{\lambda})]^{C_{i}}[(1-\alpha _{i})\mbox{exp}(-\mbox{exp}(X_i\mathbf{\beta})t_i^{\lambda})]^{1-C_{i}}.
+L(\lambda, \mathbf{\beta}, \mathbf{\gamma})=&\prod\limits_{i=1}^{N}[\alpha _{i}+(1-\alpha _{i})\lambda(\mbox{exp}(X_i\mathbf{\beta})) (\mbox{exp}(X_i\mathbf{\beta})t_i)^{\lambda - 1} \mbox{exp}(-(\mbox{exp}(X_i\mathbf{\beta})t_i)^{\lambda})]^{C_{i}}\\&\times [(1-\alpha _{i})\mbox{exp}(-(\mbox{exp}(X_i\mathbf{\beta})t_i)^{\lambda})]^{1-C_{i}}.
 \end{aligned}
 \end{equation}
 For the two parameters $\lambda$ and $\mathbf{\beta}=\{\beta_1,...,\beta_{p_1}\}$, we assign prior to each parameter as
