@@ -58,7 +58,7 @@
 \maketitle
 \setstretch{1.5}
 \begin{abstract}
-	\noindent In this paper, we implement Bayesian Inference on the new split population survival model, that explicitly models the misclassification probability of failure (vs. right censored) events. This includes two parametric survival models (Exponential and Weibull) and (possibly) Cox proportional hazards regression model. 
+	\noindent In this paper, we implement Bayesian inference on the new split population survival model, that explicitly models the misclassification probability of failure (vs. right censored) events. This includes two parametric survival models (Exponential and Weibull) and (possibly) Cox proportional hazards regression model. 
 \end{abstract}
 \clearpage \pagebreak \renewcommand{\thefigure}{\arabic{figure}} %
 \setcounter{figure}{0} \renewcommand{\thepage}{\arabic{page}} %
@@ -105,7 +105,7 @@ _{i}f(t_{i}|\mathbf{X},\mathbf{\beta})]+(1-C_{i})\ln [\delta _{i}S(t_{i}|\mathbf
 \end{equation}
 which is symmetric to the log likelihood of the cure (i.e., split-population) survival model.
 \fi
-\section{Bayesian Analysis of Parametric Zombie Survival Models}
+\section{Posterior Distribution of Parametric Zombie Survival Models}
 \iffalse\noindent The parametric survival models, also known as accelerated failure time models (AFT models), includes exponential, log-normal, log-logistic, and Weibull distributions. Although the classical approach is the maximum likelihood for parameter estimation, here we use Bayesian analysis to model Exponential and Weibull cases.\fi
 \subsection{Exponential}
 \noindent 
@@ -125,7 +125,7 @@ L(\mathbf{\beta}, \mathbf{\gamma})=\dprod\limits_{i=1}^{N}[\alpha _{i}+(1-\alpha
 where $X_i$ is the $i^{th}$ row of the covariate matrix $\mathbf{X}$.\\ \newline
 In the exponential survival model, we assume the prior of $\mathbf{\beta}=\{\beta_1,...,\beta_{p_1}\}$ as
 \begin{equation}
-\mathbf{\beta} \sim \mbox{MVN}_{p_1}(\mathbf{\mu}_{\beta}, \Sigma_{\beta}),
+\mathbf{\beta} \sim \mbox{Multivariate Normal}_{p_1}(\mathbf{\mu}_{\beta}, \Sigma_{\beta}),
 \end{equation}
 thus the conditional posterior distribution for $\mathbf{\beta}$ parameters is given by
 \begin{equation}
@@ -133,7 +133,7 @@ thus the conditional posterior distribution for $\mathbf{\beta}$ parameters is g
 \end{equation}
 Moreover, we can also assign mutivariate Normal prior to $\mathbf{\gamma}=\{\gamma_1,...,\gamma_{p_2}\}$,
 \begin{equation}
-\mathbf{\gamma} \sim \mbox{MVN}_{p_2}(\mathbf{\mu}_{\gamma}, \Sigma_{\gamma}),
+\mathbf{\gamma} \sim \mbox{Multivariate Normal}_{p_2}(\mathbf{\mu}_{\gamma}, \Sigma_{\gamma}),
 \end{equation}
 and the corresponding conditional posterior distribution of $\mathbf{\gamma}$ becomes 
 \begin{equation}
@@ -158,7 +158,7 @@ For the two parameters $\lambda$ and $\mathbf{\beta}=\{\beta_1,...,\beta_{p_1}\}
 \begin{equation}
 \begin{aligned}
 \lambda &\sim \mbox{Gamma}(a_{\lambda}, b_{\lambda})\\
-\mathbf{\beta} &\sim \mbox{MVN}_{p_1}(\mathbf{\mu}_{\beta}, \Sigma_{\beta}),
+\mathbf{\beta} &\sim \mbox{Multivariate Normal}_{p_1}(\mathbf{\mu}_{\beta}, \Sigma_{\beta}),
 \end{aligned}
 \end{equation}
 where the conditional distribution for $\lambda$ and $\mathbf{\beta}$ parameters are given by
@@ -170,54 +170,99 @@ where the conditional distribution for $\lambda$ and $\mathbf{\beta}$ parameters
 \end{equation}
 Same as Exponential case, we can assign mutivariate Normal prior to $\mathbf{\gamma}=\{\gamma_1,...,\gamma_{p_2}\}$,
 \begin{equation}
-\mathbf{\gamma} \sim \mbox{MVN}_{p_2}(\mathbf{\mu}_{\gamma}, \Sigma_{\gamma}),
+\mathbf{\gamma} \sim \mbox{Multivariate Normal}_{p_2}(\mathbf{\mu}_{\gamma}, \Sigma_{\gamma}),
 \end{equation}
 and the corresponding conditional posterior distribution becomes 
 \begin{equation}
 \pi(\mathbf{\gamma}|\mathbf{C}, \mathbf{X}, \mathbf{Z}, \mathbf{t}, \mathbf{\beta}, \lambda) \propto L(\mathbf{\gamma}|\mathbf{C}, \mathbf{X}, \mathbf{Z}, \mathbf{t}, \mathbf{\beta}, \lambda)\times \pi(\mathbf{\gamma}|\mathbf{\mu}_{\gamma}, \Sigma_{\gamma}).
 \end{equation}
-\subsection{Markov chain Monte Carlo (MCMC) algorithm}
+\section{Markov chain Monte Carlo (MCMC) algorithm}
+\subsection{Prior specifications}
 \noindent Since we do not have any informative prior for parametric Zombie survival model, we can follow the common approach and specify our hyperparameters as below:  
 \begin{equation}
 \begin{aligned}
-&\mathbf{\mu}_{\beta} = \mathbf{0}, \Sigma_{\beta} \sim \mbox{IW}(\mathbf{I}_{p_1}, \nu_1),\\
-& \mathbf{\mu}_{\gamma} = \mathbf{0}, \Sigma_{\gamma} \sim \mbox{IW}(\mathbf{I}_{p_2}, \nu_2), \\
+&\mathbf{\mu}_{\beta} = \mathbf{0}, \Sigma_{\beta} \sim \mbox{Inverse-Wishart}(\mathbf{I}_{p_1}, \nu_1),\\
+& \mathbf{\mu}_{\gamma} = \mathbf{0}, \Sigma_{\gamma} \sim \mbox{Inverse-Wishart}(\mathbf{I}_{p_2}, \nu_2), \\
 & a_{\lambda} =  b_{\lambda} = 0.001,
 \end{aligned}
 \end{equation}
-where we use hierarchical Bayesian modeling to esitmate $\Sigma_{\beta}$ and $\Sigma_{\gamma}$ using Inverse-Wishart distribution. Note that if this step seems to be unnecessary, we can instead simply fix those such as $\Sigma_{\beta} =\Sigma_{\gamma} = 10^4\mathbf{I}$. \\ \newline
-In the survival regression setting, closed forms for the posterior
-distribution of $\mathbf{\beta}$ (as well as $\mathbf{\gamma}$ in our model) are generally not available (which is also our cases: Equation (10), (12), (16), (18)), and therefore one needs to use numerical integration or Markov chain Monte Carlo (MCMC) methods. Here we will use MCMC methods with following update scheme:
+where we use hierarchical Bayesian modeling to esitmate $\Sigma_{\beta}$ and $\Sigma_{\gamma}$ using Inverse-Wishart distribution. Note that if this step seems to be unnecessary, we can instead simply fix those such as $\Sigma_{\beta} =\Sigma_{\gamma} = 10^4\times\mathbf{I}$. 
+\subsection{Sampling scheme}
+\noindent In the survival regression setting, closed forms for the posterior
+distribution of $\mathbf{\beta}$ (as well as $\mathbf{\gamma}$ in our model) are generally not available (which is also our cases: Equation (10), (12), (16), (18)), and therefore one needs to use numerical integration or Markov chain Monte Carlo (MCMC) methods. Here we will use MCMC methods with the following update scheme:
 \begin{itemize}
-	\item[] {\textbf{Step 0.}} Choose an arbitrary starting point $\mathbf{\beta}_0, \mathbf{\gamma}_0$, and $\lambda_0$ (if Weibull) and set $i = 0$.
+	\item[] {\textbf{Step 0.}} Choose an arbitrary starting point $\mathbf{\beta}_0, \mathbf{\gamma}_0$, (and $\lambda_0$ if Weibull) and set $i = 0$.
 	\item[] {\textbf{Step 1.}} Update $\Sigma_{\beta} \sim \pi(\Sigma_{\beta}|\mathbf{\beta}_i)$ and $\Sigma_{\gamma} \sim \pi(\Sigma_{\gamma}|\mathbf{\gamma}_i)$ using Gibbs sampler.
-	\item[] {\textbf{Step 2.}} Update $\mathbf{\beta}\sim \pi(\mathbf{\beta}|\mathbf{C}, \mathbf{X}, \mathbf{Z}, \mathbf{t}, \mathbf{\gamma}, \lambda, \mathbf{\mu}_{\beta}, \Sigma_{\beta})$ and $\mathbf{\gamma}\sim \pi(\mathbf{\gamma}|\mathbf{C}, \mathbf{X}, \mathbf{Z}, \mathbf{t}, \mathbf{\beta}, \lambda, \mathbf{\mu}_{\gamma}, \Sigma_{\gamma})$ using Metropolis-Hastings algorithm or slice sampler. 
-		\item[] {\textbf{Step $\mathbf{2}^\prime$.}} If Weibull, update $\lambda \sim \pi(\lambda|\mathbf{C}, \mathbf{\alpha}, \mathbf{X}, \mathbf{Z}, \mathbf{t}, \mathbf{\beta}, \mathbf{\gamma}, a_{\lambda}, b_{\lambda})$  using Metropolis-Hastings algorithm or slice sampler.
+	\item[] {\textbf{Step 2.}} Update $\mathbf{\beta}\sim \pi(\mathbf{\beta}|\mathbf{C}, \mathbf{X}, \mathbf{Z}, \mathbf{t}, \mathbf{\gamma}, \lambda, \mathbf{\mu}_{\beta}, \Sigma_{\beta})$ and $\mathbf{\gamma}\sim \pi(\mathbf{\gamma}|\mathbf{C}, \mathbf{X}, \mathbf{Z}, \mathbf{t}, \mathbf{\beta}, \lambda, \mathbf{\mu}_{\gamma}, \Sigma_{\gamma})$ using slice sampling. 
+		\item[] {\textbf{Step $\mathbf{2}^\prime$.}} If Weibull, update $\lambda \sim \pi(\lambda|\mathbf{C}, \mathbf{\alpha}, \mathbf{X}, \mathbf{Z}, \mathbf{t}, \mathbf{\beta}, \mathbf{\gamma}, a_{\lambda}, b_{\lambda})$  using slice sampling.
 	\item[] {\textbf{Step 3.}} Set $i = i + 1$, and go to Step 1.
+	\item[] {\textbf{Step 4.}} After $N$ iterations, summarize the parameter estimates using all sampled values (e.g. confidence intervals for coefficient estimation)
 \end{itemize}
-The closed form of $\pi(\Sigma_{\beta}|\mathbf{\beta}_i)$ and $\pi(\Sigma_{\gamma}|\mathbf{\gamma}_i)$ in Step 1 are derived in APPENDIX A. Detailed procedure of Metropolis-Hastings algorithm or slice sampler will be illustrated later.
-\section{APPENDIX}
-\subsection{APPENDIX A: Derivation of the full conditional distributions}
+\subsection{Gibbs sampling for $\Sigma_{\beta}$ and $\Sigma_{\gamma}$}
+\noindent The closed form of full conditional distributions of $\pi(\Sigma_{\beta}|\mathbf{\beta}_i)$ and $\pi(\Sigma_{\gamma}|\mathbf{\gamma}_i)$ in Step 1 are derived as below:
 	\begin{itemize}
 		\item [1.] $\Sigma_{\beta}$:
-			\begin{equation*}
-			\begin{aligned}
+		\begin{equation*}
+		\begin{aligned}
 		\pi(\Sigma_{\beta}|\mathbf{\beta}) 	&\propto \pi(\mathbf{\beta}|\mathbf{\mu}_{\beta} = \mathbf{0}, \Sigma_{\beta}) \times \pi(\Sigma_{\beta}) \\
-			&\propto |\Sigma_{\beta}|^{-\frac{1}{2}}\mbox{exp}\Big\{-\frac{1}{2}\Big(\mathbf{\beta}^\prime \Sigma_{\beta}^{-1}\mathbf{\beta}\Big)\Big\}\times |\Sigma_{\beta}|^{-\frac{\nu_1 + p_1 + 1}{2}}\mbox{exp}\Big\{-\frac{1}{2}\mbox{tr}\Big(\mathbf{I}_{p_1}\Sigma_{\beta}^{-1}\Big)\Big\}\\
-			& = |\Sigma_{\beta}|^{-\frac{1 + \nu_1 + p_1 +1}{2}}\mbox{exp}\Big\{-\frac{1}{2}\mbox{tr}\Big(\mathbf{\beta}\mathbf{\beta}^\prime \Sigma_{\beta}^{-1}\Big)\Big\}\times \mbox{exp}\Big\{-\frac{1}{2}\mbox{tr}\Big(\mathbf{I}_{p_1}\Sigma_{\beta}^{-1}\Big)\Big\}\\
-			& = |\Sigma_{\beta}|^{-\frac{1 + \nu_1 + p_1 +1}{2}}\mbox{exp}\Big\{-\frac{1}{2}\mbox{tr}\Big((\mathbf{\beta}\mathbf{\beta}^\prime + \mathbf{I}_{p_1})\Sigma_{\beta}^{-1}\Big) \Big\}\\
-						&\sim \mbox{IW}(\mathbf{\beta}\mathbf{\beta}^\prime + \mathbf{I}_{p_1},\quad 1 + \nu_1)	
+		&\propto |\Sigma_{\beta}|^{-\frac{1}{2}}\mbox{exp}\Big\{-\frac{1}{2}\Big(\mathbf{\beta}^\prime \Sigma_{\beta}^{-1}\mathbf{\beta}\Big)\Big\}\times |\Sigma_{\beta}|^{-\frac{\nu_1 + p_1 + 1}{2}}\mbox{exp}\Big\{-\frac{1}{2}\mbox{tr}\Big(\mathbf{I}_{p_1}\Sigma_{\beta}^{-1}\Big)\Big\}\\
+		& = |\Sigma_{\beta}|^{-\frac{1 + \nu_1 + p_1 +1}{2}}\mbox{exp}\Big\{-\frac{1}{2}\mbox{tr}\Big(\mathbf{\beta}\mathbf{\beta}^\prime \Sigma_{\beta}^{-1}\Big)\Big\}\times \mbox{exp}\Big\{-\frac{1}{2}\mbox{tr}\Big(\mathbf{I}_{p_1}\Sigma_{\beta}^{-1}\Big)\Big\}\\
+		& = |\Sigma_{\beta}|^{-\frac{1 + \nu_1 + p_1 +1}{2}}\mbox{exp}\Big\{-\frac{1}{2}\mbox{tr}\Big((\mathbf{\beta}\mathbf{\beta}^\prime + \mathbf{I}_{p_1})\Sigma_{\beta}^{-1}\Big) \Big\}\\
+		&\sim \mbox{Inverse-Wishart}(\mathbf{\beta}\mathbf{\beta}^\prime + \mathbf{I}_{p_1},\quad 1 + \nu_1)	
+		\end{aligned}
+		\end{equation*} 
+		\item [2.] $\Sigma_{\gamma}$:
+		\begin{equation*}
+		\begin{aligned}
+		\pi(\Sigma_{\gamma}|\mathbf{\gamma}) 	&\propto \pi(\mathbf{\gamma}|\mathbf{\mu}_{\gamma} = \mathbf{0}, \Sigma_{\gamma}) \times \pi(\Sigma_{\gamma}) \\
+		&\propto |\Sigma_{\gamma}|^{-\frac{1}{2}}\mbox{exp}\Big\{-\frac{1}{2}\Big(\mathbf{\gamma}^\prime \Sigma_{\gamma}^{-1}\mathbf{\gamma}\Big)\Big\}\times |\Sigma_{\gamma}|^{-\frac{\nu_1 + p_2 + 1}{2}}\mbox{exp}\Big\{-\frac{1}{2}\mbox{tr}\Big(\mathbf{I}_{p_2}\Sigma_{\gamma}^{-1}\Big)\Big\}\\
+		& = |\Sigma_{\gamma}|^{-\frac{1 + \nu_2 + p_2 +1}{2}}\mbox{exp}\Big\{-\frac{1}{2}\mbox{tr}\Big(\mathbf{\gamma}\mathbf{\gamma}^\prime \Sigma_{\gamma}^{-1}\Big)\Big\}\times \mbox{exp}\Big\{-\frac{1}{2}\mbox{tr}\Big(\mathbf{I}_{p_2}\Sigma_{\gamma}^{-1}\Big)\Big\}\\
+		& = |\Sigma_{\gamma}|^{-\frac{1 + \nu_2 + p_2 +1}{2}}\mbox{exp}\Big\{-\frac{1}{2}\mbox{tr}\Big((\mathbf{\gamma}\mathbf{\gamma}^\prime + \mathbf{I}_{p_2})\Sigma_{\gamma}^{-1}\Big) \Big\}\\
+		&\sim \mbox{Inverse-Wishart}(\mathbf{\gamma}\mathbf{\gamma}^\prime + \mathbf{I}_{p_2},\quad 1 + \nu_2)	
+		\end{aligned}
+		\end{equation*}
+	\end{itemize} 
+\subsection{Slice Sampling for $\mathbf{\beta}, \mathbf{\gamma}$ and $\lambda$}
+\noindent In recent decade, slice sampling has been widely used as an alternative to Metropolis-Hastings algorithm. Following the current practice of Bayesian mixture survival model, we use univariate slice
+sampler with stepout and shrinkage (Neal, 2003) in Step 2 (and Step $2^\prime$ if Weibull), where closed form of full conditional distribution is intractable. We also follow the modifications made in `BayesMixSurv' R package (Mahani, Mansour, and Mahani, 2016). Below are the steps to perform slice sampling for $\mathbf{\beta}$, and slice sampling for $\mathbf{\gamma}$ and $\lambda$ could be done in the exactly same manner:\\\newline
+For ${\beta}_p$, $p=1,...,P,$
+\begin{itemize}
+	\item[] {\textbf{Step 0.}} Choose an arbitrary starting point $\beta_{p_0}$ and size of the slice $w$, and set $i = 0$.
+	\item[] {\textbf{Step 1.}} Draw $y$ from $\mbox{Uniform}(0, f(\beta_{p_0}))$ defining the slice $S = \{\beta_p: y < f(\beta_{p})\}$, where
+	\begin{equation*}
+\begin{aligned}
+f(\beta_{p}) &\propto \pi(\beta_{p}|\mathbf{\beta}_{-p}, \mathbf{C}, \mathbf{X}, \mathbf{Z}, \mathbf{t}, \mathbf{\gamma}) \quad \quad\mbox{  if Exponential (Eq. (10))}\\
+& \propto \pi(\beta_{p}|\mathbf{\beta}_{-p}, \mathbf{C}, \mathbf{X}, \mathbf{Z}, \mathbf{t}, \mathbf{\gamma}, \lambda)  \quad\mbox{ if Weibull (Eq. (16))}
+\end{aligned}
+	\end{equation*}
+\item[] {\textbf{Step 2.}} Find an interva, $I = (L, R)$, around $\beta_{p_0}$ that contains all, or much, of the slice, where the initial interval is determined as
+	\begin{equation*}
+	\begin{aligned}
+	&u \sim \mbox{Uniform}(0, w)\\
+&L = \beta_{p_0} - u\\
+& R =  \beta_{p_0} + (w - u)
+	\end{aligned}
+	\end{equation*}
+	and expand the interval until its ends are outside the slice or until the limit on steps (limit on steps = $m$) is reached (``stepping-out" procedure), by comparing $y$ and $(f(L), f(R))$. 
+		\begin{equation*}
+		\begin{aligned}
+		& J =  \mbox{Floor}(\mbox{Uniform}(0,m)) \\&
+		K = (m-1) - J \\
+	    & \mbox{Repeat while } J > 0 \mbox{ and } y<f(L): \\&L= L - w, J = J -1\\
+	    & \mbox{Repeat while } K> 0 \mbox{ and } y<f(R): \\&R= R + w, K = K - 1
 			\end{aligned}
-			\end{equation*} 
-				\item [2.] $\Sigma_{\gamma}$:
-				\begin{equation*}
-				\begin{aligned}
-				\pi(\Sigma_{\gamma}|\mathbf{\gamma}) 	&\propto \pi(\mathbf{\gamma}|\mathbf{\mu}_{\gamma} = \mathbf{0}, \Sigma_{\gamma}) \times \pi(\Sigma_{\gamma}) \\
-				&\propto |\Sigma_{\gamma}|^{-\frac{1}{2}}\mbox{exp}\Big\{-\frac{1}{2}\Big(\mathbf{\gamma}^\prime \Sigma_{\gamma}^{-1}\mathbf{\gamma}\Big)\Big\}\times |\Sigma_{\gamma}|^{-\frac{\nu_1 + p_2 + 1}{2}}\mbox{exp}\Big\{-\frac{1}{2}\mbox{tr}\Big(\mathbf{I}_{p_2}\Sigma_{\gamma}^{-1}\Big)\Big\}\\
-				& = |\Sigma_{\gamma}|^{-\frac{1 + \nu_2 + p_2 +1}{2}}\mbox{exp}\Big\{-\frac{1}{2}\mbox{tr}\Big(\mathbf{\gamma}\mathbf{\gamma}^\prime \Sigma_{\gamma}^{-1}\Big)\Big\}\times \mbox{exp}\Big\{-\frac{1}{2}\mbox{tr}\Big(\mathbf{I}_{p_2}\Sigma_{\gamma}^{-1}\Big)\Big\}\\
-				& = |\Sigma_{\gamma}|^{-\frac{1 + \nu_2 + p_2 +1}{2}}\mbox{exp}\Big\{-\frac{1}{2}\mbox{tr}\Big((\mathbf{\gamma}\mathbf{\gamma}^\prime + \mathbf{I}_{p_2})\Sigma_{\gamma}^{-1}\Big) \Big\}\\
-				&\sim \mbox{IW}(\mathbf{\gamma}\mathbf{\gamma}^\prime + \mathbf{I}_{p_2},\quad 1 + \nu_2)	
-				\end{aligned}
-				\end{equation*}
-	\end{itemize}
+			\end{equation*}
+\item[] {\textbf{Step 3.}} Draw a new point $\beta_{p_1}$ from the part of the slice within this interval $I$, and shrink the interval on each rejection (``shrinkage" procedure)
+	\begin{equation*}
+	\begin{aligned}
+	&\mbox{Repeat}\\
+	&\beta_{p1} \sim \mbox{Uniform}(L, R)\\
+	&\mbox{ if } y < f(\beta_{p_1}), \mbox{ accept } \beta_{p_1} \mbox{ then exit loop}\\
+	& \mbox{ if } \beta_{p_1} < \beta_{p_0} , \mbox{ then } L = \beta_{p_1}\\
+	&\quad\quad\quad\quad\quad\quad\mbox{  else } R = \beta_{p_1}\\
+	\end{aligned}
+	\end{equation*}
+\item[] {\textbf{Step 4.}} Set $i = i + 1$, $\beta_{p_0} = \beta_{p_1},$ and go to Step 1.
+	\item[] {\textbf{Step 5.}} After $N$ iterations, summarize the parameter estimates using all sampled values (e.g. confidence intervals for coefficient estimation)
+\end{itemize}
 \end{document}
