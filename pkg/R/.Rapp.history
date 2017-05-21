@@ -1,0 +1,17 @@
+document()
+library(devtools)
+documnet()
+document()
+check()
+install()
+gamma
+document()
+check()
+install()
+library(BayesOFsurv)
+library(BayeOFsurv)
+document()
+document()
+install()
+library(BayesOFsurv)
+mcmcOF
