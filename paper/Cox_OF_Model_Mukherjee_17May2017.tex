@@ -1,0 +1,314 @@
+% style
+% style
+
+
+\documentclass[a4paper, 12pt]{article}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{graphicx}
+\usepackage{amsmath, amsthm, amssymb}
+\usepackage{setspace}
+\usepackage{indentfirst}
+\usepackage{vmargin}
+\usepackage{multirow}
+\usepackage{natbib}
+\usepackage{tabularx}
+\usepackage{url}
+\usepackage{bm}
+\usepackage[top=1in, bottom=1in, left=1in, right=1in]{geometry}
+\usepackage{endnotes}
+\usepackage{epsfig}
+\usepackage{psfrag}
+\usepackage{amsfonts}
+\usepackage[T1]{fontenc}
+\usepackage{color}
+\usepackage{rotating}
+\usepackage{longtable}
+\usepackage{graphics}
+\usepackage{morefloats}
+\usepackage{mathrsfs}
+\usepackage{subfig}
+
+\setcounter{MaxMatrixCols}{10}
+%TCIDATA{OutputFilter=LATEX.DLL}
+%TCIDATA{Version=5.50.0.2960}
+%TCIDATA{<META NAME="SaveForMode" CONTENT="1">}
+%TCIDATA{BibliographyScheme=BibTeX}
+%TCIDATA{LastRevised=Wednesday, May 17, 2017 09:30:33}
+%TCIDATA{<META NAME="GraphicsSave" CONTENT="32">}
+%TCIDATA{Language=American English}
+
+\newcommand {\dsum}{\displaystyle \sum}
+\newcommand {\dprod}{\displaystyle \prod}
+\setlength{\LTcapwidth}{5in}
+\def\p3s{\phantom{xxx}}
+\setpapersize{USletter}
+\setcounter{secnumdepth}{-2}
+\makeatletter
+\renewcommand{\section}{\@startsection
+{section}    {1}    {0mm}    {-0.7\baselineskip}    {0.08\baselineskip}    {\normalfont\large\sc\center\bf}}
+\renewcommand{\subsection}{\@startsection
+{subsection}    {2}    {0mm}    {-0.5\baselineskip}    {0.01\baselineskip}    {\normalfont\normalsize\itshape\center}}
+\makeatother
+\setmarginsrb{1.0in}{1.0in}{1.0in}{0.40in}{0in}{0in}{0in}{0.6in}
+\input{tcilatex}
+\begin{document}
+
+\date{\today }
+\title{Bayesian Inference on \\
+Parametric Zombie Survival Model}
+\author{Bomin Kim}
+\maketitle
+
+\begin{abstract}
+\noindent In this paper, we implement Bayesian Inference on the new split
+population survival model, that explicitly models the misclassification
+probability of failure (vs. right censored) events. This includes two
+parametric survival models (Exponential and Weibull) and (possibly) Cox
+proportional hazards regression model.
+\end{abstract}
+
+\setstretch{1.5}
+
+\clearpage\pagebreak \renewcommand{\thefigure}{\arabic{figure}} %
+\setcounter{figure}{0} \renewcommand{\thepage}{\arabic{page}} %
+\setcounter{page}{1} \pagestyle{plain} \doublespacing
+
+\section{Review on Parametric Zombie Survival Model}
+
+\subsection{Likelihood function}
+
+\noindent Recall from Ben's "Parametric Zombie Survival Model" that the
+probability of misclassification (that is, subset of non-censured failure
+outcomes that are being misclassified) is%
+\begin{equation}
+\alpha =\Pr (C_{i}=1|\widetilde{C}_{i}=0).
+\end{equation}%
+The unconditional density is thus given by the combination of an
+observation's misclassification probability and its probability of
+experiencing an actual failure conditional on not being misclassified,%
+\begin{equation}
+\alpha _{i}+(1-\alpha _{i})\ast f(t_{i})
+\end{equation}%
+And the unconditional survival function is therefore%
+\begin{equation}
+(1-\alpha _{i})\ast S(t_{i}),
+\end{equation}%
+where 
+\begin{equation}
+\alpha _{i}=\frac{\exp (\mathbf{Z}\gamma )}{1+\exp (\mathbf{Z}\gamma )}.
+\end{equation}%
+The likeihood function of the Parametric Zombie Survival Model is defined as 
+\begin{equation}
+L=\displaystyle\prod\limits_{i=1}^{N}[\alpha _{i}+(1-\alpha _{i})f(t_{i}|%
+\mathbf{X},\mathbf{\beta })]^{C_{i}}[(1-\alpha _{i})S(t_{i}|\mathbf{X,}%
+\mathbf{\beta })]^{1-C_{i}}
+\end{equation}%
+And the log likelihood is%
+\begin{equation}
+lnL=\displaystyle\sum\limits_{i=1}^{N}\{C_{i}\ln [\alpha _{i}+(1-\alpha
+_{i})f(t_{i}|\mathbf{X},\mathbf{\beta })]+(1-C_{i})\ln [(1-\alpha
+_{i})S(t_{i}|\mathbf{X,}\mathbf{\beta })]\}.
+\end{equation}%
+\iffalse Equivalently, if we define $\delta =1-\alpha $ and substitute this
+quantity into Equation (6), the log-likelihood would be defined as: 
+\begin{equation}
+lnL=\displaystyle\sum\limits_{i=1}^{N}\{C_{i}\ln [(1-\delta _{i})+\delta
+_{i}f(t_{i}|\mathbf{X},\mathbf{\beta })]+(1-C_{i})\ln [\delta _{i}S(t_{i}|%
+\mathbf{X,}\mathbf{\beta })]\},
+\end{equation}%
+which is symmetric to the log likelihood of the cure (i.e.,
+split-population) survival model. \fi We extend these definitions and
+notation from the Parametric Zombie Survival Model to the Cox PH framework
+in order to develop the Cox Overreported Failure (OF) model.
+
+\section{Cox-OF Model}
+
+\subsection{Likelihood function}
+
+\noindent The survival function of the conventional Cox Proportional Hazard
+(PH) model is%
+\begin{equation}
+S(t_{i}|\mathbf{X}_{i}\mathbf{,}\beta )=\exp \left\{ -\exp (\mathbf{X}_{i}%
+\mathbf{,}\beta )\dint\nolimits_{0}^{t_{i}}h_{0}(u)du\right\}
+\end{equation}%
+where $\dint\nolimits_{0}^{t_{i}}h_{0}(u)du$ is the cumulative baseline
+hazard. The density function of the Cox Proportional Hazard (PH) model is%
+\begin{equation}
+f(t_{i}|\mathbf{X}_{i}\mathbf{,}\beta )=h(t_{i}|\mathbf{X}_{i})S(t_{i}|%
+\mathbf{X}_{i}\mathbf{,}\beta )
+\end{equation}%
+which means that
+
+\begin{equation}
+f(t_{i}|\mathbf{X}_{i}\mathbf{,}\beta )=h_{0}(t_{i})e^{\mathbf{X}_{i}\mathbf{%
+,}\beta }\exp \left\{ -\exp (\mathbf{X}_{i}\mathbf{,}\beta
+)\dint\nolimits_{0}^{t_{i}}h_{0}(u)du\right\} 
+\end{equation}%
+where $h(t_{i}|\mathbf{X}_{i})$ is the conditional hazard function and $%
+h_{0}(t_{i})$ is the unspecified baseline hazard. Hence the likelihood of
+the Cox-OF model is 
+\begin{equation}
+L=\displaystyle\prod\limits_{i=1}^{N}\left[ \alpha _{i}+(1-\alpha
+_{i})h_{0}(t_{i})e^{\mathbf{X}_{i}\mathbf{,}\beta }\exp \left\{ -\exp (%
+\mathbf{X}_{i}\mathbf{,}\beta )\dint\nolimits_{0}^{t_{i}}h_{0}(u)du\right\} %
+\right] ^{C_{i}}\left[ (1-\alpha _{i})\exp \left\{ -\exp (\mathbf{X}_{i}%
+\mathbf{,}\beta )\dint\nolimits_{0}^{t_{i}}h_{0}(u)du\right\} \right]
+^{1-C_{i}}
+\end{equation}%
+\newline
+The log-likelihood from this expression is%
+\begin{equation}
+\ln L=\displaystyle\sum\limits_{i=1}^{N}\left\{ C_{i}\ln \left[ \alpha
+_{i}+(1-\alpha _{i})h_{0}(t_{i})e^{\mathbf{X}_{i}\mathbf{,}\beta }\exp
+\left( -\exp (\mathbf{X}_{i}\mathbf{,}\beta
+)\dint\nolimits_{0}^{t_{i}}h_{0}(u)du\right) \right] +(1-C_{i})\ln \left[
+(1-\alpha _{i})\exp \left( -\exp (\mathbf{X}_{i}\mathbf{,}\beta
+)\dint\nolimits_{0}^{t_{i}}h_{0}(u)du\right) \right] \right\} 
+\end{equation}%
+\newline
+
+\subsection{\protect\bigskip E-M estimation of Cox-OF model}
+
+We need some additional notation to describe the E-M
+(Expectation-Maximization) algorithm for estimating the Cox-OF model. To
+this end, let the log of the marginal full likleihood for the Cox-OF model
+be defined (more briefly) as%
+\begin{equation}
+l_{f}(\mathbf{\theta },\Lambda _{0})=\displaystyle\sum\limits_{i=1}^{N}%
+\{C_{i}\ln [\alpha _{i}+(1-\alpha _{i})h(t_{i}|\mathbf{X}_{i})S(t_{i}|%
+\mathbf{X}_{i}\mathbf{,}\beta )]+(1-C_{i})\ln [(1-\alpha _{i})S(t_{i}|%
+\mathbf{X}_{i}\mathbf{,}\beta )]\}
+\end{equation}%
+where $h(t_{i}|\mathbf{X}_{i})=h_{0}(t_{i})e^{\mathbf{X}_{i}\mathbf{,}\beta
+} $and $S(t_{i}|\mathbf{X}_{i}\mathbf{,}\beta )=\exp \left\{ -\exp (\mathbf{X%
+}_{i}\mathbf{,}\beta )\Lambda _{0}(t)\right\} $ with $\Lambda _{0}(t)=$ $%
+\dint\nolimits_{0}^{t_{i}}h_{0}(u)du$. Let $\mathbf{\theta }=(\mathbf{\gamma 
+},\mathbf{\beta })$. The estimate of $(\mathbf{\theta },\Lambda _{0})$ is
+obtained by maximizing $l_{f}$ over $(\mathbf{\theta },\Lambda _{0})$. This
+maximization is performed using the E-M algorithm given a suitable starting
+value $(\mathbf{\theta }^{(0)},\Lambda _{0}^{(0)})$ of $(\mathbf{\theta }%
+,\Lambda _{0})$. Once we have $\mathbf{\theta }^{(0)}$, a suitable $\Lambda
+_{0}^{(0)}$ corresponding to $\mathbf{\theta }^{(0)}$ can be computed by
+using the Newton-Raphson method. If we have appropriate starting values for $%
+(\mathbf{\theta }^{(0)},\Lambda _{0}^{(0)})$, then -- following Taylor
+(1995) and Sy and Taylor (2000) who developed the E-M algorithm for the
+classic Cox cure model -- we can formally describe the E-M algorithm for the
+Cox-OF model as follows. To start, the \textit{m-}th E-step in the E-M
+algorithm first transforms $l_{f}$ into the following form for the
+complete-data log likelihood%
+\begin{equation}
+l_{f}^{EM}(\mathbf{\gamma |w}^{(m)})=\sum\limits_{i=1}^{N}\left[
+(1-w_{i}^{(m)}(t_{i}))\ln \alpha _{i}+w_{i}^{(m)}(t_{i})\ln (1-\alpha _{i})%
+\right]
+\end{equation}%
+\begin{equation}
+l_{f}^{EM}(\mathbf{\beta ,}\Lambda _{0}\mathbf{|w}^{(m)})=\sum%
+\limits_{i=1}^{N}\left[ C_{i}\ln h_{0}(t_{i})+C_{i}\mathbf{X}_{i}\mathbf{%
+\beta }+w_{i}^{(m)}(t_{i})\ln f(t_{i})\right]
+\end{equation}%
+for a given $\mathbf{w}^{(m)}=(w_{1}^{(m)}(t_{1}),...,w_{N}^{(m)}(t_{N}))(m%
+\geq 1),$ where $\mathbf{w}^{(m)}$ is computed by current parameter values $(%
+\mathbf{\theta }^{(m-1)},\Lambda _{0}^{(m-1)})$ and%
+\begin{equation}
+w_{i}(t_{i};\mathbf{\theta },\Lambda _{0})=\left\{ 
+\begin{array}{c}
+\frac{(1-\alpha _{i})f(t_{i})}{\alpha _{i}+(1-\alpha _{i})f(t_{i})}\text{ \
+\ \ \ }C_{i}=0 \\ 
+1\text{ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ }C_{i}=1%
+\end{array}%
+\right\}
+\end{equation}%
+In the \textit{m-}th M-step in the E-M algorithm, the Breslow's estimate of $%
+\Lambda _{0}$,%
+\begin{equation}
+\widehat{\Lambda }(t_{i}|\mathbf{\beta ,w}^{(m)})=\displaystyle %
+\sum\limits_{\{i;T_{i}\leq t\}}\frac{C_{i}}{\tsum\limits_{j=1}^{N}I(T_{j}%
+\geq T_{i})\exp (\mathbf{X}_{j}\mathbf{\beta })w_{j}^{(m)}(T_{j})}
+\end{equation}%
+(where $I$ is an indicator function) can be employed for the maximization of 
+$l_{f}^{EM}(\mathbf{\beta ,}\Lambda _{0}\mathbf{|w}^{(m)})$. Substituting $%
+\widehat{\Lambda }_{0}(t_{i}|\mathbf{\beta ,w}^{(m)})$ into $\Lambda _{0}$
+of $l_{f}^{EM}(\mathbf{\beta ,}\Lambda _{0}\mathbf{|w}^{(m)})$ leads to the
+following log partial likelihood%
+\begin{equation}
+l_{p}^{EM}(\mathbf{\beta |w}^{(m)})=\sum\limits_{i=1}^{N}C_{i}\left[ \mathbf{%
+X}_{i}\mathbf{\beta }-\ln \left( \tsum\limits_{j=1}^{N}I(T_{j}\geq
+T_{i})\exp (\mathbf{X}_{j}\mathbf{\beta })w_{j}^{(m)}(T_{j})\right) \right]
+\end{equation}%
+The M-step of $l_{f}^{EM}(\mathbf{\beta ,}\Lambda _{0}\mathbf{|w}^{(m)})$
+over $(\mathbf{\beta ,}\Lambda _{0})$ is then replaced by maximizing $%
+l_{p}^{EM}(\mathbf{\beta |w}^{(m)})$ only over $\mathbf{\beta }$ and by
+treating $\Lambda _{0}$ as a nonparametric function. Hence, the M-step is
+easily performed by maximizing $l_{f}^{EM}(\mathbf{\gamma |w}^{(m)})$ and $%
+l_{p}^{EM}(\mathbf{\beta |w}^{(m)})$ over $\mathbf{\gamma }$ and $\mathbf{%
+\beta }$ via the Newton-Raphson method.
+
+Now suppose that $\mathbf{\theta }^{(m)}=(\mathbf{\gamma }^{(m)},\mathbf{%
+\beta }^{(m)})$ are the current estimates obtained by the M-step for a given 
+$\mathbf{w}^{(m)}$. This means that the current estimate $\Lambda _{0}^{(m)}$%
+of $\Lambda _{0}$ can be written as $\widehat{\Lambda }_{0}(.|\mathbf{\beta }%
+^{(m)}\mathbf{,w}^{(m)})$. Further, for the next $(m+1)$-th E-step, $\mathbf{%
+w}^{(m)}$ is updated to $\mathbf{w}^{(m+1)}$ by substituting $(\mathbf{%
+\theta }^{(m)},$ $\Lambda _{0}^{(m)})$ into $(\mathbf{\theta },$ $\Lambda
+_{0})$ in $\widehat{\Lambda }(t_{i}|\mathbf{\beta ,w}^{(m)})$. Finally, $(%
+\mathbf{\theta }^{(\widehat{m})},$ $\Lambda _{0}^{(\widehat{m})})$ which
+provides $\widehat{m}=\arg \max_{m=0,1...}.l_{f}(\mathbf{\theta }^{(m)},$ $%
+\Lambda _{0}^{(m)})$ becomes an estimate of $(\mathbf{\theta },$ $\Lambda
+_{0})$ in a series of the E-M iteration.
+
+\subsection{\protect\bigskip Posterior Distribution of Cox-OF model}
+
+For the Cox-OF model, we need to assign a prior to each of the following
+parameters: the baseline hazard $h_{0}$ which is labeled as $h$ for
+convenience, $\mathbf{\beta }=\{\beta _{1},...,\beta _{p_{1}}\}$, and $%
+\mathbf{\gamma }=\{\gamma _{1},...,\gamma _{p_{2}}\}$. For the baseline
+hazard, we follow standard practice\footnote{%
+complete footnote} and assume a Gamma prior where both parameters are set
+equal to $0.001$.\footnote{%
+This implies that the expectation is equal to 1 and the variance is equal to
+1000.} Hence%
+\begin{equation}
+h\symbol{126}\text{ Gamma}(a_{h},b_{h})
+\end{equation}%
+where $a_{h}=b_{h}=0.001$. From the parametric Zombie survival models, we
+assume the prior of $\mathbf{\beta }=\{\beta _{1},...,\beta _{p_{1}}\}$ as 
+\begin{equation}
+\mathbf{\beta }\sim \mbox{MVN}_{p_{1}}(\mathbf{\mu }_{\beta },\Sigma _{\beta
+}),
+\end{equation}%
+Thus the conditional posterior distribution for $h_{0}$ and $\mathbf{\beta }$
+is respectively given by%
+\begin{equation}
+\pi (h|\mathbf{C},\mathbf{\alpha },\mathbf{X},\mathbf{Z},\mathbf{t},\mathbf{%
+\beta ,\gamma })\propto L(h|\mathbf{C},\mathbf{\alpha },\mathbf{X},\mathbf{Z}%
+,\mathbf{t},\mathbf{\beta ,\gamma })\times \pi (h|a_{h},b_{h})
+\end{equation}%
+\begin{equation}
+\pi (\mathbf{\beta }|\mathbf{C},\mathbf{\alpha },\mathbf{X},\mathbf{Z},%
+\mathbf{t},\mathbf{\gamma })\propto L(\mathbf{\beta }|\mathbf{C},\mathbf{%
+\alpha },\mathbf{X},\mathbf{Z},\mathbf{t},\mathbf{\beta ,\gamma })\times \pi
+(\mathbf{\beta }|\mathbf{\mu }_{\beta },\Sigma _{\beta })
+\end{equation}%
+Further, following the parametric Zombie survival models, we can assign
+mutivariate Normal prior to $\mathbf{\gamma }=\{\gamma _{1},...,\gamma
+_{p_{2}}\}$, 
+\begin{equation}
+\mathbf{\gamma }\sim \mbox{MVN}_{p_{2}}(\mathbf{\mu }_{\gamma },\Sigma
+_{\gamma }),
+\end{equation}%
+and the corresponding conditional posterior distribution of $\mathbf{\gamma }
+$ becomes 
+\begin{equation}
+\pi (\mathbf{\gamma }|\mathbf{C},\mathbf{X},\mathbf{Z},\mathbf{t},\mathbf{%
+\beta ,h})\propto L(\mathbf{\gamma }|\mathbf{C},\mathbf{X},\mathbf{Z},%
+\mathbf{t},\mathbf{\beta ,h})\times \pi (\mathbf{\gamma }|\mathbf{\mu }%
+_{\gamma },\Sigma _{\gamma }).
+\end{equation}
+
+\textit{What about the cumulative basline hazard? }
+
+\subsection{MCMC algorithm for Cox-OF\ model}
+
+\noindent
+
+\end{document}

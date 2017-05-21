@@ -181,12 +181,12 @@ and the corresponding conditional posterior distribution becomes
 \noindent Since we do not have any informative prior for parametric Zombie survival model, we can follow the common approach and specify our hyperparameters as below:  
 \begin{equation}
 \begin{aligned}
-&\mathbf{\mu}_{\beta} = \mathbf{0}, \Sigma_{\beta} \sim \mbox{Inverse-Wishart}(\mathbf{I}_{p_1}, \nu_1),\\
-& \mathbf{\mu}_{\gamma} = \mathbf{0}, \Sigma_{\gamma} \sim \mbox{Inverse-Wishart}(\mathbf{I}_{p_2}, \nu_2), \\
+&\mathbf{\mu}_{\beta} = \mathbf{0}, \Sigma_{\beta} \sim \mbox{Inverse-Wishart}(p_1\mathbf{I}_{p_1}, p_1),\\
+& \mathbf{\mu}_{\gamma} = \mathbf{0}, \Sigma_{\gamma} \sim \mbox{Inverse-Wishart}(p_2\mathbf{I}_{p_2}, p_2), \\
 & a_{\lambda} =  b_{\lambda} = 0.001,
 \end{aligned}
 \end{equation}
-where we use hierarchical Bayesian modeling to esitmate $\Sigma_{\beta}$ and $\Sigma_{\gamma}$ using Inverse-Wishart distribution. Note that if this step seems to be unnecessary, we can instead simply fix those such as $\Sigma_{\beta} =\Sigma_{\gamma} = 10^4\times\mathbf{I}$. 
+where we use hierarchical Bayesian modeling to esitmate $\Sigma_{\beta}$ and $\Sigma_{\gamma}$ using Inverse-Wishart distribution. Note that if this step seems to be unnecessary, we can instead simply fix those such as $\Sigma_{\beta} =\Sigma_{\gamma} = 10^4\times\mathbf{I}$ (very slow mixing). 
 \subsection{Sampling scheme}
 \noindent In the survival regression setting, closed forms for the posterior
 distribution of $\mathbf{\beta}$ (as well as $\mathbf{\gamma}$ in our model) are generally not available (which is also our cases: Equation (10), (12), (16), (18)), and therefore one needs to use numerical integration or Markov chain Monte Carlo (MCMC) methods. Here we will use MCMC methods with the following update scheme:
@@ -205,20 +205,20 @@ distribution of $\mathbf{\beta}$ (as well as $\mathbf{\gamma}$ in our model) are
 		\begin{equation*}
 		\begin{aligned}
 		\pi(\Sigma_{\beta}|\mathbf{\beta}) 	&\propto \pi(\mathbf{\beta}|\mathbf{\mu}_{\beta} = \mathbf{0}, \Sigma_{\beta}) \times \pi(\Sigma_{\beta}) \\
-		&\propto |\Sigma_{\beta}|^{-\frac{1}{2}}\mbox{exp}\Big\{-\frac{1}{2}\Big(\mathbf{\beta}^\prime \Sigma_{\beta}^{-1}\mathbf{\beta}\Big)\Big\}\times |\Sigma_{\beta}|^{-\frac{\nu_1 + p_1 + 1}{2}}\mbox{exp}\Big\{-\frac{1}{2}\mbox{tr}\Big(\mathbf{I}_{p_1}\Sigma_{\beta}^{-1}\Big)\Big\}\\
-		& = |\Sigma_{\beta}|^{-\frac{1 + \nu_1 + p_1 +1}{2}}\mbox{exp}\Big\{-\frac{1}{2}\mbox{tr}\Big(\mathbf{\beta}\mathbf{\beta}^\prime \Sigma_{\beta}^{-1}\Big)\Big\}\times \mbox{exp}\Big\{-\frac{1}{2}\mbox{tr}\Big(\mathbf{I}_{p_1}\Sigma_{\beta}^{-1}\Big)\Big\}\\
-		& = |\Sigma_{\beta}|^{-\frac{1 + \nu_1 + p_1 +1}{2}}\mbox{exp}\Big\{-\frac{1}{2}\mbox{tr}\Big((\mathbf{\beta}\mathbf{\beta}^\prime + \mathbf{I}_{p_1})\Sigma_{\beta}^{-1}\Big) \Big\}\\
-		&\sim \mbox{Inverse-Wishart}(\mathbf{\beta}\mathbf{\beta}^\prime + \mathbf{I}_{p_1},\quad 1 + \nu_1)	
+		&\propto |\Sigma_{\beta}|^{-\frac{1}{2}}\mbox{exp}\Big\{-\frac{1}{2}\Big(\mathbf{\beta}^\prime \Sigma_{\beta}^{-1}\mathbf{\beta}\Big)\Big\}\times |\Sigma_{\beta}|^{-\frac{p_1+ p_1 + 1}{2}}\mbox{exp}\Big\{-\frac{1}{2}\mbox{tr}\Big(p_1\mathbf{I}_{p_1}\Sigma_{\beta}^{-1}\Big)\Big\}\\
+		& = |\Sigma_{\beta}|^{-\frac{1 + p_1 + p_1 +1}{2}}\mbox{exp}\Big\{-\frac{1}{2}\mbox{tr}\Big(\mathbf{\beta}\mathbf{\beta}^\prime \Sigma_{\beta}^{-1}\Big)\Big\}\times \mbox{exp}\Big\{-\frac{1}{2}\mbox{tr}\Big(p_1\mathbf{I}_{p_1}\Sigma_{\beta}^{-1}\Big)\Big\}\\
+		& = |\Sigma_{\beta}|^{-\frac{1 + p_1 + p_1 +1}{2}}\mbox{exp}\Big\{-\frac{1}{2}\mbox{tr}\Big((\mathbf{\beta}\mathbf{\beta}^\prime + p_1\mathbf{I}_{p_1})\Sigma_{\beta}^{-1}\Big) \Big\}\\
+		&\sim \mbox{Inverse-Wishart}(\mathbf{\beta}\mathbf{\beta}^\prime + p_1\mathbf{I}_{p_1},\quad 1 + p_1)	
 		\end{aligned}
 		\end{equation*} 
 		\item [2.] $\Sigma_{\gamma}$:
 		\begin{equation*}
 		\begin{aligned}
 		\pi(\Sigma_{\gamma}|\mathbf{\gamma}) 	&\propto \pi(\mathbf{\gamma}|\mathbf{\mu}_{\gamma} = \mathbf{0}, \Sigma_{\gamma}) \times \pi(\Sigma_{\gamma}) \\
-		&\propto |\Sigma_{\gamma}|^{-\frac{1}{2}}\mbox{exp}\Big\{-\frac{1}{2}\Big(\mathbf{\gamma}^\prime \Sigma_{\gamma}^{-1}\mathbf{\gamma}\Big)\Big\}\times |\Sigma_{\gamma}|^{-\frac{\nu_1 + p_2 + 1}{2}}\mbox{exp}\Big\{-\frac{1}{2}\mbox{tr}\Big(\mathbf{I}_{p_2}\Sigma_{\gamma}^{-1}\Big)\Big\}\\
-		& = |\Sigma_{\gamma}|^{-\frac{1 + \nu_2 + p_2 +1}{2}}\mbox{exp}\Big\{-\frac{1}{2}\mbox{tr}\Big(\mathbf{\gamma}\mathbf{\gamma}^\prime \Sigma_{\gamma}^{-1}\Big)\Big\}\times \mbox{exp}\Big\{-\frac{1}{2}\mbox{tr}\Big(\mathbf{I}_{p_2}\Sigma_{\gamma}^{-1}\Big)\Big\}\\
-		& = |\Sigma_{\gamma}|^{-\frac{1 + \nu_2 + p_2 +1}{2}}\mbox{exp}\Big\{-\frac{1}{2}\mbox{tr}\Big((\mathbf{\gamma}\mathbf{\gamma}^\prime + \mathbf{I}_{p_2})\Sigma_{\gamma}^{-1}\Big) \Big\}\\
-		&\sim \mbox{Inverse-Wishart}(\mathbf{\gamma}\mathbf{\gamma}^\prime + \mathbf{I}_{p_2},\quad 1 + \nu_2)	
+		&\propto |\Sigma_{\gamma}|^{-\frac{1}{2}}\mbox{exp}\Big\{-\frac{1}{2}\Big(\mathbf{\gamma}^\prime \Sigma_{\gamma}^{-1}\mathbf{\gamma}\Big)\Big\}\times |\Sigma_{\gamma}|^{-\frac{p_2 + p_2 + 1}{2}}\mbox{exp}\Big\{-\frac{1}{2}\mbox{tr}\Big(p_2 \mathbf{I}_{p_2}\Sigma_{\gamma}^{-1}\Big)\Big\}\\
+		& = |\Sigma_{\gamma}|^{-\frac{1 + p_2 + p_2 +1}{2}}\mbox{exp}\Big\{-\frac{1}{2}\mbox{tr}\Big(\mathbf{\gamma}\mathbf{\gamma}^\prime \Sigma_{\gamma}^{-1}\Big)\Big\}\times \mbox{exp}\Big\{-\frac{1}{2}\mbox{tr}\Big(p_2 \mathbf{I}_{p_2}\Sigma_{\gamma}^{-1}\Big)\Big\}\\
+		& = |\Sigma_{\gamma}|^{-\frac{1 + p_2  + p_2 +1}{2}}\mbox{exp}\Big\{-\frac{1}{2}\mbox{tr}\Big((\mathbf{\gamma}\mathbf{\gamma}^\prime + p_2 \mathbf{I}_{p_2})\Sigma_{\gamma}^{-1}\Big) \Big\}\\
+		&\sim \mbox{Inverse-Wishart}(\mathbf{\gamma}\mathbf{\gamma}^\prime + p_2 \mathbf{I}_{p_2},\quad 1 + p_2)	
 		\end{aligned}
 		\end{equation*}
 	\end{itemize} 
