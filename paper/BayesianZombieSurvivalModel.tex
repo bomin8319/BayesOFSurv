@@ -53,7 +53,7 @@
 \input{tcilatex}
 \begin{document}
 \date{\today }
-\title{Bayesian Inference on \\Parametric Zombie Survival Model}
+\title{Bayesian Inference on \\Parametric Overreported Failure (OF) Survival Model}
 \author{Bomin Kim}
 \maketitle
 \setstretch{1.5}
@@ -63,49 +63,42 @@
 \clearpage \pagebreak \renewcommand{\thefigure}{\arabic{figure}} %
 \setcounter{figure}{0} \renewcommand{\thepage}{\arabic{page}} %
 \setcounter{page}{1} \pagestyle{plain} \doublespacing
-\section{Review on Parametric Zombie Survival Model}
+\section{Review on Parametric Parametric OF Survival Model}
 \subsection{Likelihood function}
-\noindent Recall from Ben's "Parametric Zombie Survival Model" that the
-probability of misclassification (that is, subset of non-censured failure
-outcomes that are being misclassified) is%
+\noindent Recall from Ben's "Parametric Overreported Failure (OF) Survival Model" that the
+probability of observation $i$ being truly censored (given that the subset of non-censored failure
+outcomes are being misclassified) is%
 \begin{equation}
-\alpha =\Pr (C_{i}=1|\widetilde{C}_{i}=0).
+\alpha_i =\Pr (\widetilde{C}_{i}=0).
 \end{equation}
-The unconditional density is thus given by the combination of an
-observation's misclassification probability and its probability of
-experiencing an actual failure conditional on not being misclassified,%
+The unconditional density of $C_i = 1$ is thus given by the combination of an
+observation's true censoring probability $\Pr (\widetilde{C}_{i}=0)$ and its probability of
+survival conditional on being misclassified $\Pr (T_i > t_i , C_i =1 |\widetilde{C}_{i}=0)$, plus the observation's true un-censoring probability $\Pr (\widetilde{C}_{i}=1)$and its probability of failure conditional on not being misclassified $\Pr (T_i =t_i , C_i =1 |\widetilde{C}_{i}=1)$,%
 \begin{equation}
-\alpha _{i}+(1-\alpha _{i})\ast f(t_{i})
+\alpha _{i}S(t_i)+(1-\alpha _{i})\ast f(t_{i})
 \end{equation}
-And the unconditional survival function is therefore%
+And the unconditional survival function for the case of $C_i = 0$ is therefore%
 \begin{equation}
-(1-\alpha _{i})\ast S(t_{i}),
+\alpha _{i}\ast S(t_{i}),
 \end{equation}
 where
 \begin{equation}
 \alpha _{i}=\frac{\exp (\mathbf{Z}\gamma )}{1+\exp (\mathbf{Z}\gamma )}.
 \end{equation}
-The likeihood function of the Parametric Zombie Survival Model is defined as 
+The likeihood function of the Parametric OF Survival Model is defined as 
 \begin{equation}
-L=\dprod\limits_{i=1}^{N}[\alpha _{i}+(1-\alpha _{i})f(t_{i}|\mathbf{X},\mathbf{\beta}
-)]^{C_{i}}[(1-\alpha _{i})S(t_{i}|\mathbf{X,}\mathbf{\beta})]^{1-C_{i}}
+L=\dprod\limits_{i=1}^{N}[\alpha _{i}S(t_{i}|\mathbf{X,}%
+\mathbf{\beta})+(1-\alpha _{i})f(t_{i}|\mathbf{X},\mathbf{\beta}
+)]^{C_{i}}[\alpha _{i}S(t_{i}|\mathbf{X,}\mathbf{\beta})]^{1-C_{i}}
 \end{equation}
 And the log likelihood is%
 \begin{equation}
-lnL=\dsum\limits_{i=1}^{N}\{C_{i}\ln [\alpha _{i}+(1-\alpha
-_{i})f(t_{i}|\mathbf{X},\mathbf{\beta})]+(1-C_{i})\ln [(1-\alpha _{i})S(t_{i}|\mathbf{X,}%
+lnL=\dsum\limits_{i=1}^{N}\{C_{i}\ln [\alpha _{i}S(t_{i}|\mathbf{X,}%
+\mathbf{\beta})+(1-\alpha
+_{i})f(t_{i}|\mathbf{X},\mathbf{\beta})]+(1-C_{i})\ln [\alpha _{i}S(t_{i}|\mathbf{X,}%
 \mathbf{\beta})]\}.
 \end{equation}
-\iffalse
-Equivalently, if define $\delta = 1 - \alpha$ and substitute this quantity into Equation (6), the log-likelihood would be defined as:
-\begin{equation}
-lnL=\dsum\limits_{i=1}^{N}\{C_{i}\ln [(1-\delta _{i})+\delta
-_{i}f(t_{i}|\mathbf{X},\mathbf{\beta})]+(1-C_{i})\ln [\delta _{i}S(t_{i}|\mathbf{X,}%
-\mathbf{\beta})]\},
-\end{equation}
-which is symmetric to the log likelihood of the cure (i.e., split-population) survival model.
-\fi
-\section{Posterior Distribution of Parametric Zombie Survival Models}
+\section{Posterior Distribution of Parametric OF Survival Models}
 \iffalse\noindent The parametric survival models, also known as accelerated failure time models (AFT models), includes exponential, log-normal, log-logistic, and Weibull distributions. Although the classical approach is the maximum likelihood for parameter estimation, here we use Bayesian analysis to model Exponential and Weibull cases.\fi
 \subsection{Exponential}
 \noindent 
@@ -116,10 +109,10 @@ f(t_i|X_i, \mathbf{\beta}) &= \mbox{exp}(X_i\mathbf{\beta})\mbox{exp}(- \mbox{ex
 S(t_i|X_i, \mathbf{\beta}) &= \mbox{exp}(- \mbox{exp}(X_i\mathbf{\beta})t_i).
 \end{aligned}
 \end{equation}
-Then, the likelihood function of Exponential Zombie survival model is
+Then, the likelihood function of Exponential OF survival model is
 \begin{equation}
 \begin{aligned}
-L(\mathbf{\beta}, \mathbf{\gamma})=\dprod\limits_{i=1}^{N}[\alpha _{i}+(1-\alpha _{i})\mbox{exp}(X_i\mathbf{\beta})\mbox{exp}(- \mbox{exp}(X_i\mathbf{\beta})t_i)]^{C_{i}}[(1-\alpha _{i})\mbox{exp}(- \mbox{exp}(X_i\mathbf{\beta})t_i)]^{1-C_{i}}
+L(\mathbf{\beta}, \mathbf{\gamma})=&\dprod\limits_{i=1}^{N}[\alpha _{i}\mbox{exp}(- \mbox{exp}(X_i\mathbf{\beta})t_i)+(1-\alpha _{i})\mbox{exp}(X_i\mathbf{\beta})\mbox{exp}(- \mbox{exp}(X_i\mathbf{\beta})t_i)]^{C_{i}}\\&\quad \times[\alpha _{i}\mbox{exp}(- \mbox{exp}(X_i\mathbf{\beta})t_i)]^{1-C_{i}}
 \end{aligned}
 \end{equation}
 where $X_i$ is the $i^{th}$ row of the covariate matrix $\mathbf{X}$.\\ \newline
@@ -148,10 +141,10 @@ f(t_i|\lambda, X_i, \mathbf{\beta}) &= \lambda(\mbox{exp}(X_i\mathbf{\beta})) (\
 S(t_i|\lambda, X_i, \mathbf{\beta}) &= \mbox{exp}(-(\mbox{exp}(X_i\mathbf{\beta})t_i)^{\lambda}),
 \end{aligned}
 \end{equation}
-which shows that $\lambda=1$ reduces to Exponential survival model, which is a well-known property. The likelihood function of Weibull Zombie survival model is
+which shows that $\lambda=1$ reduces to Exponential survival model, which is a well-known property. The likelihood function of Weibull OF survival model is
 \begin{equation}
 \begin{aligned}
-L(\lambda, \mathbf{\beta}, \mathbf{\gamma})=&\prod\limits_{i=1}^{N}[\alpha _{i}+(1-\alpha _{i})\lambda(\mbox{exp}(X_i\mathbf{\beta})) (\mbox{exp}(X_i\mathbf{\beta})t_i)^{\lambda - 1} \mbox{exp}(-(\mbox{exp}(X_i\mathbf{\beta})t_i)^{\lambda})]^{C_{i}}\\&\times [(1-\alpha _{i})\mbox{exp}(-(\mbox{exp}(X_i\mathbf{\beta})t_i)^{\lambda})]^{1-C_{i}}.
+L(\lambda, \mathbf{\beta}, \mathbf{\gamma})=&\prod\limits_{i=1}^{N}[\alpha _{i}\mbox{exp}(-(\mbox{exp}(X_i\mathbf{\beta})t_i)^{\lambda})+(1-\alpha _{i})\lambda(\mbox{exp}(X_i\mathbf{\beta})) (\mbox{exp}(X_i\mathbf{\beta})t_i)^{\lambda - 1} \mbox{exp}(-(\mbox{exp}(X_i\mathbf{\beta})t_i)^{\lambda})]^{C_{i}}\\&\quad\times [\alpha _{i}\mbox{exp}(-(\mbox{exp}(X_i\mathbf{\beta})t_i)^{\lambda})]^{1-C_{i}}.
 \end{aligned}
 \end{equation}
 For the two parameters $\lambda$ and $\mathbf{\beta}=\{\beta_1,...,\beta_{p_1}\}$, we assign prior to each parameter as
@@ -178,7 +171,7 @@ and the corresponding conditional posterior distribution becomes
 \end{equation}
 \section{Markov chain Monte Carlo (MCMC) algorithm}
 \subsection{Prior specifications}
-\noindent Since we do not have any informative prior for parametric Zombie survival model, we can follow the common approach and specify our hyperparameters as below:  
+\noindent Since we do not have any informative prior for parametric OF survival model, we can follow the common approach and specify our hyperparameters as below:  
 \begin{equation}
 \begin{aligned}
 &\mathbf{\mu}_{\beta} = \mathbf{0}, \Sigma_{\beta} \sim \mbox{Inverse-Wishart}(p_1\mathbf{I}_{p_1}, p_1),\\
