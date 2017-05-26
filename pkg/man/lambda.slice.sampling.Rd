@@ -4,19 +4,23 @@
 \alias{lambda.slice.sampling}
 \title{lambda.slice.sampling}
 \usage{
-lambda.slice.sampling(lambda, Y, C, XB, phi, w, m = 100, lower = 0 +
+lambda.slice.sampling(Y, X, betas, Z, gammas, C, lambda, w, m, lower = 0 +
   10^(-10), upper = +Inf)
 }
 \arguments{
-\item{lambda}{current value of lambda}
-
 \item{Y}{response variable}
+
+\item{X}{covariates for betas}
+
+\item{betas}{current value of betas}
+
+\item{Z}{covariates for gammas}
+
+\item{gammas}{current value of gammas}
 
 \item{C}{censoring indicator}
 
-\item{XB}{current value of XB}
-
-\item{phi}{current value of phi}
+\item{lambda}{current value of lambda}
 
 \item{w}{size of the slice in the slice sampling}
 

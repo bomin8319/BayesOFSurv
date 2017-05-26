@@ -1,20 +1,21 @@
 #' @useDynLib BayesOFsurv
-#' @importFrom stats dgammas runif
+#' @importFrom stats dgamma runif
 #' @import grDevices
 #' @import graphics
 #' @importFrom MCMCpack riwish
 #' @importFrom mvtnorm rmvnorm dmvnorm
 NULL
 
-#' @title beta.slice.sampling
-#' @description slice sampling for beta
+#' @title betas.slice.sampling
+#' @description slice sampling for betas
 #'
-#' @param beta previous value of beta used in the slice sampling
-#' @param Sigma.b variance estimate of beta
+#' @param Sigma.b variance estimate of betas
 #' @param Y response variable
+#' @param X covariates for betas
+#' @param betas current value of betas
+#' @param Z covariates for gammas
+#' @param gammas current value of gammas
 #' @param C censoring indicator
-#' @param X covariates for beta
-#' @param phi current value of phi
 #' @param lambda current value of lambda
 #' @param w size of the slice in the slice sampling
 #' @param m limit on steps in the slice sampling
@@ -22,25 +23,26 @@ NULL
 #' @return One sample update using slice sampling
 #'
 #' @export
-beta.slice.sampling = function(beta, Sigma.b, Y, C, X, phi, lambda, w, m = 100) {
-  p1 = length(beta)
+betas.slice.sampling = function(Sigma.b, Y, X, betas, Z, gammas, C, lambda, w, m) {
+  p1 = length(betas)
   for (p in sample(1:p1, p1, replace = FALSE)) {
-    beta[p] = univ.beta.slice.sampling(beta[p], p, beta, Sigma.b, Y, C, X, phi, lambda, w, m)
+    betas[p] = univ.betas.slice.sampling(betas[p], p, Sigma.b, Y, X, betas, Z, gammas, C, lambda, w, m)
   }
-  return(beta)
+  return(betas)
 }
 
-#' @title univ.beta.slice.sampling
-#' @description univariate slice sampling for beta.p
+#' @title univ.betas.slice.sampling
+#' @description univariate slice sampling for betas.p
 #'
-#' @param beta.p current value of the pth element of beta
+#' @param betas.p current value of the pth element of betas
 #' @param p pth element
-#' @param beta current value of beta
-#' @param Sigma.b variance estimate of beta
+#' @param Sigma.b variance estimate of betas
 #' @param Y response variable
+#' @param X covariates for betas
+#' @param betas current value of betas
+#' @param Z covariates for gammas
+#' @param gammas current value of gammas
 #' @param C censoring indicator
-#' @param X covariates for beta
-#' @param phi current value of phi
 #' @param lambda current value of lambda
 #' @param w size of the slice in the slice sampling
 #' @param m limit on steps in the slice sampling
@@ -50,9 +52,9 @@ beta.slice.sampling = function(beta, Sigma.b, Y, C, X, phi, lambda, w, m = 100) 
 #' @return One sample update using slice sampling
 #'
 #' @export
-univ.beta.slice.sampling = function(beta.p, p, beta, Sigma.b, Y, C, X, phi, lambda, w, m = 100, lower = -Inf, upper = +Inf) {
-  b0 = beta.p
-  b.post0 = beta.post(b0, p, beta, Sigma.b, Y, C, X, phi, lambda)
+univ.betas.slice.sampling = function(betas.p, p, Sigma.b, Y, X, betas, Z, gammas, C, lambda, w, m, lower = -Inf, upper = +Inf) {
+  b0 = betas.p
+  b.post0 = betas.post(b0, p, Sigma.b, Y, X, betas, Z, gammas, C, lambda)
 
   u = runif(1, 0, w)
   L = b0 - u
@@ -60,13 +62,13 @@ univ.beta.slice.sampling = function(beta.p, p, beta, Sigma.b, Y, C, X, phi, lamb
   if (is.infinite(m)) {
     repeat
     { if (L <= lower) break
-      if (beta.post(L, p, beta, Sigma.b, Y, C, X, phi, lambda) <= b.post0) break
+      if (betas.post(L, p, Sigma.b, Y, X, betas, Z, gammas, C, lambda) <= b.post0) break
       L = L - w
     }
     repeat
     {
       if (R >= upper) break
-      if (beta.post(R, p, beta, Sigma.b, Y, C, X, phi, lambda) <= b.post0) break
+      if (betas.post(R, p, Sigma.b, Y, X, betas, Z, gammas, C, lambda) <= b.post0) break
       R = R + w
     }
   } else if (m > 1) {
@@ -75,14 +77,14 @@ univ.beta.slice.sampling = function(beta.p, p, beta, Sigma.b, Y, C, X, phi, lamb
 
     while (J > 0) {
       if (L <= lower) break
-      if (beta.post(L, p, beta, Sigma.b, Y, C, X, phi, lambda) <= b.post0) break
+      if (betas.post(L, p, Sigma.b, Y, X, betas, Z, gammas, C, lambda) <= b.post0) break
       L = L - w
       J = J - 1
     }
 
     while (K > 0) {
       if (R >= upper) break
-      if (beta.post(R, p, beta, Sigma.b, Y, C, X, phi, lambda) <= b.post0) break
+      if (betas.post(R, p, Sigma.b, Y, X, betas, Z, gammas, C, lambda) <= b.post0) break
       R = R + w
       K = K - 1
     }
@@ -98,7 +100,7 @@ univ.beta.slice.sampling = function(beta.p, p, beta, Sigma.b, Y, C, X, phi, lamb
   repeat
   {
     b1 = runif(1, L, R)
-    b.post1 = beta.post(b1, p, beta, Sigma.b, Y, C, X, phi, lambda)
+    b.post1 = betas.post(b1, p, Sigma.b, Y, X, betas, Z, gammas, C, lambda)
 
     if (b.post1 >= b.post0) break
     if (b1 > b0) {
@@ -110,15 +112,16 @@ univ.beta.slice.sampling = function(beta.p, p, beta, Sigma.b, Y, C, X, phi, lamb
   return(b1)
   }
 
-#' @title gammass.slice.sampling
-#' @description slice sampling for gammass
+#' @title gammas.slice.sampling
+#' @description slice sampling for gammas
 #'
-#' @param gammass previous value of gammass used in the slice sampling
-#' @param Sigma.g variance estimate of gammass
+#' @param Sigma.g variance estimate of gammas
 #' @param Y response variable
-#' @param C censoring indicator
-#' @param XB current value of XB
+#' @param X covariates for betas
+#' @param betas current value of betas
 #' @param Z covariates for gammas
+#' @param gammas current value of gammas
+#' @param C censoring indicator
 #' @param lambda current value of lambda
 #' @param w size of the slice in the slice sampling
 #' @param m limit on steps in the slice sampling
@@ -126,12 +129,12 @@ univ.beta.slice.sampling = function(beta.p, p, beta, Sigma.b, Y, C, X, phi, lamb
 #' @return One sample update using slice sampling
 #'
 #' @export
-gammas.slice.sampling = function(gammass, Sigma.g, Y, C, XB, Z, lambda, w, m = 100) {
-  p2 = length(gammass)
+gammas.slice.sampling = function(Sigma.g, Y, X, betas, Z, gammas, C, lambda, w, m) {
+  p2 = length(gammas)
   for (p in sample(1:p2, p2, replace = FALSE)) {
-    gammass[p] = univ.gammas.slice.sampling(gammass[p], p, gammass, Sigma.g, Y, C, XB, Z, lambda, w, m)
+    gammas[p] = univ.gammas.slice.sampling(gammas[p], p, Sigma.g, Y, X, betas, Z, gammas, C, lambda, w, m)
   }
-  return(gammass)
+  return(gammas)
 }
 
 #' @title univ.gammas.slice.sampling
@@ -139,12 +142,13 @@ gammas.slice.sampling = function(gammass, Sigma.g, Y, C, XB, Z, lambda, w, m = 1
 #'
 #' @param gammas.p current value of the pth element of gammas
 #' @param p pth element
-#' @param gammass current value of gammas
 #' @param Sigma.g variance estimate of gammas
 #' @param Y response variable
-#' @param C censoring indicator
-#' @param XB current value of XB
+#' @param X covariates for betas
+#' @param betas current value of betas
 #' @param Z covariates for gammas
+#' @param gammas current value of gammas
+#' @param C censoring indicator
 #' @param lambda current value of lambda
 #' @param w size of the slice in the slice sampling
 #' @param m limit on steps in the slice sampling
@@ -154,9 +158,9 @@ gammas.slice.sampling = function(gammass, Sigma.g, Y, C, XB, Z, lambda, w, m = 1
 #' @return One sample update using slice sampling
 #'
 #' @export
-univ.gammas.slice.sampling = function(gammas.p, p, gammass, Sigma.g, Y, C, XB, Z, lambda, w, m = 100, lower = -Inf, upper = +Inf) {
+univ.gammas.slice.sampling = function(gammas.p, p, Sigma.g, Y, X, betas, Z, gammas, C, lambda, w, m, lower = -Inf, upper = +Inf) {
   g0 = gammas.p
-  g.post0 = gammas.post(g0, p, gammass, Sigma.g, Y, C, XB, Z, lambda)
+  g.post0 = gammas.post(g0, p, Sigma.g, Y, X, betas, Z, gammas, C, lambda)
 
   u = runif(1, 0, w)
   L = g0 - u
@@ -164,13 +168,13 @@ univ.gammas.slice.sampling = function(gammas.p, p, gammass, Sigma.g, Y, C, XB, Z
   if (is.infinite(m)) {
     repeat
     { if (L <= lower) break
-      if (gammas.post(L, p, gammass, Sigma.g, Y, C, XB, Z, lambda) <= g.post0) break
+      if (gammas.post(L, p, Sigma.g, Y, X, betas, Z, gammas, C, lambda) <= g.post0) break
       L = L - w
     }
     repeat
     {
       if (R >= upper) break
-      if (gammas.post(R, p, gammass, Sigma.g, Y, C, XB, Z, lambda) <= g.post0) break
+      if (gammas.post(R, p, Sigma.g, Y, X, betas, Z, gammas, C, lambda) <= g.post0) break
       R = R + w
     }
   } else if (m > 1) {
@@ -179,14 +183,14 @@ univ.gammas.slice.sampling = function(gammas.p, p, gammass, Sigma.g, Y, C, XB, Z
 
     while (J > 0) {
       if (L <= lower) break
-      if (gammas.post(L, p, gammass, Sigma.g, Y, C, XB, Z, lambda) <= g.post0) break
+      if (gammas.post(L, p, Sigma.g, Y, X, betas, Z, gammas, C, lambda) <= g.post0) break
       L = L - w
       J = J - 1
     }
 
     while (K > 0) {
       if (R >= upper) break
-      if (gammas.post(R, p, gammass, Sigma.g, Y, C, XB, Z, lambda) <= g.post0) break
+      if (gammas.post(R, p, Sigma.g, Y, X, betas, Z, gammas, C, lambda) <= g.post0) break
       R = R + w
       K = K - 1
     }
@@ -202,7 +206,7 @@ univ.gammas.slice.sampling = function(gammas.p, p, gammass, Sigma.g, Y, C, XB, Z
   repeat
   {
     g1 = runif(1, L, R)
-    g.post1 = gammas.post(g1, p, gammass, Sigma.g, Y, C, XB, Z, lambda)
+    g.post1 = gammas.post(g1, p, Sigma.g, Y, X, betas, Z, gammas, C, lambda)
 
     if (g.post1 >= g.post0) break
     if (g1 > g0) {
@@ -217,11 +221,13 @@ univ.gammas.slice.sampling = function(gammas.p, p, gammass, Sigma.g, Y, C, XB, Z
 #' @title lambda.slice.sampling
 #' @description univariate slice sampling for lambda
 #'
-#' @param lambda current value of lambda
 #' @param Y response variable
+#' @param X covariates for betas
+#' @param betas current value of betas
+#' @param Z covariates for gammas
+#' @param gammas current value of gammas
 #' @param C censoring indicator
-#' @param XB current value of XB
-#' @param phi current value of phi
+#' @param lambda current value of lambda
 #' @param w size of the slice in the slice sampling
 #' @param m limit on steps in the slice sampling
 #' @param lower lower bound on support of the distribution
@@ -230,9 +236,9 @@ univ.gammas.slice.sampling = function(gammas.p, p, gammass, Sigma.g, Y, C, XB, Z
 #' @return One sample update using slice sampling
 #'
 #' @export
-lambda.slice.sampling = function(lambda, Y, C, XB, phi, w, m = 100, lower = 0 + 10^(-10), upper = +Inf) {
+lambda.slice.sampling = function(Y, X, betas, Z, gammas, C, lambda, w, m, lower = 0 + 10^(-10), upper = +Inf) {
   l0 = lambda
-  l.post0 = lambda.post(l0, Y, C, XB, phi)
+  l.post0 = lambda.post(Y, X, betas, Z, gammas, C, l0)
 
   u = runif(1, 0, w)
   L = l0 - u
@@ -240,13 +246,13 @@ lambda.slice.sampling = function(lambda, Y, C, XB, phi, w, m = 100, lower = 0 + 
   if (is.infinite(m)) {
     repeat
     { if (L <= lower) break
-      if (lambda.post(L, Y, C, XB, phi) <= l.post0) break
+      if (lambda.post(Y, X, betas, Z, gammas, C, L) <= l.post0) break
       L = L - w
     }
     repeat
     {
       if (R >= upper) break
-      if (lambda.post(R, Y, C, XB, phi) <= l.post0) break
+      if (lambda.post(Y, X, betas, Z, gammas, C, R) <= l.post0) break
       R = R + w
     }
   } else if (m > 1) {
@@ -255,14 +261,14 @@ lambda.slice.sampling = function(lambda, Y, C, XB, phi, w, m = 100, lower = 0 + 
 
     while (J > 0) {
       if (L <= lower) break
-      if (lambda.post(L, Y, C, XB, phi) <= l.post0) break
+      if (lambda.post(Y, X, betas, Z, gammas, C, L) <= l.post0) break
       L = L - w
       J = J - 1
     }
 
     while (K > 0) {
       if (R >= upper) break
-      if (lambda.post(R, Y, C, XB, phi) <= l.post0) break
+      if (lambda.post(Y, X, betas, Z, gammas, C, R) <= l.post0) break
       R = R + w
       K = K - 1
     }
@@ -278,7 +284,7 @@ lambda.slice.sampling = function(lambda, Y, C, XB, phi, w, m = 100, lower = 0 + 
   repeat
   {
     l1 = runif(1, L, R)
-    l.post1 = lambda.post(l1, Y, C, XB, phi)
+    l.post1 = lambda.post(Y, X, betas, Z, gammas, C, l1)
 
     if (l.post1 >= l.post0) break
     if (l1 > l0) {
@@ -292,30 +298,27 @@ lambda.slice.sampling = function(lambda, Y, C, XB, phi, w, m = 100, lower = 0 + 
 }
 
 
-#' @title beta.post
-#' @description log-posterior distribution of beta with pth element fixed as beta.p
+#' @title betas.post
+#' @description log-posterior distribution of betas with pth element fixed as betas.p
 #'
-#' @param beta.p current value of the pth element of beta
+#' @param betas.p current value of the pth element of betas
 #' @param p pth element
-#' @param beta current value of beta
-#' @param Sigma.b variance estimate of beta
+#' @param Sigma.b variance estimate of betas
 #' @param Y response variable
+#' @param X covariates for betas
+#' @param betas current value of betas
+#' @param Z covariates for gammas
+#' @param gammas current value of gammas
 #' @param C censoring indicator
-#' @param X covariates for beta
-#' @param phi current value of phi
 #' @param lambda current value of lambda
 #'
-#' @return log- posterior density of beta
+#' @return log- posterior density of betas
 #'
 #' @export
-beta.post = function(beta.p, p, beta, Sigma.b, Y, C, X, phi, lambda) {
-  beta[p] = beta.p
-  XB = X %*% beta
-  llik = C * (log((1 - phi) + phi * exp(XB) * lambda *
-         ((exp(XB) * Y)^(lambda - 1)) * exp(-(exp(XB) * Y)^lambda))) +
-         (1 - C) * (log(phi) -(exp(XB) * Y)^lambda)
-  lprior = dmvnorm(beta, rep(0, length(beta)), Sigma.b, log = TRUE)
-  lpost = sum(llik) + lprior
+betas.post = function(betas.p, p, Sigma.b, Y, X, betas, Z, gammas, C, lambda) {
+  betas[p] = betas.p
+  lprior = dmvnorm(betas, rep(0, length(betas)), Sigma.b, log = TRUE)
+  lpost = llikWeibull(Y, X, betas, Z, gammas, C, lambda) + lprior
   return(lpost)
 }
 
@@ -324,49 +327,44 @@ beta.post = function(beta.p, p, beta, Sigma.b, Y, C, X, phi, lambda) {
 #'
 #' @param gammas.p current value of the pth element of gammas
 #' @param p pth element
-#' @param gammass current value of gammas
 #' @param Sigma.g variance estimate of gammas
 #' @param Y response variable
-#' @param C censoring indicator
-#' @param XB current value of XB
+#' @param X covariates for betas
+#' @param betas current value of betas
 #' @param Z covariates for gammas
+#' @param gammas current value of gammas
+#' @param C censoring indicator
 #' @param lambda current value of lambda
 #'
-#' @return log- posterior density of beta
+#' @return log- posterior density of betas
 #'
 #' @export
-gammas.post = function(gammas.p, p, gammass, Sigma.g, Y, C, XB, Z, lambda) {
-  gammass[p] = gammas.p
-  ZG = Z %*% gammass
-  phi = 1 / (1 + exp(-ZG))
-  llik = C * (log((1 - phi) + phi * exp(XB) * lambda *
-                    ((exp(XB) * Y)^(lambda - 1)) * exp(-(exp(XB) * Y)^lambda))) +
-    (1 - C) * (log(phi) -(exp(XB) * Y)^lambda)
-  lprior = dmvnorm(gammass, rep(0, length(gammass)), Sigma.g, log = TRUE)
-  lpost = sum(llik) + lprior
+gammas.post = function(gammas.p, p, Sigma.g, Y, X, betas, Z, gammas, C, lambda) {
+  gammas[p] = gammas.p
+  lprior = dmvnorm(gammas, rep(0, length(gammas)), Sigma.g, log = TRUE)
+  lpost = llikWeibull(Y, X, betas, Z, gammas, C, lambda) + lprior
   return(lpost)
 }
 
 #' @title lambda.post
 #' @description log-posterior distribution of lambda
 #'
-#' @param lambda current value of lambda
 #' @param Y response variable
+#' @param X covariates for betas
+#' @param betas current value of betas
+#' @param Z covariates for gammas
+#' @param gammas current value of gammas
 #' @param C censoring indicator
-#' @param XB current value of XB
-#' @param phi current value of phi
+#' @param lambda current value of lambda
 #' @param a shape parameter of gammas prior
 #' @param b scale parameter of gammas prior
 #'
-#' @return log- posterior density of beta
+#' @return log- posterior density of betas
 #'
 #' @export
-lambda.post = function(lambda, Y, C, XB, phi, a = 1, b = 1) {
-  llik = C * (log((1 - phi) + phi * exp(XB) * lambda *
-         ((exp(XB) * Y)^(lambda - 1)) * exp(-(exp(XB) * Y)^lambda))) +
-         (1 - C) * (log(phi) -(exp(XB) * Y)^lambda)
-  lprior = dgammas(lambda, a, b, log = TRUE)
-  lpost = sum(llik) + lprior
+lambda.post = function(Y, X, betas, Z, gammas, C, lambda, a = 1, b = 1) {
+  lprior = dgamma(lambda, a, b, log = TRUE)
+  lpost = llikWeibull(Y, X, betas, Z, gammas, C, lambda) + lprior
   return(lpost)
 }
 
@@ -375,19 +373,19 @@ lambda.post = function(lambda, Y, C, XB, phi, a = 1, b = 1) {
 #'
 #' @param Y response variable
 #' @param C censoring indicator
-#' @param X covariates for beta
+#' @param X covariates for betas
 #' @param Z covariates for gammas
 #' @param N number of MCMC iterations
 #' @param burn burn-in to be discarded
 #' @param thin thinning to prevent from autocorrelation
-#' @param w size of the slice in the slice sampling for (beta, gammas, lambda)
+#' @param w size of the slice in the slice sampling for (betas, gammas, lambda)
 #' @param form type of parametric model (Exponential or Weibull)
 #' @param seed seed number
 #'
 #' @return chain of the variables of interest
 #'
 #' @export
-mcmcOF<- function(Y, C, X, Z, N, burn, thin, w = c(1, 1, 1), form, seed = 1) {
+mcmcOF<- function(Y, C, X, Z, N, burn, thin, w = c(1, 1, 1), m = 100, form, seed = 1) {
   set.seed(seed)
   p1 = dim(X)[2]
   p2 = dim(Z)[2]
@@ -395,42 +393,30 @@ mcmcOF<- function(Y, C, X, Z, N, burn, thin, w = c(1, 1, 1), form, seed = 1) {
   # initial values
   Sigma.b = 10 * p1 * diag(p1)  # multiply 10 to ensure large enough variance in the early stages
   Sigma.g = 10 * p2 * diag(p2)  # multiply 10 to ensure large enough variance in the early stages
-  beta = rep(0, p1)
-  gammass = rep(0, p2)
+  betas = rep(0, p1)
+  gammas = rep(0, p2)
   lambda = 1
-  XB = X %*% beta
-  ZG = Z %*% gammass
-  phi = 1 / (1 + exp(-ZG))
-
-  beta.samp = matrix(NA, nrow = (N - burn) / thin, ncol = p1)
+  betas.samp = matrix(NA, nrow = (N - burn) / thin, ncol = p1)
   gammas.samp = matrix(NA, nrow = (N - burn) / thin, ncol = p2)
   lambda.samp = rep(NA, (N - burn) / thin)
   loglike.samp = rep(NA, (N - burn) / thin)
   for (iter in 1:N) {
     if (iter %% 500 == 0) print(iter)
-    beta = beta.slice.sampling(beta, Sigma.b, Y, C, X, phi, lambda, w[1])
-    XB = X %*% beta
-    gammass = gammas.slice.sampling(gammass, Sigma.g, Y, C, XB, Z, lambda, w[2])
-    ZG = Z %*% gammass
-    phi = 1 / (1 + exp(-ZG))
+    betas = betas.slice.sampling(Sigma.b, Y, X, betas, Z, gammas, C, lambda, w[1], m)
+    gammas = gammas.slice.sampling(Sigma.g, Y, X, betas, Z, gammas, C, lambda, w[2], m)
     if (form %in% "Weibull") {
-    lambdasamp = lambda.slice.sampling(lambda, Y, C, XB, phi, w[3])
-    lambda = lambdasamp
-    loglike = names(lambdasamp)
-    } else {
-      loglike = sum(C * (log((1 - phi) + phi * exp(XB) * exp(-(exp(XB) * Y)))) +
-        (1 - C) * (log(phi) -(exp(XB) * Y)))
-    }
+    lambda = lambda.slice.sampling(Y, X, betas, Z, gammas, C, lambda, w[3], m)
+     } 
     if (iter > burn) {
-      Sigma.b = riwish(1 + p1, beta %*% t(beta) + p1 * diag(p1))
-      Sigma.g = riwish(1 + p2, gammass %*% t(gammass) + p2 * diag(p2))
+      Sigma.b = riwish(1 + p1, betas %*% t(betas) + p1 * diag(p1))
+      Sigma.g = riwish(1 + p2, gammas %*% t(gammas) + p2 * diag(p2))
       if ((iter - burn) %% thin == 0) {
-      beta.samp[(iter - burn) / thin, ] = beta
-      gammas.samp[(iter - burn) / thin, ] = gammass
+      betas.samp[(iter - burn) / thin, ] = betas
+      gammas.samp[(iter - burn) / thin, ] = gammas
       lambda.samp[(iter - burn) / thin] = lambda
-      loglike.samp[(iter - burn) / thin] = loglike
+      loglike.samp[(iter - burn) / thin] = llikWeibull(Y, X, betas, Z, gammas, C, lambda)
       }
     }
   }
-  return(list(loglike = loglike.samp, beta = beta.samp, gammass = gammas.samp, lambda = lambda.samp))
+  return(list(loglike = loglike.samp, betas = betas.samp, gammas = gammas.samp, lambda = lambda.samp))
 }

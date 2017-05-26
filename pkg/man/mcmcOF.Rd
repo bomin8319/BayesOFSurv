@@ -4,14 +4,14 @@
 \alias{mcmcOF}
 \title{mcmcOF}
 \usage{
-mcmcOF(Y, C, X, Z, N, burn, thin, w = c(1, 1, 1), form, seed = 1)
+mcmcOF(Y, C, X, Z, N, burn, thin, w = c(1, 1, 1), m = 100, form, seed = 1)
 }
 \arguments{
 \item{Y}{response variable}
 
 \item{C}{censoring indicator}
 
-\item{X}{covariates for beta}
+\item{X}{covariates for betas}
 
 \item{Z}{covariates for gammas}
 
@@ -21,7 +21,7 @@ mcmcOF(Y, C, X, Z, N, burn, thin, w = c(1, 1, 1), form, seed = 1)
 
 \item{thin}{thinning to prevent from autocorrelation}
 
-\item{w}{size of the slice in the slice sampling for (beta, gammas, lambda)}
+\item{w}{size of the slice in the slice sampling for (betas, gammas, lambda)}
 
 \item{form}{type of parametric model (Exponential or Weibull)}
 

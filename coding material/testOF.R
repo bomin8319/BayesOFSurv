@@ -1,8 +1,9 @@
 library(mvtnorm)
 library(MCMCpack)
+library(BayesOFsurv)
 
 n = 1000
-
+nsims = 1
 #create covariates
 x<-runif(n, min=-2.5, max=12)
 z<-log(runif(n, min=1, max=100))
@@ -24,11 +25,11 @@ i = 1
   tru.est[i,7]<-table(di)[1]
   
   #create parameters for ZG
-  phi<-1/(1+exp(-(tru.est[i,3]+tru.est[i,4]*z+tru.est[i,5]*x)))
-  print(mean(phi))
+  alpha<-1/(1+exp(-(tru.est[i,3]+tru.est[i,4]*z+tru.est[i,5]*x)))
+  print(mean(alpha))
   yzero<-matrix(1,n,1)
   error<--1*rlogis(n)
-  flag<-error<qlogis(phi)
+  flag<-error<qlogis(alpha)
   yzero[flag]<-error[flag]
   flag<-yzero==1
   di[flag]<-ifelse(di[flag]==0,yzero[flag],di[flag])
@@ -43,7 +44,7 @@ i = 1
   Z<-cbind(1,z,x)
   
 ######### Try fit the data using Bayesian OF model #############  
-Weibull = mcmcOF(Y, C, X, Z, N = 10000, burn = 5000, thin = 20,  w = c(1, 1, 1), form = "Weibull", seed = 100)
+Weibull = mcmcOF(Y, C, X, Z, N = 10000, burn = 5000, thin = 20,  w = c(1, 1, 1), m = 10, form = "Weibull", seed = 100)
 summary(mcmc(Weibull$beta))
 summary(mcmc(Weibull$gamma))
 summary(mcmc(Weibull$lambda))

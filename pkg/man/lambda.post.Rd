@@ -4,25 +4,29 @@
 \alias{lambda.post}
 \title{lambda.post}
 \usage{
-lambda.post(lambda, Y, C, XB, phi, a = 1, b = 1)
+lambda.post(Y, X, betas, Z, gammas, C, lambda, a = 1, b = 1)
 }
 \arguments{
-\item{lambda}{current value of lambda}
-
 \item{Y}{response variable}
+
+\item{X}{covariates for betas}
+
+\item{betas}{current value of betas}
+
+\item{Z}{covariates for gammas}
+
+\item{gammas}{current value of gammas}
 
 \item{C}{censoring indicator}
 
-\item{XB}{current value of XB}
-
-\item{phi}{current value of phi}
+\item{lambda}{current value of lambda}
 
 \item{a}{shape parameter of gammas prior}
 
 \item{b}{scale parameter of gammas prior}
 }
 \value{
-log- posterior density of beta
+log- posterior density of betas
 }
 \description{
 log-posterior distribution of lambda

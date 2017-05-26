@@ -4,25 +4,27 @@
 \alias{univ.gammas.slice.sampling}
 \title{univ.gammas.slice.sampling}
 \usage{
-univ.gammas.slice.sampling(gammas.p, p, gammass, Sigma.g, Y, C, XB, Z, lambda,
-  w, m = 100, lower = -Inf, upper = +Inf)
+univ.gammas.slice.sampling(gammas.p, p, Sigma.g, Y, X, betas, Z, gammas, C,
+  lambda, w, m, lower = -Inf, upper = +Inf)
 }
 \arguments{
 \item{gammas.p}{current value of the pth element of gammas}
 
 \item{p}{pth element}
 
-\item{gammass}{current value of gammas}
-
 \item{Sigma.g}{variance estimate of gammas}
 
 \item{Y}{response variable}
 
-\item{C}{censoring indicator}
+\item{X}{covariates for betas}
 
-\item{XB}{current value of XB}
+\item{betas}{current value of betas}
 
 \item{Z}{covariates for gammas}
+
+\item{gammas}{current value of gammas}
+
+\item{C}{censoring indicator}
 
 \item{lambda}{current value of lambda}
 
