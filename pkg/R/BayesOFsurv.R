@@ -391,7 +391,7 @@ mcmcOF<- function(Y, C, X, Z, N, burn, thin, w = c(1, 1, 1), m = 10, form) {
   betas.samp = matrix(NA, nrow = (N - burn) / thin, ncol = p1)
   gammas.samp = matrix(NA, nrow = (N - burn) / thin, ncol = p2)
   lambda.samp = rep(NA, (N - burn) / thin)
-  for (iter in 1:N) {print(c(betas, gammas, lambda))
+  for (iter in 1:N) {
     if (iter %% 1000 == 0) print(iter)
     Sigma.b = riwish(1 + p1, betas %*% t(betas) + p1 * diag(p1))
     Sigma.g = riwish(1 + p2, gammas %*% t(gammas) + p2 * diag(p2))
