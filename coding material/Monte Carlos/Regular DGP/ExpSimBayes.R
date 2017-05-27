@@ -1,10 +1,11 @@
 ###
 ###1. Store True values for X0, X1, Z0, Z1, Z2, P
 ###2. Store proportion censored pre & post
+###
 ###3. Simmulate n of 1000, do this 1000 times
-###4. Estimate cox, weibull, store all relevant coefficient estimates (exponentiate p's where applicable)
+###4. Estimate cox, weibull, exp--> store all relevant coefficient etimates from 1 (expdentiate p's where applicable)
 ###5. For each value in 4, calculate CPs and RMSEs, store.
-###6. Estimate zombie exp and zombie weibull-->store all relevant coefficient estimates (exponentiate p's where applicable).
+###6. Estimate zombie exp and zombie weibull-->store all relevant coefficient estimates from 1.
 ###7. For each value in 6, calculate CPs and RMSEs, store.
 ###8. Estimate Bayesian zombie exp and Bayesian zombie weibull-->store all relevant coefficient estimates (exponentiate p's where applicable).
 ###9. For each value in 8, calculate CPs and RMSEs, store.
@@ -35,7 +36,7 @@ install_github('bomin8319/BayesOFsurv/pkg')
 library(BayesOFsurv)
 
 #set working directory
-setwd("/Users/bomin8319/Desktop/BayesOFsurv/coding material/Monte Carlos/Mixture DGP/")
+setwd("/Users/bomin8319/Desktop/BayesOFsurv/coding material/Monte Carlos/Regular DGP/")
 
 ##########################################################################
 ##########################################################################
@@ -84,9 +85,9 @@ for(i in 1:nsims){
 #Assign parameter values
 tru.est[i,1]<-1
 tru.est[i,2]<-3.5
-tru.est[i,3]<--2
-tru.est[i,4]<-2
-tru.est[i,5]<-3
+tru.est[i,3]<-Inf
+tru.est[i,4]<-Inf
+tru.est[i,5]<-Inf
 tru.est[i,6]<-1
 
 myrates <- exp(tru.est[i,1]+(tru.est[i,2]*x)) 
@@ -95,20 +96,9 @@ cen <- rexp(n, rate = 1 )
 ycen <- pmin(y, cen)
 di <- as.numeric(y <= cen)
 tru.est[i,7]<-table(di)[1]
-
-#create parameters for ZG
-phi<-1/(1+exp(-(tru.est[i,3]+tru.est[i,4]*z+tru.est[i,5]*x)))
-print(mean(phi))
-yzero<-matrix(1,n,1)
-error<--1*rlogis(n)
-flag<-error<qlogis(phi)
-yzero[flag]<-error[flag]
-flag<-yzero==1
-di[flag]<-ifelse(di[flag]==0,yzero[flag],di[flag])
 tru.est[i,8]<-table(di)[1]
 
 data<-cbind(ycen,di,x,z)
-
 
 #####################################################################################
 ###################################COX Model#########################################
@@ -456,6 +446,7 @@ weib.cp[i,8]<-ifelse(tru.est[i,2]>b1.lower & tru.est[i,2]<b1.upper, 1,0)
 weib.cp[i,9]<-ifelse(tru.est[i,6]>p.lower & tru.est[i,6]<p.upper, 1,0)
 }
 
+
 ###############################################################################
 ######################Bayesian Zombie Exponential Model########################
 ###############################################################################
@@ -592,7 +583,7 @@ weib.cp[i,15]<-ifelse(tru.est[i,6]>p.lower & tru.est[i,6]<p.upper, 1,0)
 
 }
 #combine matrices and label variables
-main.data<-cbind(tru.est, cox.est, exp.est, weib.est, cox.rmse, exp.rmse, weib.rmse, cox.cp, exp.cp, weib.cp)
+main.data<-cbind(tru.est,cox.est,exp.est,weib.est,cox.rmse,exp.rmse,weib.rmse,cox.cp,exp.cp,weib.cp)
 colnames(main.data)<-c("true.x0","true.x1","true.z0","true.z1","true.z2","true.p","cen.lat","cen.obs",
 	"cox.x1","cox.x1.se",
 	"exp.x0","exp.x0.se","exp.x1","exp.x1.se",
