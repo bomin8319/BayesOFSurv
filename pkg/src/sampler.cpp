@@ -24,7 +24,7 @@ double llikWeibull_betas (arma::vec Y,
 	arma::vec eXB = exp(XB);
 	arma::vec dexp1 = exp(-pow(eXB % Y, lambda));
 	arma::vec dexp2 = pow(eXB % Y, lambda - 1);
-	for (int i = 0; i < dexp.n_elem; i++) {
+	for (int i = 0; i < dexp1.n_elem; i++) {
 		if (dexp1[i] == 0) {
 			dexp1[i] = 0.0000001;
 		}
@@ -54,7 +54,7 @@ double llikWeibull_gammas (arma::vec Y,
 	arma::vec alpha = 1 / (1 + exp(-ZG))	;				
 	arma::vec dexp1 = exp(-pow(eXB % Y, lambda));
 	arma::vec dexp2 = pow(eXB % Y, lambda - 1);
-	for (int i = 0; i < dexp.n_elem; i++) {
+	for (int i = 0; i < dexp1.n_elem; i++) {
 		if (dexp1[i] == 0) {
 			dexp1[i] = 0.0000001;
 		}
@@ -81,7 +81,7 @@ double llikWeibull_lambda (arma::vec Y,
 					double lambda) {
 	arma::vec dexp1 = exp(-pow(eXB % Y, lambda));
 	arma::vec dexp2 = pow(eXB % Y, lambda - 1);
-	for (int i = 0; i < dexp.n_elem; i++) {
+	for (int i = 0; i < dexp1.n_elem; i++) {
 		if (dexp1[i] == 0) {
 			dexp1[i] = 0.0000001;
 		}
