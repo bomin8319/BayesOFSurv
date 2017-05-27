@@ -4,7 +4,7 @@
 \alias{betas.slice.sampling}
 \title{betas.slice.sampling}
 \usage{
-betas.slice.sampling(Sigma.b, Y, X, betas, Z, gammas, C, lambda, w, m)
+betas.slice.sampling(Sigma.b, Y, X, betas, alpha, C, lambda, w, m)
 }
 \arguments{
 \item{Sigma.b}{variance estimate of betas}
@@ -15,9 +15,7 @@ betas.slice.sampling(Sigma.b, Y, X, betas, Z, gammas, C, lambda, w, m)
 
 \item{betas}{current value of betas}
 
-\item{Z}{covariates for gammas}
-
-\item{gammas}{current value of gammas}
+\item{alpha}{probability of true censoring}
 
 \item{C}{censoring indicator}
 

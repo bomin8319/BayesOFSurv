@@ -4,16 +4,14 @@
 \alias{gammas.slice.sampling}
 \title{gammas.slice.sampling}
 \usage{
-gammas.slice.sampling(Sigma.g, Y, X, betas, Z, gammas, C, lambda, w, m)
+gammas.slice.sampling(Sigma.g, Y, eXB, Z, gammas, C, lambda, w, m)
 }
 \arguments{
 \item{Sigma.g}{variance estimate of gammas}
 
 \item{Y}{response variable}
 
-\item{X}{covariates for betas}
-
-\item{betas}{current value of betas}
+\item{eXB}{exponentiated vector of covariates times betas}
 
 \item{Z}{covariates for gammas}
 

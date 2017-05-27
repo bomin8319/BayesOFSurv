@@ -4,19 +4,15 @@
 \alias{lambda.slice.sampling}
 \title{lambda.slice.sampling}
 \usage{
-lambda.slice.sampling(Y, X, betas, Z, gammas, C, lambda, w, m, lower = 0 +
-  10^(-10), upper = +Inf)
+lambda.slice.sampling(Y, eXB, alpha, C, lambda, w, m, lower = 0 + 10^(-10),
+  upper = +Inf)
 }
 \arguments{
 \item{Y}{response variable}
 
-\item{X}{covariates for betas}
+\item{eXB}{exponentiated vector of covariates times betas}
 
-\item{betas}{current value of betas}
-
-\item{Z}{covariates for gammas}
-
-\item{gammas}{current value of gammas}
+\item{alpha}{probability of true censoring}
 
 \item{C}{censoring indicator}
 

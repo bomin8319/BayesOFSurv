@@ -4,18 +4,14 @@
 \alias{lambda.post}
 \title{lambda.post}
 \usage{
-lambda.post(Y, X, betas, Z, gammas, C, lambda, a = 1, b = 1)
+lambda.post(Y, eXB, alpha, C, lambda, a = 1, b = 1)
 }
 \arguments{
 \item{Y}{response variable}
 
-\item{X}{covariates for betas}
+\item{eXB}{exponentiated vector of covariates times betas}
 
-\item{betas}{current value of betas}
-
-\item{Z}{covariates for gammas}
-
-\item{gammas}{current value of gammas}
+\item{alpha}{probability of true censoring}
 
 \item{C}{censoring indicator}
 

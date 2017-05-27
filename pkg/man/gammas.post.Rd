@@ -4,7 +4,7 @@
 \alias{gammas.post}
 \title{gammas.post}
 \usage{
-gammas.post(gammas.p, p, Sigma.g, Y, X, betas, Z, gammas, C, lambda)
+gammas.post(gammas.p, p, Sigma.g, Y, eXB, Z, gammas, C, lambda)
 }
 \arguments{
 \item{gammas.p}{current value of the pth element of gammas}
@@ -15,9 +15,7 @@ gammas.post(gammas.p, p, Sigma.g, Y, X, betas, Z, gammas, C, lambda)
 
 \item{Y}{response variable}
 
-\item{X}{covariates for betas}
-
-\item{betas}{current value of betas}
+\item{eXB}{exponentiated vector of covariates times betas}
 
 \item{Z}{covariates for gammas}
 

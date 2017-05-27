@@ -4,8 +4,8 @@
 \alias{univ.gammas.slice.sampling}
 \title{univ.gammas.slice.sampling}
 \usage{
-univ.gammas.slice.sampling(gammas.p, p, Sigma.g, Y, X, betas, Z, gammas, C,
-  lambda, w, m, lower = -Inf, upper = +Inf)
+univ.gammas.slice.sampling(gammas.p, p, Sigma.g, Y, eXB, Z, gammas, C, lambda,
+  w, m, lower = -Inf, upper = +Inf)
 }
 \arguments{
 \item{gammas.p}{current value of the pth element of gammas}
@@ -16,9 +16,7 @@ univ.gammas.slice.sampling(gammas.p, p, Sigma.g, Y, X, betas, Z, gammas, C,
 
 \item{Y}{response variable}
 
-\item{X}{covariates for betas}
-
-\item{betas}{current value of betas}
+\item{eXB}{exponentiated vector of covariates times betas}
 
 \item{Z}{covariates for gammas}
 

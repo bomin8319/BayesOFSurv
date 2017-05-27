@@ -4,7 +4,7 @@
 \alias{betas.post}
 \title{betas.post}
 \usage{
-betas.post(betas.p, p, Sigma.b, Y, X, betas, Z, gammas, C, lambda)
+betas.post(betas.p, p, Sigma.b, Y, X, betas, alpha, C, lambda)
 }
 \arguments{
 \item{betas.p}{current value of the pth element of betas}
@@ -19,9 +19,7 @@ betas.post(betas.p, p, Sigma.b, Y, X, betas, Z, gammas, C, lambda)
 
 \item{betas}{current value of betas}
 
-\item{Z}{covariates for gammas}
-
-\item{gammas}{current value of gammas}
+\item{alpha}{probability of true censoring}
 
 \item{C}{censoring indicator}
 

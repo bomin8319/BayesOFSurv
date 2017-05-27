@@ -4,7 +4,7 @@
 \alias{mcmcOF}
 \title{mcmcOF}
 \usage{
-mcmcOF(Y, C, X, Z, N, burn, thin, w = c(1, 1, 1), m = 100, form, seed = 1)
+mcmcOF(Y, C, X, Z, N, burn, thin, w = c(1, 1, 1), m = 10, form, seed = 1)
 }
 \arguments{
 \item{Y}{response variable}
@@ -22,6 +22,8 @@ mcmcOF(Y, C, X, Z, N, burn, thin, w = c(1, 1, 1), m = 100, form, seed = 1)
 \item{thin}{thinning to prevent from autocorrelation}
 
 \item{w}{size of the slice in the slice sampling for (betas, gammas, lambda)}
+
+\item{m}{limit on steps in the slice sampling}
 
 \item{form}{type of parametric model (Exponential or Weibull)}
 
