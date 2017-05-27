@@ -264,7 +264,7 @@ lambda.slice.sampling = function(Y, eXB, alpha, C, lambda, w, m, lower = 0 + 10^
 
     while (K > 0) {
       if (R >= upper) break
-      if (try(lambda.post(Y, eXB, alpha, C, R)) <= l.post0) break
+      if (lambda.post(Y, eXB, alpha, C, R) <= l.post0) break
       R = R + w
       K = K - 1
     }
@@ -391,7 +391,7 @@ mcmcOF<- function(Y, C, X, Z, N, burn, thin, w = c(1, 1, 1), m = 10, form) {
   betas.samp = matrix(NA, nrow = (N - burn) / thin, ncol = p1)
   gammas.samp = matrix(NA, nrow = (N - burn) / thin, ncol = p2)
   lambda.samp = rep(NA, (N - burn) / thin)
-  try(for (iter in 1:N) {
+  for (iter in 1:N) {print(c(betas, gammas, lambda))
     if (iter %% 1000 == 0) print(iter)
     Sigma.b = riwish(1 + p1, betas %*% t(betas) + p1 * diag(p1))
     Sigma.g = riwish(1 + p2, gammas %*% t(gammas) + p2 * diag(p2))
@@ -407,6 +407,6 @@ mcmcOF<- function(Y, C, X, Z, N, burn, thin, w = c(1, 1, 1), m = 10, form) {
       gammas.samp[(iter - burn) / thin, ] = gammas
       lambda.samp[(iter - burn) / thin] = lambda
     }
-  })
+  }
   return(list(betas = betas.samp, gammas = gammas.samp, lambda = lambda.samp))
 }
