@@ -289,7 +289,6 @@ lambda.slice.sampling = function(Y, eXB, alpha, C, lambda, w, m, lower = 0 + 10^
       L = l1
     }
   }
-  names(l1) = l.post1
   return(l1)
 }
 

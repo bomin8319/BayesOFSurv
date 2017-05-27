@@ -4,7 +4,7 @@
 \alias{mcmcOF}
 \title{mcmcOF}
 \usage{
-mcmcOF(Y, C, X, Z, N, burn, thin, w = c(1, 1, 1), m = 10, form, seed = 1)
+mcmcOF(Y, C, X, Z, N, burn, thin, w = c(1, 1, 1), m = 10, form)
 }
 \arguments{
 \item{Y}{response variable}
@@ -26,8 +26,6 @@ mcmcOF(Y, C, X, Z, N, burn, thin, w = c(1, 1, 1), m = 10, form, seed = 1)
 \item{m}{limit on steps in the slice sampling}
 
 \item{form}{type of parametric model (Exponential or Weibull)}
-
-\item{seed}{seed number}
 }
 \value{
 chain of the variables of interest

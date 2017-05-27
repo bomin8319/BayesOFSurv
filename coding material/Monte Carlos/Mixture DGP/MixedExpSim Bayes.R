@@ -49,7 +49,7 @@ set.seed(3)
 n<-100
 
 #set the number of simulations, and create matrices to store the results
-nsims<-10
+nsims<-1000
 
 
 #history matrix for true estimates
@@ -610,7 +610,7 @@ colnames(main.data)<-c("true.x0","true.x1","true.z0","true.z1","true.z2","true.p
 	"zwei.z0.cp","zwei.z1.cp","zwei.z2.cp","zwei.x0.cp","zwei.x1.cp","zwei.p.cp", "bzwei.x0.cp","bzwei.x1.cp","bzwei.z0.cp","bzwei.z1.cp","bzwei.z2.cp","bzwei.p.cp")
 
 #save dataset
-main.data<-as.data.frame(main.data)
-write.dta(main.data,"main.data.dta", )
+main.data2<-as.data.frame(main.data)
+write.dta(main.data2,"main.data2.dta", )
 
 #the end
