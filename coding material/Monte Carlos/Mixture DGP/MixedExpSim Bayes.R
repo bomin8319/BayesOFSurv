@@ -30,6 +30,8 @@ library(corpcor)
 library(Design)
 library(mvtnorm)
 library(MCMCpack)
+library(devtools)
+install_github('bomin8319/BayesOFsurv/pkg')
 library(BayesOFsurv)
 
 #set working directory
