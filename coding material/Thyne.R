@@ -13,7 +13,7 @@ Y=as.matrix(Thyne$`_t`)
 C=as.matrix(Thyne$`_d`)
 
 ######### Try fit the data using Bayesian OF model #############  
-Weibull = mcmcOF(Y, C, X, Z, N = 3000, burn = 1000, thin = 20,  w = c(1, 1, 1), m = 10, form = "Weibull")
+Weibull = mcmcOF(Y, C, X, Z, N = 10000, burn = 5000, thin = 20,  w = c(1, 1, 1), m = 100, form = "Weibull")
 summary(mcmc(Weibull$beta))
 summary(mcmc(Weibull$gamma))
 summary(mcmc(Weibull$lambda))
@@ -26,7 +26,7 @@ for (p in 1:3) {
 }
 plot(Weibull$lambda, type = 'l')
 
-Exponential = mcmcOF(Y, C, X, Z, N = 3000, burn = 1000, thin = 20,  w = c(1, 1, 1), m = 10, form = "Exponential")
+Exponential = mcmcOF(Y, C, X, Z, N = 10000, burn = 5000, thin = 20,  w = c(1, 1, 1), m = 100, form = "Exponential")
 summary(mcmc(Exponential$beta))
 summary(mcmc(Exponential$gamma))
 summary(mcmc(Exponential$lambda))
