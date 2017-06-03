@@ -30,8 +30,8 @@ library(corpcor)
 library(Design)
 library(mvtnorm)
 library(MCMCpack)
-library(devtools)
-install_github('bomin8319/BayesOFsurv/pkg')
+#library(devtools)
+#install_github('bomin8319/BayesOFsurv/pkg')
 library(BayesOFsurv)
 
 #set working directory
@@ -46,10 +46,10 @@ setwd("/Users/bomin8319/Desktop/BayesOFsurv/coding material/Monte Carlos/Mixture
 set.seed(3)   
 
 #set the number of observations
-n<-100
+n<-1000
 
 #set the number of simulations, and create matrices to store the results
-nsims<-1000
+nsims<-10
 
 
 #history matrix for true estimates
@@ -57,21 +57,21 @@ tru.est<-matrix(NA,nrow=nsims,ncol=8)
 #history matrix for cox estimates
 cox.est<-matrix(NA,nrow=nsims,ncol=2)
 #history matrix for exp estimates
-exp.est<-matrix(NA,nrow=nsims,ncol=24)
+exp.est<-matrix(NA,nrow=nsims,ncol=14)
 #history matrix for weibull estimates
-weib.est<-matrix(NA,nrow=nsims,ncol=30)
+weib.est<-matrix(NA,nrow=nsims,ncol=18)
 #history matrix for cox RMSE
 cox.rmse<-matrix(NA,nrow=nsims,ncol=1)
 #history matrix for exp RMSE
-exp.rmse<-matrix(NA,nrow=nsims,ncol=12)
+exp.rmse<-matrix(NA,nrow=nsims,ncol=7)
 #history matrix for exp RMSE
-weib.rmse<-matrix(NA,nrow=nsims,ncol=15)
+weib.rmse<-matrix(NA,nrow=nsims,ncol=9)
 #history matrix for cox CP
 cox.cp<-matrix(NA,nrow=nsims,ncol=1)
 #history matrix for exp CP
-exp.cp<-matrix(NA,nrow=nsims,ncol=12)
+exp.cp<-matrix(NA,nrow=nsims,ncol=7)
 #history matrix for exp CP
-weib.cp<-matrix(NA,nrow=nsims,ncol=15)
+weib.cp<-matrix(NA,nrow=nsims,ncol=9)
 
 #create covariates
 x<-runif(n, min=-2.5, max=12)
@@ -288,7 +288,7 @@ ZExponential<- function(est,Y,C,X,Z,data) {
 	XB<-X%*%beta
 	ZG<-Z%*%gamma
 	phi<-1/(1+exp(-ZG))
-	llik<-C*(log(phi*exp(-exp(XB)*Y)+(1-phi)*exp(XB)*exp(-exp(XB)*Y)))+(1-C)*(log(phi)+-exp(XB)*Y)
+	llik<-C*(log((1-phi)+phi*exp(XB)*exp(-exp(XB)*Y)))+(1-C)*(log(phi)+-exp(XB)*Y)
 	llik<--1*sum(llik)
 	return(llik)
 	
@@ -371,7 +371,7 @@ ZWeibull<- function(est,Y,C,X,Z,data) {
 	XB<-X%*%beta
 	ZG<-Z%*%gamma
 	phi<-1/(1+exp(-(ZG+1/p)))
-	llik<-C*(log(phi*exp(-(exp(XB+1/p)*Y)^p)+(1-phi)*exp(XB+1/p)*p*((exp(XB+1/p)*Y)^(p-1))*exp(-(exp(XB+1/p)*Y)^p)))+(1-C)*(log(phi)+-(exp(XB+1/p)*Y)^p)
+	llik<-C*(log((1-phi)+*exp(XB+1/p)*p*((exp(XB+1/p)*Y)^(p-1))*exp(-(exp(XB+1/p)*Y)^p)))+(1-C)*(log(phi)+-(exp(XB+1/p)*Y)^p)
 	llik<--1*sum(llik)
 	return(llik)
 	
@@ -455,6 +455,7 @@ weib.cp[i,7]<-ifelse(tru.est[i,1]>b0.lower & tru.est[i,1]<b0.upper, 1,0)
 weib.cp[i,8]<-ifelse(tru.est[i,2]>b1.lower & tru.est[i,2]<b1.upper, 1,0)
 weib.cp[i,9]<-ifelse(tru.est[i,6]>p.lower & tru.est[i,6]<p.upper, 1,0)
 }
+
 
 ###############################################################################
 ######################Bayesian Zombie Exponential Model########################

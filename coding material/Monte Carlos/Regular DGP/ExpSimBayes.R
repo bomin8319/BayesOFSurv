@@ -31,8 +31,8 @@ library(corpcor)
 library(Design)
 library(mvtnorm)
 library(MCMCpack)
-library(devtools)
-install_github('bomin8319/BayesOFsurv/pkg')
+#library(devtools)
+#install_github('bomin8319/BayesOFsurv/pkg')
 library(BayesOFsurv)
 
 #set working directory
@@ -47,10 +47,10 @@ setwd("/Users/bomin8319/Desktop/BayesOFsurv/coding material/Monte Carlos/Regular
 set.seed(3)   
 
 #set the number of observations
-n<-100
+n<-1000
 
 #set the number of simulations, and create matrices to store the results
-nsims<-10
+nsims<-1000
 
 
 #history matrix for true estimates
