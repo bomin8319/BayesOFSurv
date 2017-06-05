@@ -13,3 +13,15 @@ llikWeibull_lambda <- function(Y, eXB, alpha, C, lambda) {
     .Call('BayesOFsurv_llikWeibull_lambda', PACKAGE = 'BayesOFsurv', Y, eXB, alpha, C, lambda)
 }
 
+llikWeibull_betas2 <- function(Y, X, betas, alpha, C, lambda) {
+    .Call('BayesOFsurv_llikWeibull_betas2', PACKAGE = 'BayesOFsurv', Y, X, betas, alpha, C, lambda)
+}
+
+llikWeibull_gammas2 <- function(Y, eXB, Z, gammas, C, lambda) {
+    .Call('BayesOFsurv_llikWeibull_gammas2', PACKAGE = 'BayesOFsurv', Y, eXB, Z, gammas, C, lambda)
+}
+
+llikWeibull_lambda2 <- function(Y, eXB, alpha, C, lambda) {
+    .Call('BayesOFsurv_llikWeibull_lambda2', PACKAGE = 'BayesOFsurv', Y, eXB, alpha, C, lambda)
+}
+
