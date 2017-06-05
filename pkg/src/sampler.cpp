@@ -37,7 +37,7 @@ double llikWeibull_betas (arma::vec Y,
       dexp2[i] = 0.0000001;
     }
   } 								
-  arma::vec llik = C % (log((1 - alpha) * exp(- pow(eXB % Y, lambda)) + lambda * alpha % eXB % dexp2 % dexp1)) +
+  arma::vec llik = C % (log((1 - alpha) % exp(- pow(eXB % Y, lambda)) + lambda * alpha % eXB % dexp2 % dexp1)) +
     (1 - C) % (- pow(eXB % Y, lambda));		
   return sum(llik);
 }
@@ -67,7 +67,7 @@ double llikWeibull_gammas (arma::vec Y,
       dexp2[i] = 0.0000001;
     }
   } 								
-  arma::vec llik = C % (log((1 - alpha) * exp(- pow(eXB % Y, lambda)) + lambda * alpha % eXB % dexp2 % dexp1)) +
+  arma::vec llik = C % (log((1 - alpha) % exp(- pow(eXB % Y, lambda)) + lambda * alpha % eXB % dexp2 % dexp1)) +
     (1 - C) % (- pow(eXB % Y, lambda));	
   return sum(llik);
 }
@@ -94,7 +94,7 @@ double llikWeibull_lambda (arma::vec Y,
       dexp2[i] = 0.0000001;
     }
   } 								
-  arma::vec llik = C % (log((1 - alpha) * exp(- pow(eXB % Y, lambda)) + lambda * alpha % eXB % dexp2 % dexp1)) +
+  arma::vec llik = C % (log((1 - alpha) % exp(- pow(eXB % Y, lambda)) + lambda * alpha % eXB % dexp2 % dexp1)) +
     (1 - C) % (- pow(eXB % Y, lambda));
   return sum(llik);
 }
