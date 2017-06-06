@@ -46,7 +46,7 @@ set.seed(1)
 n<-1000
 
 #set the number of simulations, and create matrices to store the results
-nsims<-5
+nsims<-100
 
 
 #history matrix for true estimates
@@ -78,7 +78,7 @@ z<-log(runif(n, min=1, max=100))
 
 #create a dependent variable, begin the simmulations
 for(i in 1:nsims){
-
+  print(i)
   #Assign parameter values
   tru.est[i,1]<-1
   tru.est[i,2]<-3.5
@@ -451,7 +451,7 @@ Y<-ycen
 C<-di
 X<-cbind(1,x)
 Z<-cbind(1,z,x)
-BayesZExponential = mcmcOF2(Y, C, X, Z, N = 1000, burn = 500, thin = 5,  w = c(1, 1, 1), m = 10, form = "Exponential")
+BayesZExponential = mcmcOF2(Y, C, X, Z, N = 400, burn = 100, thin = 1,  w = c(1, 1, 1), m = 10, form = "Exponential")
 output.BayesZExponential = list(par = c(summary(mcmc(BayesZExponential$beta))[[1]][,1], summary(mcmc(BayesZExponential$gamma))[[1]][,1]), 
                                 se = c(summary(mcmc(BayesZExponential$beta))[[1]][,2], summary(mcmc(BayesZExponential$gamma))[[1]][,2]),
                                 CI = rbind(summary(mcmc(BayesZExponential$beta))[[2]], summary(mcmc(BayesZExponential$gamma))[[2]]))
@@ -512,7 +512,7 @@ Y<-ycen
 C<-di
 X<-cbind(1,x)
 Z<-cbind(1,z,x)
-BayesZWeibull = mcmcOF2(Y, C, X, Z, N = 1000, burn = 500, thin = 5,  w = c(1, 1, 1), m = 10, form = "Weibull")
+BayesZWeibull = mcmcOF2(Y, C, X, Z, N = 400, burn = 100, thin = 1,  w = c(1, 1, 1), m = 10, form = "Weibull")
 output.BayesZWeibull = list(par = c(summary(mcmc(BayesZWeibull$beta))[[1]][,1], summary(mcmc(BayesZWeibull$gamma))[[1]][,1], 
                                     summary(mcmc(BayesZWeibull$lambda))[[1]][1]), 
                             se = c(summary(mcmc(BayesZWeibull$beta))[[1]][,2], summary(mcmc(BayesZWeibull$gamma))[[1]][,2], 

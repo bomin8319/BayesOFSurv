@@ -4,7 +4,7 @@
 \alias{lambda.slice.sampling2}
 \title{lambda.slice.sampling2}
 \usage{
-lambda.slice.sampling2(Y, eXB, alpha, C, lambda, w, m, lower = 0 + 10^(-10),
+lambda.slice.sampling2(Y, eXB, alpha, C, lambda, w, m, lower = 0.01,
   upper = +Inf)
 }
 \arguments{

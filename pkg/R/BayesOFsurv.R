@@ -235,7 +235,7 @@ univ.gammas.slice.sampling = function(gammas.p, p, Sigma.g, Y, eXB, Z, gammas, C
 #' @return One sample update using slice sampling
 #'
 #' @export
-lambda.slice.sampling = function(Y, eXB, alpha, C, lambda, w, m, lower = 0 + 10^(-10), upper = +Inf) {
+lambda.slice.sampling = function(Y, eXB, alpha, C, lambda, w, m, lower = 0.01, upper = +Inf) {
   l0 = lambda
   l.post0 = lambda.post(Y, eXB, alpha, C, l0)
 
@@ -649,7 +649,7 @@ univ.gammas.slice.sampling2 = function(gammas.p, p, Sigma.g, Y, eXB, Z, gammas, 
 #' @return One sample update using slice sampling
 #'
 #' @export
-lambda.slice.sampling2 = function(Y, eXB, alpha, C, lambda, w, m, lower = 0 + 10^(-10), upper = +Inf) {
+lambda.slice.sampling2 = function(Y, eXB, alpha, C, lambda, w, m, lower = 0.01, upper = +Inf) {
   l0 = lambda
   l.post0 = lambda.post2(Y, eXB, alpha, C, l0)
   
