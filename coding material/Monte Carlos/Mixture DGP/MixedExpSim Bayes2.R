@@ -30,8 +30,8 @@ library(corpcor)
 library(Design)
 library(mvtnorm)
 library(MCMCpack)
-library(devtools)
-install_github('bomin8319/BayesOFsurv/pkg')
+#library(devtools)
+#install_github('bomin8319/BayesOFsurv/pkg')
 library(BayesOFsurv)
 
 #set working directory
@@ -46,11 +46,10 @@ setwd("/Users/bomin8319/Desktop/BayesOFsurv/coding material/Monte Carlos/Mixture
 set.seed(3)   
 
 #set the number of observations
-n<-1000
+n<-100
 
 #set the number of simulations, and create matrices to store the results
-nsims<-10
-
+nsims<-1000
 
 #history matrix for true estimates
 tru.est<-matrix(NA,nrow=nsims,ncol=8)
@@ -280,18 +279,20 @@ logitcoef3<-glm(di~ z+x, data = dataset, family = "binomial")$coef[3]
 
 #This program estimates the Exponential loglikelihood function returning hazard rate form coefficients
 
-ZExponential<- function(est,Y,C,X,Z,data) {      
-  n=nrow(data)        
+ZExponential<- function(est,Y,C,X,Z,data) {					      
+  n=nrow(data)							      					  
   llik <- matrix(0, nrow=n, ncol = 1)
   gamma<-est[1:ncol(Z)]
   beta<-est[(ncol(Z)+1):length(est)]
   XB<-X%*%beta
   ZG<-Z%*%gamma
   phi<-1/(1+exp(-ZG))
-  llik<-C*(log((1-phi)*exp(-exp(XB)*Y)+phi*exp(XB)*exp(-exp(XB)*Y)))+(1-C)*(-exp(XB)*Y)
+  llik<-C*(log((1-phi)+phi*exp(XB)*exp(-exp(XB)*Y)))+(1-C)*(log(phi)+-exp(XB)*Y)
   llik<--1*sum(llik)
   return(llik)
+  
 }
+
 
 
 #set starting parameters
@@ -309,47 +310,47 @@ Z<-cbind(1,z,x)
 output.ZExponential<-try(optim(f=ZExponential,  p=est, X=X,Y=Y,C=C,Z=Z, method="BFGS", control=list(maxit=10000),  data=data, hessian=TRUE), TRUE)
 
 if(class(output.ZExponential)=="list"){
-	ifelse(is.positive.definite(output.ZExponential$hessian)==TRUE,vcv<-solve(output.ZExponential$hessian),vcv<-matrix(data=NA,nrow=5,ncol=5))
-
-#store betas and ses
-exp.est[i,5]<-output.ZExponential$par[1]
-exp.est[i,6]<-sqrt(vcv[1,1])
-exp.est[i,7]<-output.ZExponential$par[2]
-exp.est[i,8]<-sqrt(vcv[2,2])
-exp.est[i,9]<-output.ZExponential$par[3]
-exp.est[i,10]<-sqrt(vcv[3,3])
-exp.est[i,11]<-output.ZExponential$par[4]
-exp.est[i,12]<-sqrt(vcv[4,4])
-exp.est[i,13]<-output.ZExponential$par[5]
-exp.est[i,14]<-sqrt(vcv[5,5])
-
-#store rmse
-exp.rmse[i,3]<-sqrt((tru.est[i,3]-exp.est[i,5])^2)
-exp.rmse[i,4]<-sqrt((tru.est[i,4]-exp.est[i,7])^2)
-exp.rmse[i,5]<-sqrt((tru.est[i,5]-exp.est[i,9])^2)
-exp.rmse[i,6]<-sqrt((tru.est[i,1]-exp.est[i,11])^2)
-exp.rmse[i,7]<-sqrt((tru.est[i,2]-exp.est[i,13])^2)
-
-#calculate upper and lower 95% CI's
-g0.lower<-exp.est[i,5]-(1.959964*exp.est[i,6])
-g0.upper<-exp.est[i,5]+(1.959964*exp.est[i,6])
-g1.lower<-exp.est[i,7]-(1.959964*exp.est[i,8])
-g1.upper<-exp.est[i,7]+(1.959964*exp.est[i,8])
-g2.lower<-exp.est[i,9]-(1.959964*exp.est[i,10])
-g2.upper<-exp.est[i,9]+(1.959964*exp.est[i,10])
-b0.lower<-exp.est[i,11]-(1.959964*exp.est[i,12])
-b0.upper<-exp.est[i,11]+(1.959964*exp.est[i,12])
-b1.lower<-exp.est[i,13]-(1.959964*exp.est[i,14])
-b1.upper<-exp.est[i,13]+(1.959964*exp.est[i,14])
-
-
-#store coverage parameters
-exp.cp[i,3]<-ifelse(tru.est[i,3]>g0.lower & tru.est[i,3]<g0.upper, 1,0)
-exp.cp[i,4]<-ifelse(tru.est[i,4]>g1.lower & tru.est[i,4]<g1.upper, 1,0)
-exp.cp[i,5]<-ifelse(tru.est[i,5]>g2.lower & tru.est[i,5]<g2.upper, 1,0)
-exp.cp[i,6]<-ifelse(tru.est[i,1]>b0.lower & tru.est[i,1]<b0.upper, 1,0)
-exp.cp[i,7]<-ifelse(tru.est[i,2]>b1.lower & tru.est[i,2]<b1.upper, 1,0)
-
+  ifelse(is.positive.definite(output.ZExponential$hessian)==TRUE,vcv<-solve(output.ZExponential$hessian),vcv<-matrix(data=NA,nrow=5,ncol=5))
+  
+  #store betas and ses
+  exp.est[i,5]<-output.ZExponential$par[1]
+  exp.est[i,6]<-sqrt(vcv[1,1])
+  exp.est[i,7]<-output.ZExponential$par[2]
+  exp.est[i,8]<-sqrt(vcv[2,2])
+  exp.est[i,9]<-output.ZExponential$par[3]
+  exp.est[i,10]<-sqrt(vcv[3,3])
+  exp.est[i,11]<-output.ZExponential$par[4]
+  exp.est[i,12]<-sqrt(vcv[4,4])
+  exp.est[i,13]<-output.ZExponential$par[5]
+  exp.est[i,14]<-sqrt(vcv[5,5])
+  
+  #store rmse
+  exp.rmse[i,3]<-sqrt((tru.est[i,3]-exp.est[i,5])^2)
+  exp.rmse[i,4]<-sqrt((tru.est[i,4]-exp.est[i,7])^2)
+  exp.rmse[i,5]<-sqrt((tru.est[i,5]-exp.est[i,9])^2)
+  exp.rmse[i,6]<-sqrt((tru.est[i,1]-exp.est[i,11])^2)
+  exp.rmse[i,7]<-sqrt((tru.est[i,2]-exp.est[i,13])^2)
+  
+  #calculate upper and lower 95% CI's
+  g0.lower<-exp.est[i,5]-(1.959964*exp.est[i,6])
+  g0.upper<-exp.est[i,5]+(1.959964*exp.est[i,6])
+  g1.lower<-exp.est[i,7]-(1.959964*exp.est[i,8])
+  g1.upper<-exp.est[i,7]+(1.959964*exp.est[i,8])
+  g2.lower<-exp.est[i,9]-(1.959964*exp.est[i,10])
+  g2.upper<-exp.est[i,9]+(1.959964*exp.est[i,10])
+  b0.lower<-exp.est[i,11]-(1.959964*exp.est[i,12])
+  b0.upper<-exp.est[i,11]+(1.959964*exp.est[i,12])
+  b1.lower<-exp.est[i,13]-(1.959964*exp.est[i,14])
+  b1.upper<-exp.est[i,13]+(1.959964*exp.est[i,14])
+  
+  
+  #store coverage parameters
+  exp.cp[i,3]<-ifelse(tru.est[i,3]>g0.lower & tru.est[i,3]<g0.upper, 1,0)
+  exp.cp[i,4]<-ifelse(tru.est[i,4]>g1.lower & tru.est[i,4]<g1.upper, 1,0)
+  exp.cp[i,5]<-ifelse(tru.est[i,5]>g2.lower & tru.est[i,5]<g2.upper, 1,0)
+  exp.cp[i,6]<-ifelse(tru.est[i,1]>b0.lower & tru.est[i,1]<b0.upper, 1,0)
+  exp.cp[i,7]<-ifelse(tru.est[i,2]>b1.lower & tru.est[i,2]<b1.upper, 1,0)
+  
 }
 
 #####################################################################################
@@ -358,8 +359,9 @@ exp.cp[i,7]<-ifelse(tru.est[i,2]>b1.lower & tru.est[i,2]<b1.upper, 1,0)
 
 
 #This program estimates the Exponential loglikelihood function returning hazard rate form coefficients
-ZWeibull<- function(est,Y,C,X,Z,data) {      
-  n=nrow(data)        
+
+ZWeibull<- function(est,Y,C,X,Z,data) {					      
+  n=nrow(data)							      					  
   llik <- matrix(0, nrow=n, ncol = 1)
   gamma<-est[1:ncol(Z)]
   beta<-est[(ncol(Z)+1):(length(est)-1)]
@@ -368,11 +370,11 @@ ZWeibull<- function(est,Y,C,X,Z,data) {
   XB<-X%*%beta
   ZG<-Z%*%gamma
   phi<-1/(1+exp(-(ZG+1/p)))
-  llik<-C*(log((1-phi)*exp(-(exp(XB+1/p)*Y)^p)+phi*exp(XB+1/p)*p*((exp(XB+1/p)*Y)^(p-1))*exp(-(exp(XB+1/p)*Y)^p)))+(1-C)*(-(exp(XB+1/p)*Y)^p)
+  llik<-C*(log((1-phi)+phi*exp(XB+1/p)*p*((exp(XB+1/p)*Y)^(p-1))*exp(-(exp(XB+1/p)*Y)^p)))+(1-C)*(log(phi)+-(exp(XB+1/p)*Y)^p)
   llik<--1*sum(llik)
   return(llik)
+  
 }
-
 
 
 
@@ -391,66 +393,66 @@ Z<-cbind(1,z,x)
 output.ZWeibull<-try(optim(f=ZWeibull,  p=est, X=X,Y=Y,C=C,Z=Z, method="BFGS", control=list(maxit=10000),  data=data, hessian=TRUE), TRUE)
 
 if(class(output.ZWeibull)=="list"){
-	ifelse(is.positive.definite(output.ZWeibull$hessian)==TRUE,vcv<-solve(output.ZWeibull$hessian),vcv<-matrix(data=NA,nrow=6,ncol=6))
-
-#store betas and ses
-weib.est[i,7]<-output.ZWeibull$par[1]+1/exp(output.ZWeibull$par[6])
-coeff<-c(weib.est[i,7],output.ZWeibull$par[6])
-varcov<-matrix(NA,2,2)
-varcov[1,1]<-vcv[1,1]
-varcov[1,2]<-vcv[1,6]
-varcov[2,1]<-vcv[6,1]
-varcov[2,2]<-vcv[6,6]
-weib.est[i,8]<-deltamethod(~(x1+1/exp(x2)), coeff, varcov, ses=TRUE)
-weib.est[i,9]<-output.ZWeibull$par[2]
-weib.est[i,10]<-sqrt(vcv[2,2])
-weib.est[i,11]<-output.ZWeibull$par[3]
-weib.est[i,12]<-sqrt(vcv[3,3])
-weib.est[i,13]<-output.ZWeibull$par[4]+1/exp(output.ZWeibull$par[6])
-coeff<-c(weib.est[i,13],output.ZWeibull$par[6])
-varcov<-matrix(NA,2,2)
-varcov[1,1]<-vcv[4,4]
-varcov[1,2]<-vcv[4,6]
-varcov[2,1]<-vcv[6,4]
-varcov[2,2]<-vcv[6,6]
-weib.est[i,14]<-deltamethod(~(x1+1/exp(x2)), coeff, varcov, ses=TRUE)
-weib.est[i,15]<-output.ZWeibull$par[5]
-weib.est[i,16]<-sqrt(vcv[5,5])
-weib.est[i,17]<-exp(output.ZWeibull$par[6])
-coeff<-c(weib.est[i,17])
-varcov<-matrix(NA,1,1)
-varcov[1,1]<-vcv[6,6]
-weib.est[i,18]<-deltamethod(~(exp(x1)), coeff, varcov, ses=TRUE)
- 
-#store rmse
-weib.rmse[i,4]<-sqrt((tru.est[i,3]-weib.est[i,7])^2)
-weib.rmse[i,5]<-sqrt((tru.est[i,4]-weib.est[i,9])^2)
-weib.rmse[i,6]<-sqrt((tru.est[i,5]-weib.est[i,11])^2)
-weib.rmse[i,7]<-sqrt((tru.est[i,1]-weib.est[i,13])^2)
-weib.rmse[i,8]<-sqrt((tru.est[i,2]-weib.est[i,15])^2)
-weib.rmse[i,9]<-sqrt((tru.est[i,6]-weib.est[i,17])^2)
-
-#calculate upper and lower 95% CI's
-g0.lower<-weib.est[i,7]-(1.959964*weib.est[i,8])
-g0.upper<-weib.est[i,7]+(1.959964*weib.est[i,8])
-g1.lower<-weib.est[i,9]-(1.959964*weib.est[i,10])
-g1.upper<-weib.est[i,9]+(1.959964*weib.est[i,10])
-g2.lower<-weib.est[i,11]-(1.959964*weib.est[i,12])
-g2.upper<-weib.est[i,11]+(1.959964*weib.est[i,12])
-b0.lower<-weib.est[i,13]-(1.959964*weib.est[i,14])
-b0.upper<-weib.est[i,13]+(1.959964*weib.est[i,14])
-b1.lower<-weib.est[i,15]-(1.959964*weib.est[i,16])
-b1.upper<-weib.est[i,15]+(1.959964*weib.est[i,16])
-p.lower<-weib.est[i,17]-(1.959964*weib.est[i,18])
-p.upper<-weib.est[i,17]+(1.959964*weib.est[i,18])
-
-#store coverage parameters
-weib.cp[i,4]<-ifelse(tru.est[i,3]>g0.lower & tru.est[i,3]<g0.upper, 1,0)
-weib.cp[i,5]<-ifelse(tru.est[i,4]>g1.lower & tru.est[i,4]<g1.upper, 1,0)
-weib.cp[i,6]<-ifelse(tru.est[i,5]>g2.lower & tru.est[i,5]<g2.upper, 1,0)
-weib.cp[i,7]<-ifelse(tru.est[i,1]>b0.lower & tru.est[i,1]<b0.upper, 1,0)
-weib.cp[i,8]<-ifelse(tru.est[i,2]>b1.lower & tru.est[i,2]<b1.upper, 1,0)
-weib.cp[i,9]<-ifelse(tru.est[i,6]>p.lower & tru.est[i,6]<p.upper, 1,0)
+  ifelse(is.positive.definite(output.ZWeibull$hessian)==TRUE,vcv<-solve(output.ZWeibull$hessian),vcv<-matrix(data=NA,nrow=6,ncol=6))
+  
+  #store betas and ses
+  weib.est[i,7]<-output.ZWeibull$par[1]+1/exp(output.ZWeibull$par[6])
+  coeff<-c(weib.est[i,7],output.ZWeibull$par[6])
+  varcov<-matrix(NA,2,2)
+  varcov[1,1]<-vcv[1,1]
+  varcov[1,2]<-vcv[1,6]
+  varcov[2,1]<-vcv[6,1]
+  varcov[2,2]<-vcv[6,6]
+  weib.est[i,8]<-deltamethod(~(x1+1/exp(x2)), coeff, varcov, ses=TRUE)
+  weib.est[i,9]<-output.ZWeibull$par[2]
+  weib.est[i,10]<-sqrt(vcv[2,2])
+  weib.est[i,11]<-output.ZWeibull$par[3]
+  weib.est[i,12]<-sqrt(vcv[3,3])
+  weib.est[i,13]<-output.ZWeibull$par[4]+1/exp(output.ZWeibull$par[6])
+  coeff<-c(weib.est[i,13],output.ZWeibull$par[6])
+  varcov<-matrix(NA,2,2)
+  varcov[1,1]<-vcv[4,4]
+  varcov[1,2]<-vcv[4,6]
+  varcov[2,1]<-vcv[6,4]
+  varcov[2,2]<-vcv[6,6]
+  weib.est[i,14]<-deltamethod(~(x1+1/exp(x2)), coeff, varcov, ses=TRUE)
+  weib.est[i,15]<-output.ZWeibull$par[5]
+  weib.est[i,16]<-sqrt(vcv[5,5])
+  weib.est[i,17]<-exp(output.ZWeibull$par[6])
+  coeff<-c(weib.est[i,17])
+  varcov<-matrix(NA,1,1)
+  varcov[1,1]<-vcv[6,6]
+  weib.est[i,18]<-deltamethod(~(exp(x1)), coeff, varcov, ses=TRUE)
+  
+  #store rmse
+  weib.rmse[i,4]<-sqrt((tru.est[i,3]-weib.est[i,7])^2)
+  weib.rmse[i,5]<-sqrt((tru.est[i,4]-weib.est[i,9])^2)
+  weib.rmse[i,6]<-sqrt((tru.est[i,5]-weib.est[i,11])^2)
+  weib.rmse[i,7]<-sqrt((tru.est[i,1]-weib.est[i,13])^2)
+  weib.rmse[i,8]<-sqrt((tru.est[i,2]-weib.est[i,15])^2)
+  weib.rmse[i,9]<-sqrt((tru.est[i,6]-weib.est[i,17])^2)
+  
+  #calculate upper and lower 95% CI's
+  g0.lower<-weib.est[i,7]-(1.959964*weib.est[i,8])
+  g0.upper<-weib.est[i,7]+(1.959964*weib.est[i,8])
+  g1.lower<-weib.est[i,9]-(1.959964*weib.est[i,10])
+  g1.upper<-weib.est[i,9]+(1.959964*weib.est[i,10])
+  g2.lower<-weib.est[i,11]-(1.959964*weib.est[i,12])
+  g2.upper<-weib.est[i,11]+(1.959964*weib.est[i,12])
+  b0.lower<-weib.est[i,13]-(1.959964*weib.est[i,14])
+  b0.upper<-weib.est[i,13]+(1.959964*weib.est[i,14])
+  b1.lower<-weib.est[i,15]-(1.959964*weib.est[i,16])
+  b1.upper<-weib.est[i,15]+(1.959964*weib.est[i,16])
+  p.lower<-weib.est[i,17]-(1.959964*weib.est[i,18])
+  p.upper<-weib.est[i,17]+(1.959964*weib.est[i,18])
+  
+  #store coverage parameters
+  weib.cp[i,4]<-ifelse(tru.est[i,3]>g0.lower & tru.est[i,3]<g0.upper, 1,0)
+  weib.cp[i,5]<-ifelse(tru.est[i,4]>g1.lower & tru.est[i,4]<g1.upper, 1,0)
+  weib.cp[i,6]<-ifelse(tru.est[i,5]>g2.lower & tru.est[i,5]<g2.upper, 1,0)
+  weib.cp[i,7]<-ifelse(tru.est[i,1]>b0.lower & tru.est[i,1]<b0.upper, 1,0)
+  weib.cp[i,8]<-ifelse(tru.est[i,2]>b1.lower & tru.est[i,2]<b1.upper, 1,0)
+  weib.cp[i,9]<-ifelse(tru.est[i,6]>p.lower & tru.est[i,6]<p.upper, 1,0)
 }
 
 
@@ -463,7 +465,7 @@ Y<-ycen
 C<-di
 X<-cbind(1,x)
 Z<-cbind(1,z,x)
-BayesZExponential = mcmcOF(Y, C, X, Z, N = 3000, burn = 1000, thin = 20,  w = c(1, 1, 1), m = 10, form = "Exponential")
+BayesZExponential = mcmcOF2(Y, C, X, Z, N = 3000, burn = 1000, thin = 20,  w = c(1, 1, 1), m = 10, form = "Exponential")
 output.BayesZExponential = list(par = c(summary(mcmc(BayesZExponential$beta))[[1]][,1], summary(mcmc(BayesZExponential$gamma))[[1]][,1]), 
 								se = c(summary(mcmc(BayesZExponential$beta))[[1]][,2], summary(mcmc(BayesZExponential$gamma))[[1]][,2]),
 								CI = rbind(summary(mcmc(BayesZExponential$beta))[[2]], summary(mcmc(BayesZExponential$gamma))[[2]]))
@@ -524,7 +526,7 @@ Y<-ycen
 C<-di
 X<-cbind(1,x)
 Z<-cbind(1,z,x)
-BayesZWeibull = mcmcOF(Y, C, X, Z, N = 3000, burn = 1000, thin = 20,  w = c(1, 1, 1), m = 10, form = "Weibull")
+BayesZWeibull = mcmcOF2(Y, C, X, Z, N = 3000, burn = 1000, thin = 20,  w = c(1, 1, 1), m = 10, form = "Weibull")
 output.BayesZWeibull = list(par = c(summary(mcmc(BayesZWeibull$beta))[[1]][,1], summary(mcmc(BayesZWeibull$gamma))[[1]][,1], 
 									summary(mcmc(BayesZWeibull$lambda))[[1]][1]), 
 								se = c(summary(mcmc(BayesZWeibull$beta))[[1]][,2], summary(mcmc(BayesZWeibull$gamma))[[1]][,2], 
@@ -608,7 +610,7 @@ colnames(main.data)<-c("true.x0","true.x1","true.z0","true.z1","true.z2","true.p
 	"zwei.z0.cp","zwei.z1.cp","zwei.z2.cp","zwei.x0.cp","zwei.x1.cp","zwei.p.cp", "bzwei.x0.cp","bzwei.x1.cp","bzwei.z0.cp","bzwei.z1.cp","bzwei.z2.cp","bzwei.p.cp")
 
 #save dataset
-main.data2<-as.data.frame(main.data)
+main.data<-as.data.frame(main.data)
 write.dta(main.data2,"main.data2.dta", )
 
 #the end

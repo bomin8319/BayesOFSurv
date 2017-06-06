@@ -40,7 +40,7 @@ setwd("/Users/bomin8319/Desktop/BayesOFsurv/coding material/Monte Carlos/Mixture
 set.seed(3)   
 
 #set the number of observations
-n<-1000
+n<-100
 
 #set the number of simulations, and create matrices to store the results
 nsims<-1000

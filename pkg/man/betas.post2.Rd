@@ -4,7 +4,7 @@
 \alias{betas.post2}
 \title{betas.post2}
 \usage{
-betas.post2(betas.p, p, Sigma.b, Y, X, betas, alpha, C, lambda)
+betas.post2(betas.p, p, Sigma.b, Y, X, betas, alpha, C, lambda, form)
 }
 \arguments{
 \item{betas.p}{current value of the pth element of betas}
@@ -24,6 +24,8 @@ betas.post2(betas.p, p, Sigma.b, Y, X, betas, alpha, C, lambda)
 \item{C}{censoring indicator}
 
 \item{lambda}{current value of lambda}
+
+\item{form}{type of parametric model (Exponential or Weibull)}
 }
 \value{
 log- posterior density of betas

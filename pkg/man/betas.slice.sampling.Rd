@@ -4,7 +4,7 @@
 \alias{betas.slice.sampling}
 \title{betas.slice.sampling}
 \usage{
-betas.slice.sampling(Sigma.b, Y, X, betas, alpha, C, lambda, w, m)
+betas.slice.sampling(Sigma.b, Y, X, betas, alpha, C, lambda, w, m, form)
 }
 \arguments{
 \item{Sigma.b}{variance estimate of betas}
@@ -24,6 +24,8 @@ betas.slice.sampling(Sigma.b, Y, X, betas, alpha, C, lambda, w, m)
 \item{w}{size of the slice in the slice sampling}
 
 \item{m}{limit on steps in the slice sampling}
+
+\item{form}{type of parametric model (Exponential or Weibull)}
 }
 \value{
 One sample update using slice sampling

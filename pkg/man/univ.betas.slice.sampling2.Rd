@@ -5,7 +5,7 @@
 \title{univ.betas.slice.sampling2}
 \usage{
 univ.betas.slice.sampling2(betas.p, p, Sigma.b, Y, X, betas, alpha, C, lambda,
-  w, m, lower = -Inf, upper = +Inf)
+  w, m, lower = -Inf, upper = +Inf, form)
 }
 \arguments{
 \item{betas.p}{current value of the pth element of betas}
@@ -33,6 +33,8 @@ univ.betas.slice.sampling2(betas.p, p, Sigma.b, Y, X, betas, alpha, C, lambda,
 \item{lower}{lower bound on support of the distribution}
 
 \item{upper}{upper bound on support of the distribution}
+
+\item{form}{type of parametric model (Exponential or Weibull)}
 }
 \value{
 One sample update using slice sampling

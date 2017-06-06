@@ -17,13 +17,10 @@ using namespace Rcpp;
 // **********************************************************//
 // [[Rcpp::export]]
 double llikWeibull_betas (arma::vec Y,
-                          arma::mat X,
-                          arma::vec betas,
+                          arma::vec eXB,
                           arma::vec alpha,
                           arma::vec C,
                           double lambda) {
-  arma::vec XB = X * betas;
-  arma::vec eXB = exp(XB);
   arma::vec dexp1 = exp(-pow(eXB % Y, lambda));
   arma::vec dexp2 = pow(eXB % Y, lambda - 1);
   for (int i = 0; i < dexp1.n_elem; i++) {
@@ -37,7 +34,7 @@ double llikWeibull_betas (arma::vec Y,
       dexp2[i] = 0.0000001;
     }
   } 								
-  arma::vec llik = C % (log((1 - alpha) % exp(- pow(eXB % Y, lambda)) + lambda * alpha % eXB % dexp2 % dexp1)) +
+  arma::vec llik = C % (log((1 - alpha) % dexp1 + lambda * alpha % eXB % dexp2 % dexp1)) +
     (1 - C) % (- pow(eXB % Y, lambda));		
   return sum(llik);
 }
@@ -67,7 +64,7 @@ double llikWeibull_gammas (arma::vec Y,
       dexp2[i] = 0.0000001;
     }
   } 								
-  arma::vec llik = C % (log((1 - alpha) % exp(- pow(eXB % Y, lambda)) + lambda * alpha % eXB % dexp2 % dexp1)) +
+  arma::vec llik = C % (log((1 - alpha) % dexp1 + lambda * alpha % eXB % dexp2 % dexp1)) +
     (1 - C) % (- pow(eXB % Y, lambda));	
   return sum(llik);
 }
@@ -94,7 +91,7 @@ double llikWeibull_lambda (arma::vec Y,
       dexp2[i] = 0.0000001;
     }
   } 								
-  arma::vec llik = C % (log((1 - alpha) % exp(- pow(eXB % Y, lambda)) + lambda * alpha % eXB % dexp2 % dexp1)) +
+  arma::vec llik = C % (log((1 - alpha) % dexp1 + lambda * alpha % eXB % dexp2 % dexp1)) +
     (1 - C) % (- pow(eXB % Y, lambda));
   return sum(llik);
 }
@@ -105,13 +102,10 @@ double llikWeibull_lambda (arma::vec Y,
 // **********************************************************//
 // [[Rcpp::export]]
 double llikWeibull_betas2 (arma::vec Y,
-                          arma::mat X,
-                          arma::vec betas,
+                          arma::vec eXB,
                           arma::vec alpha,
                           arma::vec C,
                           double lambda) {
-	arma::vec XB = X * betas;
-	arma::vec eXB = exp(XB);
 	arma::vec dexp1 = exp(-pow(eXB % Y, lambda));
 	arma::vec dexp2 = pow(eXB % Y, lambda - 1);
 	for (int i = 0; i < dexp1.n_elem; i++) {
@@ -141,7 +135,7 @@ double llikWeibull_gammas2 (arma::vec Y,
                            arma::vec C,
                            double lambda) {
 	arma::vec ZG = Z * gammas;
-	arma::vec alpha = 1 / (1 + exp(-ZG))	;				
+	arma::vec alpha = 1 / (1 + exp(-ZG));
 	arma::vec dexp1 = exp(-pow(eXB % Y, lambda));
 	arma::vec dexp2 = pow(eXB % Y, lambda - 1);
 	for (int i = 0; i < dexp1.n_elem; i++) {
