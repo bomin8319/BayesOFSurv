@@ -5,6 +5,7 @@
 #' @import RcppArmadillo
 #' @importFrom Rcpp sourceCpp
 #' @importFrom MCMCpack riwish
+#' @importFrom coda mcmc
 #' @importFrom mvtnorm rmvnorm dmvnorm
 NULL
 

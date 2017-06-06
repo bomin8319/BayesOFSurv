@@ -15,7 +15,8 @@ Imports:
 	grDevices,
 	graphics,
 	Rcpp,
-	RcppArmadillo
+	RcppArmadillo,
+	coda
 LinkingTo:
 	Rcpp,
 	RcppArmadillo
