@@ -809,15 +809,17 @@ mcmcOF2 <- function(Y, C, X, Z, N, burn, thin, w = c(1, 1, 1), m = 10, form) {
   gammas = rep(0, p2)
   lambda = 1
   alpha = 1 / (1 + exp(-Z %*% gammas))
-  #Sigma.b = 10 * p1 * diag(p1)
-  #Sigma.g = 10 * p2 * diag(p2)
+  Sigma.b = 10 * p1 * diag(p1)
+  Sigma.g = 10 * p2 * diag(p2)
   betas.samp = matrix(NA, nrow = (N - burn) / thin, ncol = p1)
   gammas.samp = matrix(NA, nrow = (N - burn) / thin, ncol = p2)
   lambda.samp = rep(NA, (N - burn) / thin)
   for (iter in 1:N) {
     if (iter %% 1000 == 0) print(iter)
+    if (iter > burn) {
     Sigma.b = riwish(1 + p1, betas %*% t(betas) + p1 * diag(p1))
     Sigma.g = riwish(1 + p2, gammas %*% t(gammas) + p2 * diag(p2))
+    }
     betas = betas.slice.sampling2(Sigma.b, Y, X, betas, alpha, C, lambda, w[1], m, form)
     if (form %in% "Weibull") {
       eXB = exp(X %*% betas + 1/lambda)

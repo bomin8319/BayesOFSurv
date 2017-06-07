@@ -69,6 +69,22 @@ cox.cp<-matrix(NA,nrow=nsims,ncol=1)
 exp.cp<-matrix(NA,nrow=nsims,ncol=12)
 #history matrix for exp CP
 weib.cp<-matrix(NA,nrow=nsims,ncol=15)
+main.data<-cbind(tru.est,cox.est,exp.est,weib.est,cox.rmse,exp.rmse,weib.rmse,cox.cp,exp.cp,weib.cp)
+colnames(main.data)<-c("true.x0","true.x1","true.z0","true.z1","true.z2","true.p","cen.lat","cen.obs",
+                       "cox.x1","cox.x1.se",
+                       "exp.x0","exp.x0.se","exp.x1","exp.x1.se",
+                       "zexp.z0","zexp.z0.se","zexp.z1","zexp.z1.se","zexp.z2","zexp.z2.se","zexp.x0","zexp.x0.se","zexp.x1","zexp.x1.se",
+                       "bzexp.x0","zexp.x0.se","bzexp.x1","bzexp.x1.se","bzexp.z0","bzexp.z0.se","bzexp.z1","bzexp.z1.se","bzexp.z2","bzexp.z2.se",
+                       "wei.x0","wei.x0.se","wei.x1","wei.x1.se","wei.p","wei.p.se",
+                       "zwei.z0","zwei.z0.se","zwei.z1","zwei.z1.se","zwei.z2","zwei.z2.se","zwei.x0","zwei.x0.se","zwei.x1","zwei.x1.se","zwei.p","zwei.p.se",
+                       "bzwei.x0","bzwei.x0.se","bzwei.x1","bzwei.x1.se","bzwei.z0","bzwei.z0.se","bzwei.z1","bzwei.z1.se","bzwei.z2","bzwei.z2.se","bzwei.p","bzwei.p.se",
+                       "cox.x1.rmse",
+                       "exp.x0.rmse","exp.x1.rmse","zexp.z0.rmse","zexp.z1.rmse","zexp.z2.rmse","zexp.x0.rmse","zexp.x1.rmse","bzexp.x0.rmse","bzexp.x1.rmse","bzexp.z0.rmse","bzexp.z1.rmse","bzexp.z2.rmse",
+                       "wei.x0.rmse","wei.x1.rmse","wei.p.rmse","zwei.z0.rmse","zwei.z1.rmse","zwei.z2.rmse",
+                       "zwei.x0.rmse","zwei.x1.rmse","zwei.p.rmse", "bzwei.x0.rmse","bzwei.x1.rmse","bzwei.z0.rmse","bzwei.z1.rmse","bzwei.z2.rmse","bzwei.p.rmse",
+                       "cox.x1.cp","exp.x0.cp","exp.x1.cp","zexp.z0.cp","zexp.z1.cp","zexp.z2.cp","zexp.x0.cp","zexp.x1.cp","bzexp.x0.cp","bzexp.x1.cp","bzexp.z0.cp","bzexp.z1.cp","bzexp.z2.cp",
+                       "wei.x0.cp","wei.x1.cp","wei.p.cp",
+                       "zwei.z0.cp","zwei.z1.cp","zwei.z2.cp","zwei.x0.cp","zwei.x1.cp","zwei.p.cp", "bzwei.x0.cp","bzwei.x1.cp","bzwei.z0.cp","bzwei.z1.cp","bzwei.z2.cp","bzwei.p.cp")
 
 
 #create covariates
@@ -576,24 +592,11 @@ weib.cp[i,13]<-ifelse(tru.est[i,1]>b0.lower & tru.est[i,1]<b0.upper, 1,0)
 weib.cp[i,14]<-ifelse(tru.est[i,2]>b1.lower & tru.est[i,2]<b1.upper, 1,0)
 weib.cp[i,15]<-ifelse(tru.est[i,6]>p.lower & tru.est[i,6]<p.upper, 1,0)
 
-}
 #combine matrices and label variables
-main.data<-cbind(tru.est,cox.est,exp.est,weib.est,cox.rmse,exp.rmse,weib.rmse,cox.cp,exp.cp,weib.cp)
-colnames(main.data)<-c("true.x0","true.x1","true.z0","true.z1","true.z2","true.p","cen.lat","cen.obs",
-                       "cox.x1","cox.x1.se",
-                       "exp.x0","exp.x0.se","exp.x1","exp.x1.se",
-                       "zexp.z0","zexp.z0.se","zexp.z1","zexp.z1.se","zexp.z2","zexp.z2.se","zexp.x0","zexp.x0.se","zexp.x1","zexp.x1.se",
-                       "bzexp.x0","zexp.x0.se","bzexp.x1","bzexp.x1.se","bzexp.z0","bzexp.z0.se","bzexp.z1","bzexp.z1.se","bzexp.z2","bzexp.z2.se",
-                       "wei.x0","wei.x0.se","wei.x1","wei.x1.se","wei.p","wei.p.se",
-                       "zwei.z0","zwei.z0.se","zwei.z1","zwei.z1.se","zwei.z2","zwei.z2.se","zwei.x0","zwei.x0.se","zwei.x1","zwei.x1.se","zwei.p","zwei.p.se",
-                       "bzwei.x0","bzwei.x0.se","bzwei.x1","bzwei.x1.se","bzwei.z0","bzwei.z0.se","bzwei.z1","bzwei.z1.se","bzwei.z2","bzwei.z2.se","bzwei.p","bzwei.p.se",
-                       "cox.x1.rmse",
-                       "exp.x0.rmse","exp.x1.rmse","zexp.z0.rmse","zexp.z1.rmse","zexp.z2.rmse","zexp.x0.rmse","zexp.x1.rmse","bzexp.x0.rmse","bzexp.x1.rmse","bzexp.z0.rmse","bzexp.z1.rmse","bzexp.z2.rmse",
-                       "wei.x0.rmse","wei.x1.rmse","wei.p.rmse","zwei.z0.rmse","zwei.z1.rmse","zwei.z2.rmse",
-                       "zwei.x0.rmse","zwei.x1.rmse","zwei.p.rmse", "bzwei.x0.rmse","bzwei.x1.rmse","bzwei.z0.rmse","bzwei.z1.rmse","bzwei.z2.rmse","bzwei.p.rmse",
-                       "cox.x1.cp","exp.x0.cp","exp.x1.cp","zexp.z0.cp","zexp.z1.cp","zexp.z2.cp","zexp.x0.cp","zexp.x1.cp","bzexp.x0.cp","bzexp.x1.cp","bzexp.z0.cp","bzexp.z1.cp","bzexp.z2.cp",
-                       "wei.x0.cp","wei.x1.cp","wei.p.cp",
-                       "zwei.z0.cp","zwei.z1.cp","zwei.z2.cp","zwei.x0.cp","zwei.x1.cp","zwei.p.cp", "bzwei.x0.cp","bzwei.x1.cp","bzwei.z0.cp","bzwei.z1.cp","bzwei.z2.cp","bzwei.p.cp")
+main.data[i, ]<-c(tru.est[i, ],cox.est[i, ],exp.est[i, ],weib.est[i, ],cox.rmse[i, ],exp.rmse[i, ],weib.rmse[i, ],
+                      cox.cp[i, ],exp.cp[i, ],weib.cp[i, ])
+
+}
 
 #save dataset
 main.data<-as.data.frame(main.data)
