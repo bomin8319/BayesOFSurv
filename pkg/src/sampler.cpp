@@ -24,12 +24,12 @@ double llikWeibull_betas (arma::vec Y,
   arma::vec dexp1 = exp(-pow(eXB % Y, lambda));
   arma::vec dexp2 = pow(eXB % Y, lambda - 1);
   arma::vec dexp3 = pow(eXB % Y, lambda);
-  arma::vec llik1 = log((1 - alpha) + lambda * alpha % eXB % dexp2 % dexp1);
+  arma::vec llik1 = log((1 - alpha) % dexp1 + lambda * alpha % eXB % dexp2 % dexp1);
   arma::uvec ids1 = find(llik1 == arma::datum::inf);
   llik1.elem(ids1).fill(exp(700));
   arma::uvec ids2 = find(dexp3 == arma::datum::inf);
   dexp3.elem(ids2).fill(exp(700));
-  arma::vec llik = C % llik1 + (1 - C) % (log(alpha) - dexp3);
+  arma::vec llik = C % llik1 + (1 - C) % (- dexp3);
   return sum(llik);
 }
 
@@ -48,12 +48,12 @@ double llikWeibull_gammas (arma::vec Y,
   arma::vec dexp1 = exp(-pow(eXB % Y, lambda));
   arma::vec dexp2 = pow(eXB % Y, lambda - 1);
   arma::vec dexp3 = pow(eXB % Y, lambda);
-  arma::vec llik1 = log((1 - alpha) + lambda * alpha % eXB % dexp2 % dexp1);
+  arma::vec llik1 = log((1 - alpha) % dexp1 + lambda * alpha % eXB % dexp2 % dexp1);
   arma::uvec ids1 = find(llik1 == arma::datum::inf);
   llik1.elem(ids1).fill(exp(700));
   arma::uvec ids2 = find(dexp3 == arma::datum::inf);
   dexp3.elem(ids2).fill(exp(700));
-  arma::vec llik = C % llik1 + (1 - C) % (log(alpha) - dexp3);
+  arma::vec llik = C % llik1 + (1 - C) % (- dexp3);
   return sum(llik);
 }
 
@@ -69,12 +69,12 @@ double llikWeibull_lambda (arma::vec Y,
   arma::vec dexp1 = exp(-pow(eXB % Y, lambda));
   arma::vec dexp2 = pow(eXB % Y, lambda - 1);
   arma::vec dexp3 = pow(eXB % Y, lambda);
-  arma::vec llik1 = log((1 - alpha) + lambda * alpha % eXB % dexp2 % dexp1);
+  arma::vec llik1 = log((1 - alpha) % dexp1 + lambda * alpha % eXB % dexp2 % dexp1);
   arma::uvec ids1 = find(llik1 == arma::datum::inf);
   llik1.elem(ids1).fill(exp(700));
   arma::uvec ids2 = find(dexp3 == arma::datum::inf);
   dexp3.elem(ids2).fill(exp(700));
-  arma::vec llik = C % llik1 + (1 - C) % (log(alpha) - dexp3);
+  arma::vec llik = C % llik1 + (1 - C) % (- dexp3);
   return sum(llik);
 }
 
