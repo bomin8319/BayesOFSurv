@@ -95,7 +95,7 @@ text (x=3.55, y =38, "BZ.Wei",col="orange")
 par(new=FALSE)
 
 #B1
-local.ylim<-c(0,19)
+local.ylim<-c(0,20)
 local.xlim<-c(0.75,1.1)
 plot(density(Results[,39],na.rm=TRUE), main = "",  ylab = "", xlab = "",xlim=local.xlim, ylim=local.ylim,col="forestgreen", xaxt='n', yaxt='n')
 abline(v=1,lty=3)
@@ -105,11 +105,11 @@ par(new=TRUE)
 plot(density(Results[,51],na.rm=TRUE), main =" ", xlab = "P",xlim=local.xlim, ylim=local.ylim,col="purple")
 text (x=1.06, y =15.2, "Z.Wei",col="purple")
 text (x=1.06, y =14.2, "BZ.Wei",col="orange")
-text (x=.85, y =18, "Wei",col="forestgreen")
+text (x=.78, y =18, "Wei",col="forestgreen")
 par(new=FALSE)
 
 #B1
-local.ylim<-c(0,.5)
+local.ylim<-c(0,.6)
 local.xlim<-c(-5.3,2)
 plot(density(Results[,15],na.rm=TRUE), main = "", ylab = "", xlab = "",xlim=local.xlim, ylim=local.ylim,col="red", xaxt='n', yaxt='n')
 abline(v=-2,lty=3)
@@ -127,7 +127,7 @@ par(new=FALSE)
 
 
 #B1
-local.ylim<-c(0,1.2)
+local.ylim<-c(0,1.25)
 local.xlim<-c(.5,4)
 plot(density(Results[,17],na.rm=TRUE), main = "", ylab = "",  xlab = "",xlim=local.xlim, ylim=local.ylim,col="red", xaxt='n', yaxt='n')
 abline(v=2,lty=3)

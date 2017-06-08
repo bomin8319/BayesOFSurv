@@ -4,7 +4,7 @@
 \alias{gammas.post}
 \title{gammas.post}
 \usage{
-gammas.post(gammas.p, p, Sigma.g, Y, eXB, Z, gammas, C, lambda)
+gammas.post(gammas.p, p, Sigma.g, Y, eXB, Z, gammas, C, lambda, form)
 }
 \arguments{
 \item{gammas.p}{current value of the pth element of gammas}
@@ -24,6 +24,8 @@ gammas.post(gammas.p, p, Sigma.g, Y, eXB, Z, gammas, C, lambda)
 \item{C}{censoring indicator}
 
 \item{lambda}{current value of lambda}
+
+\item{form}{type of parametric model (Exponential or Weibull)}
 }
 \value{
 log- posterior density of betas

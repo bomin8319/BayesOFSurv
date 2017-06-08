@@ -4,7 +4,7 @@
 \alias{gammas.slice.sampling}
 \title{gammas.slice.sampling}
 \usage{
-gammas.slice.sampling(Sigma.g, Y, eXB, Z, gammas, C, lambda, w, m)
+gammas.slice.sampling(Sigma.g, Y, eXB, Z, gammas, C, lambda, w, m, form)
 }
 \arguments{
 \item{Sigma.g}{variance estimate of gammas}
@@ -24,6 +24,8 @@ gammas.slice.sampling(Sigma.g, Y, eXB, Z, gammas, C, lambda, w, m)
 \item{w}{size of the slice in the slice sampling}
 
 \item{m}{limit on steps in the slice sampling}
+
+\item{form}{type of parametric model (Exponential or Weibull)}
 }
 \value{
 One sample update using slice sampling

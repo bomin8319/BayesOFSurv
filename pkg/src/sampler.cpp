@@ -11,137 +11,50 @@ using std::pow;
 using namespace Rcpp; 
 
 
-
 // **********************************************************//
-//     	            Likelihood function for beta             //
+//     	           Likelihood function            //
 // **********************************************************//
 // [[Rcpp::export]]
-double llikWeibull_betas (arma::vec Y,
-                          arma::vec eXB,
-                          arma::vec alpha,
-                          arma::vec C,
-                          double lambda) {
+double llikWeibull (arma::vec Y,
+                    arma::vec eXB, 
+                    arma::vec alpha,
+                    arma::vec C,
+                    double lambda) {
   arma::vec dexp1 = exp(-pow(eXB % Y, lambda));
   arma::vec dexp2 = pow(eXB % Y, lambda - 1);
   arma::vec dexp3 = pow(eXB % Y, lambda);
-  arma::vec llik1 = log((1 - alpha) % dexp1 + lambda * alpha % eXB % dexp2 % dexp1);
+  arma::vec llik1 = (1 - alpha) % dexp1 + lambda * alpha % eXB % dexp2 % dexp1;
+  arma::uvec ids0 = find(llik1 == 0);
+  llik1.elem(ids0).fill(0.000000001);
   arma::uvec ids1 = find(llik1 == arma::datum::inf);
-  llik1.elem(ids1).fill(exp(700));
+  llik1.elem(ids1).fill(exp(-740));
   arma::uvec ids2 = find(dexp3 == arma::datum::inf);
   dexp3.elem(ids2).fill(exp(700));
-  arma::vec llik = C % llik1 + (1 - C) % (- dexp3);
-  return sum(llik);
-}
-
-// **********************************************************//
-//     	            Likelihood function for gamma            //
-// **********************************************************//
-// [[Rcpp::export]]
-double llikWeibull_gammas (arma::vec Y,
-                           arma::vec eXB,
-                           arma::mat Z,
-                           arma::vec gammas,
-                           arma::vec C,
-                           double lambda) {
-  arma::vec ZG = Z * gammas;
-  arma::vec alpha = 1 / (1 + exp(-ZG))	;				
-  arma::vec dexp1 = exp(-pow(eXB % Y, lambda));
-  arma::vec dexp2 = pow(eXB % Y, lambda - 1);
-  arma::vec dexp3 = pow(eXB % Y, lambda);
-  arma::vec llik1 = log((1 - alpha) % dexp1 + lambda * alpha % eXB % dexp2 % dexp1);
-  arma::uvec ids1 = find(llik1 == arma::datum::inf);
-  llik1.elem(ids1).fill(exp(700));
-  arma::uvec ids2 = find(dexp3 == arma::datum::inf);
-  dexp3.elem(ids2).fill(exp(700));
-  arma::vec llik = C % llik1 + (1 - C) % (- dexp3);
-  return sum(llik);
-}
-
-// **********************************************************//
-//     	           Likelihood function for lambda            //
-// **********************************************************//
-// [[Rcpp::export]]
-double llikWeibull_lambda (arma::vec Y,
-                           arma::vec eXB, 
-                           arma::vec alpha,
-                           arma::vec C,
-                           double lambda) {
-  arma::vec dexp1 = exp(-pow(eXB % Y, lambda));
-  arma::vec dexp2 = pow(eXB % Y, lambda - 1);
-  arma::vec dexp3 = pow(eXB % Y, lambda);
-  arma::vec llik1 = log((1 - alpha) % dexp1 + lambda * alpha % eXB % dexp2 % dexp1);
-  arma::uvec ids1 = find(llik1 == arma::datum::inf);
-  llik1.elem(ids1).fill(exp(700));
-  arma::uvec ids2 = find(dexp3 == arma::datum::inf);
-  dexp3.elem(ids2).fill(exp(700));
-  arma::vec llik = C % llik1 + (1 - C) % (- dexp3);
+  arma::vec llik = C % log(llik1) + (1 - C) % (- dexp3);
   return sum(llik);
 }
 
 
 // **********************************************************//
-//     	            Likelihood function for beta             //
+//     	             Likelihood function                     //
 // **********************************************************//
 // [[Rcpp::export]]
-double llikWeibull_betas2 (arma::vec Y,
-                          arma::vec eXB,
-                          arma::vec alpha,
-                          arma::vec C,
-                          double lambda) {
-	arma::vec dexp1 = exp(-pow(eXB % Y, lambda));
-	arma::vec dexp2 = pow(eXB % Y, lambda - 1);
-	arma::vec dexp3 = pow(eXB % Y, lambda);
-	arma::vec llik1 = log((1 - alpha) + lambda * alpha % eXB % dexp2 % dexp1);
-	arma::uvec ids1 = find(llik1 == arma::datum::inf);
-	llik1.elem(ids1).fill(exp(700));
-	arma::uvec ids2 = find(dexp3 == arma::datum::inf);
-	dexp3.elem(ids2).fill(exp(700));
-	arma::vec llik = C % llik1 + (1 - C) % (log(alpha) - dexp3);
-	return sum(llik);
-}
-
-// **********************************************************//
-//     	            Likelihood function for gamma            //
-// **********************************************************//
-// [[Rcpp::export]]
-double llikWeibull_gammas2 (arma::vec Y,
-                           arma::vec eXB,
-                           arma::mat Z,
-                           arma::vec gammas,
-                           arma::vec C,
-                           double lambda) {
-  arma::vec ZG = Z * gammas;
-	arma::vec alpha = 1 / (1 + exp(-ZG));
-	arma::vec dexp1 = exp(-pow(eXB % Y, lambda));
-	arma::vec dexp2 = pow(eXB % Y, lambda - 1);
-	arma::vec dexp3 = pow(eXB % Y, lambda);
-	arma::vec llik1 = log((1 - alpha) + lambda * alpha % eXB % dexp2 % dexp1);
-	arma::uvec ids1 = find(llik1 == arma::datum::inf);
-	llik1.elem(ids1).fill(exp(700));
-	arma::uvec ids2 = find(dexp3 == arma::datum::inf);
-	dexp3.elem(ids2).fill(exp(700));
-	arma::vec llik = C % llik1 + (1 - C) % (log(alpha) - dexp3);
-	return sum(llik);
-}
-
-// **********************************************************//
-//     	           Likelihood function for lambda            //
-// **********************************************************//
-// [[Rcpp::export]]
-double llikWeibull_lambda2 (arma::vec Y,
-					arma::vec eXB, 
-					arma::vec alpha,
-					arma::vec C,
-					double lambda) {
+double llikWeibull2(arma::vec Y,
+					          arma::vec eXB, 
+				          	arma::vec alpha,
+				          	arma::vec C,
+					          double lambda) {
   arma::vec dexp1 = exp(-pow(eXB % Y, lambda));
 	arma::vec dexp2 = pow(eXB % Y, lambda - 1);
 	arma::vec dexp3 = pow(eXB % Y, lambda);
-	arma::vec llik1 = log((1 - alpha) + lambda * alpha % eXB % dexp2 % dexp1);
+	arma::vec llik1 = (1 - alpha) + lambda * alpha % eXB % dexp2 % dexp1;
 	arma::uvec ids1 = find(llik1 == arma::datum::inf);
 	llik1.elem(ids1).fill(exp(700));
+	arma::uvec ids0 = find(llik1 == 0);
+	llik1.elem(ids0).fill(exp(-740));
 	arma::uvec ids2 = find(dexp3 == arma::datum::inf);
 	dexp3.elem(ids2).fill(exp(700));
-	arma::vec llik = C % llik1 + (1 - C) % (log(alpha) - dexp3);
+	arma::vec llik = C % log(llik1) + (1 - C) % (log(alpha) - dexp3);
 	return sum(llik);
 }
 

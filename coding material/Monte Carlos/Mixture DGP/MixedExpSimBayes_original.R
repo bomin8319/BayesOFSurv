@@ -40,7 +40,7 @@ setwd("/Users/bomin8319/Desktop/BayesOFsurv/coding material/Monte Carlos/Mixture
 ##########################################################################
 
 #set seed
-set.seed(1)   
+set.seed(3)   
 
 #set the number of observations
 n<-1000
@@ -111,6 +111,7 @@ tru.est[i,7]<-table(di)[1]
 
 #create parameters for ZG
 phi<-1/(1+exp(-(tru.est[i,3]+tru.est[i,4]*z+tru.est[i,5]*x)))
+print(mean(phi))
 yzero<-matrix(1,n,1)
 error<--1*rlogis(n)
 flag<-error<qlogis(phi)

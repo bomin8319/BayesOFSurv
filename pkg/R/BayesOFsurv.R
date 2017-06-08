@@ -127,14 +127,15 @@ univ.betas.slice.sampling = function(betas.p, p, Sigma.b, Y, X, betas, alpha, C,
 #' @param lambda current value of lambda
 #' @param w size of the slice in the slice sampling
 #' @param m limit on steps in the slice sampling
+#' @param form type of parametric model (Exponential or Weibull)
 #'
 #' @return One sample update using slice sampling
 #'
 #' @export
-gammas.slice.sampling = function(Sigma.g, Y, eXB, Z, gammas, C, lambda, w, m) {
+gammas.slice.sampling = function(Sigma.g, Y, eXB, Z, gammas, C, lambda, w, m, form) {
   p2 = length(gammas)
   for (p in sample(1:p2, p2, replace = FALSE)) {
-    gammas[p] = univ.gammas.slice.sampling(gammas[p], p, Sigma.g, Y, eXB, Z, gammas, C, lambda, w, m)
+    gammas[p] = univ.gammas.slice.sampling(gammas[p], p, Sigma.g, Y, eXB, Z, gammas, C, lambda, w, m, form = form)
   }
   return(gammas)
 }
@@ -155,13 +156,14 @@ gammas.slice.sampling = function(Sigma.g, Y, eXB, Z, gammas, C, lambda, w, m) {
 #' @param m limit on steps in the slice sampling
 #' @param lower lower bound on support of the distribution
 #' @param upper upper bound on support of the distribution
+#' @param form type of parametric model (Exponential or Weibull)
 #'
 #' @return One sample update using slice sampling
 #'
 #' @export
-univ.gammas.slice.sampling = function(gammas.p, p, Sigma.g, Y, eXB, Z, gammas, C, lambda, w, m, lower = -Inf, upper = +Inf) {
+univ.gammas.slice.sampling = function(gammas.p, p, Sigma.g, Y, eXB, Z, gammas, C, lambda, w, m, lower = -Inf, upper = +Inf, form) {
   g0 = gammas.p
-  g.post0 = gammas.post(g0, p, Sigma.g, Y, eXB, Z, gammas, C, lambda)
+  g.post0 = gammas.post(g0, p, Sigma.g, Y, eXB, Z, gammas, C, lambda, form)
 
   u = runif(1, 0, w)
   L = g0 - u
@@ -169,13 +171,13 @@ univ.gammas.slice.sampling = function(gammas.p, p, Sigma.g, Y, eXB, Z, gammas, C
   if (is.infinite(m)) {
     repeat
     { if (L <= lower) break
-      if (gammas.post(L, p, Sigma.g, Y, eXB, Z, gammas, C, lambda) <= g.post0) break
+      if (gammas.post(L, p, Sigma.g, Y, eXB, Z, gammas, C, lambda, form) <= g.post0) break
       L = L - w
     }
     repeat
     {
       if (R >= upper) break
-      if (gammas.post(R, p, Sigma.g, Y, eXB, Z, gammas, C, lambda) <= g.post0) break
+      if (gammas.post(R, p, Sigma.g, Y, eXB, Z, gammas, C, lambda, form) <= g.post0) break
       R = R + w
     }
   } else if (m > 1) {
@@ -184,14 +186,14 @@ univ.gammas.slice.sampling = function(gammas.p, p, Sigma.g, Y, eXB, Z, gammas, C
 
     while (J > 0) {
       if (L <= lower) break
-      if (gammas.post(L, p, Sigma.g, Y, eXB, Z, gammas, C, lambda) <= g.post0) break
+      if (gammas.post(L, p, Sigma.g, Y, eXB, Z, gammas, C, lambda, form) <= g.post0) break
       L = L - w
       J = J - 1
     }
 
     while (K > 0) {
       if (R >= upper) break
-      if (gammas.post(R, p, Sigma.g, Y, eXB, Z, gammas, C, lambda) <= g.post0) break
+      if (gammas.post(R, p, Sigma.g, Y, eXB, Z, gammas, C, lambda, form) <= g.post0) break
       R = R + w
       K = K - 1
     }
@@ -207,7 +209,7 @@ univ.gammas.slice.sampling = function(gammas.p, p, Sigma.g, Y, eXB, Z, gammas, C
   repeat
   {
     g1 = runif(1, L, R)
-    g.post1 = gammas.post(g1, p, Sigma.g, Y, eXB, Z, gammas, C, lambda)
+    g.post1 = gammas.post(g1, p, Sigma.g, Y, eXB, Z, gammas, C, lambda, form)
 
     if (g.post1 >= g.post0) break
     if (g1 > g0) {
@@ -321,7 +323,7 @@ betas.post = function(betas.p, p, Sigma.b, Y, X, betas, alpha, C, lambda, form) 
     eXB = exp(X %*% betas)
   }
   lprior = dmvnorm(betas, rep(0, length(betas)), Sigma.b, log = TRUE)
-  lpost = llikWeibull_betas(Y, eXB, alpha, C, lambda) + lprior
+  lpost = llikWeibull(Y, eXB, alpha, C, lambda) + lprior
   return(lpost)
 }
 
@@ -337,14 +339,20 @@ betas.post = function(betas.p, p, Sigma.b, Y, X, betas, alpha, C, lambda, form) 
 #' @param gammas current value of gammas
 #' @param C censoring indicator
 #' @param lambda current value of lambda
+#' @param form type of parametric model (Exponential or Weibull)
 #'
 #' @return log- posterior density of betas
 #'
 #' @export
-gammas.post = function(gammas.p, p, Sigma.g, Y, eXB, Z, gammas, C, lambda) {
+gammas.post = function(gammas.p, p, Sigma.g, Y, eXB, Z, gammas, C, lambda, form) {
   gammas[p] = gammas.p
+  if (form %in% "Weibull") {
+    alpha = 1 / (1 + exp(-Z %*% gammas - 1/lambda))
+  } else {
+    alpha = 1 / (1 + exp(-Z %*% gammas))
+  }
   lprior = dmvnorm(gammas, rep(0, length(gammas)), Sigma.g, log = TRUE)
-  lpost = llikWeibull_gammas(Y, eXB, Z, gammas, C, lambda) + lprior
+  lpost = llikWeibull(Y, eXB, alpha, C, lambda) + lprior
   return(lpost)
 }
 
@@ -364,7 +372,7 @@ gammas.post = function(gammas.p, p, Sigma.g, Y, eXB, Z, gammas, C, lambda) {
 #' @export
 lambda.post = function(Y, eXB, alpha, C, lambda, a = 1, b = 1) {
   lprior = dgamma(lambda, a, b, log = TRUE)
-  lpost = llikWeibull_lambda(Y, eXB, alpha, C, lambda) + lprior
+  lpost = llikWeibull(Y, eXB, alpha, C, lambda) + lprior
   return(lpost)
 }
 
@@ -407,8 +415,12 @@ mcmcOF<- function(Y, C, X, Z, N, burn, thin, w = c(1, 1, 1), m = 10, form) {
     } else {
       eXB = exp(X %*% betas)
     }
-    gammas = gammas.slice.sampling(Sigma.g, Y, eXB, Z, gammas, C, lambda, w[2], m)
-    alpha = 1 / (1 + exp(-Z %*% gammas))
+    gammas = gammas.slice.sampling(Sigma.g, Y, eXB, Z, gammas, C, lambda, w[2], m, form = form)
+    if (form %in% "Weibull") {
+      alpha = 1 / (1 + exp(-Z %*% gammas - 1/lambda))
+    } else {
+      alpha = 1 / (1 + exp(-Z %*% gammas))
+    }
     if (form %in% "Weibull") {
     lambda = lambda.slice.sampling(Y, eXB, alpha, C, lambda, w[3], m)
      } 
@@ -541,14 +553,15 @@ univ.betas.slice.sampling2 = function(betas.p, p, Sigma.b, Y, X, betas, alpha, C
 #' @param lambda current value of lambda
 #' @param w size of the slice in the slice sampling
 #' @param m limit on steps in the slice sampling
+#' @param form type of parametric model (Exponential or Weibull)
 #'
 #' @return One sample update using slice sampling
 #'
 #' @export
-gammas.slice.sampling2 = function(Sigma.g, Y, eXB, Z, gammas, C, lambda, w, m) {
+gammas.slice.sampling2 = function(Sigma.g, Y, eXB, Z, gammas, C, lambda, w, m, form) {
   p2 = length(gammas)
   for (p in sample(1:p2, p2, replace = FALSE)) {
-    gammas[p] = univ.gammas.slice.sampling2(gammas[p], p, Sigma.g, Y, eXB, Z, gammas, C, lambda, w, m)
+    gammas[p] = univ.gammas.slice.sampling2(gammas[p], p, Sigma.g, Y, eXB, Z, gammas, C, lambda, w, m, form = form)
   }
   return(gammas)
 }
@@ -569,13 +582,14 @@ gammas.slice.sampling2 = function(Sigma.g, Y, eXB, Z, gammas, C, lambda, w, m) {
 #' @param m limit on steps in the slice sampling
 #' @param lower lower bound on support of the distribution
 #' @param upper upper bound on support of the distribution
+#' @param form type of parametric model (Exponential or Weibull)
 #'
 #' @return One sample update using slice sampling
 #'
 #' @export
-univ.gammas.slice.sampling2 = function(gammas.p, p, Sigma.g, Y, eXB, Z, gammas, C, lambda, w, m, lower = -Inf, upper = +Inf) {
+univ.gammas.slice.sampling2 = function(gammas.p, p, Sigma.g, Y, eXB, Z, gammas, C, lambda, w, m, lower = -Inf, upper = +Inf, form) {
   g0 = gammas.p
-  g.post0 = gammas.post2(g0, p, Sigma.g, Y, eXB, Z, gammas, C, lambda)
+  g.post0 = gammas.post2(g0, p, Sigma.g, Y, eXB, Z, gammas, C, lambda, form)
   
   u = runif(1, 0, w)
   L = g0 - u
@@ -583,13 +597,13 @@ univ.gammas.slice.sampling2 = function(gammas.p, p, Sigma.g, Y, eXB, Z, gammas, 
   if (is.infinite(m)) {
     repeat
     { if (L <= lower) break
-      if (gammas.post2(L, p, Sigma.g, Y, eXB, Z, gammas, C, lambda) <= g.post0) break
+      if (gammas.post2(L, p, Sigma.g, Y, eXB, Z, gammas, C, lambda, form) <= g.post0) break
       L = L - w
     }
     repeat
     {
       if (R >= upper) break
-      if (gammas.post2(R, p, Sigma.g, Y, eXB, Z, gammas, C, lambda) <= g.post0) break
+      if (gammas.post2(R, p, Sigma.g, Y, eXB, Z, gammas, C, lambda, form) <= g.post0) break
       R = R + w
     }
   } else if (m > 1) {
@@ -598,14 +612,14 @@ univ.gammas.slice.sampling2 = function(gammas.p, p, Sigma.g, Y, eXB, Z, gammas, 
     
     while (J > 0) {
       if (L <= lower) break
-      if (gammas.post2(L, p, Sigma.g, Y, eXB, Z, gammas, C, lambda) <= g.post0) break
+      if (gammas.post2(L, p, Sigma.g, Y, eXB, Z, gammas, C, lambda, form) <= g.post0) break
       L = L - w
       J = J - 1
     }
     
     while (K > 0) {
       if (R >= upper) break
-      if (gammas.post2(R, p, Sigma.g, Y, eXB, Z, gammas, C, lambda) <= g.post0) break
+      if (gammas.post2(R, p, Sigma.g, Y, eXB, Z, gammas, C, lambda, form) <= g.post0) break
       R = R + w
       K = K - 1
     }
@@ -621,7 +635,7 @@ univ.gammas.slice.sampling2 = function(gammas.p, p, Sigma.g, Y, eXB, Z, gammas, 
   repeat
   {
     g1 = runif(1, L, R)
-    g.post1 = gammas.post2(g1, p, Sigma.g, Y, eXB, Z, gammas, C, lambda)
+    g.post1 = gammas.post2(g1, p, Sigma.g, Y, eXB, Z, gammas, C, lambda, form)
     
     if (g.post1 >= g.post0) break
     if (g1 > g0) {
@@ -735,8 +749,7 @@ betas.post2 = function(betas.p, p, Sigma.b, Y, X, betas, alpha, C, lambda, form)
     eXB = exp(X %*% betas)
   }
   lprior = dmvnorm(betas, rep(0, length(betas)), Sigma.b, log = TRUE)
-  lpost = llikWeibull_betas2(Y, eXB, alpha, C, lambda) + lprior
-  if (is.na(lpost)) {browser()}
+  lpost = llikWeibull2(Y, eXB, alpha, C, lambda) + lprior
   return(lpost)
 }
 
@@ -752,14 +765,20 @@ betas.post2 = function(betas.p, p, Sigma.b, Y, X, betas, alpha, C, lambda, form)
 #' @param gammas current value of gammas
 #' @param C censoring indicator
 #' @param lambda current value of lambda
+#' @param form type of parametric model (Exponential or Weibull)
 #'
 #' @return log- posterior density of betas
 #'
 #' @export
-gammas.post2 = function(gammas.p, p, Sigma.g, Y, eXB, Z, gammas, C, lambda) {
+gammas.post2 = function(gammas.p, p, Sigma.g, Y, eXB, Z, gammas, C, lambda, form) {
   gammas[p] = gammas.p
+  if (form %in% "Weibull") {
+    alpha = 1 / (1 + exp(-Z %*% gammas - 1/lambda))
+  } else {
+    alpha = 1 / (1 + exp(-Z %*% gammas))
+  }
   lprior = dmvnorm(gammas, rep(0, length(gammas)), Sigma.g, log = TRUE)
-  lpost = llikWeibull_gammas2(Y, eXB, Z, gammas, C, lambda) + lprior
+  lpost = llikWeibull2(Y, eXB, alpha, C, lambda) + lprior
   return(lpost)
 }
 
@@ -779,7 +798,7 @@ gammas.post2 = function(gammas.p, p, Sigma.g, Y, eXB, Z, gammas, C, lambda) {
 #' @export
 lambda.post2 = function(Y, eXB, alpha, C, lambda, a = 1, b = 1) {
   lprior = dgamma(lambda, a, b, log = TRUE)
-  lpost = llikWeibull_lambda2(Y, eXB, alpha, C, lambda) + lprior
+  lpost = llikWeibull2(Y, eXB, alpha, C, lambda) + lprior
   return(lpost)
 }
 
@@ -808,7 +827,11 @@ mcmcOF2 <- function(Y, C, X, Z, N, burn, thin, w = c(1, 1, 1), m = 10, form) {
   betas = rep(0, p1)
   gammas = rep(0, p2)
   lambda = 1
-  alpha = 1 / (1 + exp(-Z %*% gammas))
+  if (form %in% "Weibull") {
+    alpha = 1 / (1 + exp(-Z %*% gammas - 1/lambda))
+  } else {
+    alpha = 1 / (1 + exp(-Z %*% gammas))
+  }
   Sigma.b = 10 * p1 * diag(p1)
   Sigma.g = 10 * p2 * diag(p2)
   betas.samp = matrix(NA, nrow = (N - burn) / thin, ncol = p1)
@@ -820,14 +843,18 @@ mcmcOF2 <- function(Y, C, X, Z, N, burn, thin, w = c(1, 1, 1), m = 10, form) {
     Sigma.b = riwish(1 + p1, betas %*% t(betas) + p1 * diag(p1))
     Sigma.g = riwish(1 + p2, gammas %*% t(gammas) + p2 * diag(p2))
     }
-    betas = betas.slice.sampling2(Sigma.b, Y, X, betas, alpha, C, lambda, w[1], m, form)
+    betas = betas.slice.sampling2(Sigma.b, Y, X, betas, alpha, C, lambda, w[1], m, form = form)
     if (form %in% "Weibull") {
       eXB = exp(X %*% betas + 1/lambda)
     } else {
       eXB = exp(X %*% betas)
     }
-    gammas = gammas.slice.sampling2(Sigma.g, Y, eXB, Z, gammas, C, lambda, w[2], m)
-    alpha = 1 / (1 + exp(-Z %*% gammas))
+    gammas = gammas.slice.sampling2(Sigma.g, Y, eXB, Z, gammas, C, lambda, w[2], m, form = form)
+    if (form %in% "Weibull") {
+      alpha = 1 / (1 + exp(-Z %*% gammas - 1/lambda))
+    } else {
+      alpha = 1 / (1 + exp(-Z %*% gammas))
+    }
     if (form %in% "Weibull") {
       lambda = lambda.slice.sampling2(Y, eXB, alpha, C, lambda, w[3], m)
     } 

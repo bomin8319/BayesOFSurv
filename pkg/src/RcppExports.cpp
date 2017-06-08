@@ -6,9 +6,9 @@
 
 using namespace Rcpp;
 
-// llikWeibull_betas
-double llikWeibull_betas(arma::vec Y, arma::vec eXB, arma::vec alpha, arma::vec C, double lambda);
-RcppExport SEXP BayesOFsurv_llikWeibull_betas(SEXP YSEXP, SEXP eXBSEXP, SEXP alphaSEXP, SEXP CSEXP, SEXP lambdaSEXP) {
+// llikWeibull
+double llikWeibull(arma::vec Y, arma::vec eXB, arma::vec alpha, arma::vec C, double lambda);
+RcppExport SEXP BayesOFsurv_llikWeibull(SEXP YSEXP, SEXP eXBSEXP, SEXP alphaSEXP, SEXP CSEXP, SEXP lambdaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -17,29 +17,13 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::vec >::type alpha(alphaSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type C(CSEXP);
     Rcpp::traits::input_parameter< double >::type lambda(lambdaSEXP);
-    rcpp_result_gen = Rcpp::wrap(llikWeibull_betas(Y, eXB, alpha, C, lambda));
+    rcpp_result_gen = Rcpp::wrap(llikWeibull(Y, eXB, alpha, C, lambda));
     return rcpp_result_gen;
 END_RCPP
 }
-// llikWeibull_gammas
-double llikWeibull_gammas(arma::vec Y, arma::vec eXB, arma::mat Z, arma::vec gammas, arma::vec C, double lambda);
-RcppExport SEXP BayesOFsurv_llikWeibull_gammas(SEXP YSEXP, SEXP eXBSEXP, SEXP ZSEXP, SEXP gammasSEXP, SEXP CSEXP, SEXP lambdaSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::vec >::type Y(YSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type eXB(eXBSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type Z(ZSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type gammas(gammasSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type C(CSEXP);
-    Rcpp::traits::input_parameter< double >::type lambda(lambdaSEXP);
-    rcpp_result_gen = Rcpp::wrap(llikWeibull_gammas(Y, eXB, Z, gammas, C, lambda));
-    return rcpp_result_gen;
-END_RCPP
-}
-// llikWeibull_lambda
-double llikWeibull_lambda(arma::vec Y, arma::vec eXB, arma::vec alpha, arma::vec C, double lambda);
-RcppExport SEXP BayesOFsurv_llikWeibull_lambda(SEXP YSEXP, SEXP eXBSEXP, SEXP alphaSEXP, SEXP CSEXP, SEXP lambdaSEXP) {
+// llikWeibull2
+double llikWeibull2(arma::vec Y, arma::vec eXB, arma::vec alpha, arma::vec C, double lambda);
+RcppExport SEXP BayesOFsurv_llikWeibull2(SEXP YSEXP, SEXP eXBSEXP, SEXP alphaSEXP, SEXP CSEXP, SEXP lambdaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -48,64 +32,14 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::vec >::type alpha(alphaSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type C(CSEXP);
     Rcpp::traits::input_parameter< double >::type lambda(lambdaSEXP);
-    rcpp_result_gen = Rcpp::wrap(llikWeibull_lambda(Y, eXB, alpha, C, lambda));
-    return rcpp_result_gen;
-END_RCPP
-}
-// llikWeibull_betas2
-double llikWeibull_betas2(arma::vec Y, arma::vec eXB, arma::vec alpha, arma::vec C, double lambda);
-RcppExport SEXP BayesOFsurv_llikWeibull_betas2(SEXP YSEXP, SEXP eXBSEXP, SEXP alphaSEXP, SEXP CSEXP, SEXP lambdaSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::vec >::type Y(YSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type eXB(eXBSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type alpha(alphaSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type C(CSEXP);
-    Rcpp::traits::input_parameter< double >::type lambda(lambdaSEXP);
-    rcpp_result_gen = Rcpp::wrap(llikWeibull_betas2(Y, eXB, alpha, C, lambda));
-    return rcpp_result_gen;
-END_RCPP
-}
-// llikWeibull_gammas2
-double llikWeibull_gammas2(arma::vec Y, arma::vec eXB, arma::mat Z, arma::vec gammas, arma::vec C, double lambda);
-RcppExport SEXP BayesOFsurv_llikWeibull_gammas2(SEXP YSEXP, SEXP eXBSEXP, SEXP ZSEXP, SEXP gammasSEXP, SEXP CSEXP, SEXP lambdaSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::vec >::type Y(YSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type eXB(eXBSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type Z(ZSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type gammas(gammasSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type C(CSEXP);
-    Rcpp::traits::input_parameter< double >::type lambda(lambdaSEXP);
-    rcpp_result_gen = Rcpp::wrap(llikWeibull_gammas2(Y, eXB, Z, gammas, C, lambda));
-    return rcpp_result_gen;
-END_RCPP
-}
-// llikWeibull_lambda2
-double llikWeibull_lambda2(arma::vec Y, arma::vec eXB, arma::vec alpha, arma::vec C, double lambda);
-RcppExport SEXP BayesOFsurv_llikWeibull_lambda2(SEXP YSEXP, SEXP eXBSEXP, SEXP alphaSEXP, SEXP CSEXP, SEXP lambdaSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::vec >::type Y(YSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type eXB(eXBSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type alpha(alphaSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type C(CSEXP);
-    Rcpp::traits::input_parameter< double >::type lambda(lambdaSEXP);
-    rcpp_result_gen = Rcpp::wrap(llikWeibull_lambda2(Y, eXB, alpha, C, lambda));
+    rcpp_result_gen = Rcpp::wrap(llikWeibull2(Y, eXB, alpha, C, lambda));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"BayesOFsurv_llikWeibull_betas", (DL_FUNC) &BayesOFsurv_llikWeibull_betas, 5},
-    {"BayesOFsurv_llikWeibull_gammas", (DL_FUNC) &BayesOFsurv_llikWeibull_gammas, 6},
-    {"BayesOFsurv_llikWeibull_lambda", (DL_FUNC) &BayesOFsurv_llikWeibull_lambda, 5},
-    {"BayesOFsurv_llikWeibull_betas2", (DL_FUNC) &BayesOFsurv_llikWeibull_betas2, 5},
-    {"BayesOFsurv_llikWeibull_gammas2", (DL_FUNC) &BayesOFsurv_llikWeibull_gammas2, 6},
-    {"BayesOFsurv_llikWeibull_lambda2", (DL_FUNC) &BayesOFsurv_llikWeibull_lambda2, 5},
+    {"BayesOFsurv_llikWeibull", (DL_FUNC) &BayesOFsurv_llikWeibull, 5},
+    {"BayesOFsurv_llikWeibull2", (DL_FUNC) &BayesOFsurv_llikWeibull2, 5},
     {NULL, NULL, 0}
 };
 
