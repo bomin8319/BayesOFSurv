@@ -40,13 +40,13 @@ setwd("/Users/bomin8319/Desktop/BayesOFsurv/coding material/Monte Carlos/Regular
 ##########################################################################
 
 #set seed
-set.seed(1)   
+set.seed(3)   
 
 #set the number of observations
 n<-1000
 
 #set the number of simulations, and create matrices to store the results
-nsims<-100
+nsims<-1000
 
 
 #history matrix for true estimates
