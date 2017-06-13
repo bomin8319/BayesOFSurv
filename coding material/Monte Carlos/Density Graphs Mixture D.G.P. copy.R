@@ -201,7 +201,7 @@ plot(density(Results[,35],na.rm=TRUE), main = "", xlab = "Beta 0",xlim=local.xli
 text (x=.7, y =6.5, "Z.Exp",col="red")
 text (x=.7, y =6.3, "Z.Wei",col="forestgreen")
 text (x=1.33, y =6.25, "Exp",col="blue")
-text (x=1.5, y =6.25, "Wei",col="purple")
+text (x=1.33, y =6, "Wei",col="purple")
 text (x=0.7, y =6, "BZ.Exp",col="pink")
 text (x=0, y =6.25, "BZ.Wei",col="orange")
 par(new=FALSE)
