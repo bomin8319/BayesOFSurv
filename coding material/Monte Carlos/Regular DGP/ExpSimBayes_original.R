@@ -28,8 +28,8 @@ library(verification)
 library(corpcor)
 library(Design)
 library(coda)
-library(devtools)
-install_github('bomin8319/BayesOFsurv/pkg')
+#library(devtools)
+#install_github('bomin8319/BayesOFsurv/pkg')
 library(BayesOFsurv)
 #set working directory
 setwd("/Users/bomin8319/Desktop/BayesOFsurv/coding material/Monte Carlos/Regular DGP/")
@@ -46,7 +46,7 @@ set.seed(3)
 n<-1000
 
 #set the number of simulations, and create matrices to store the results
-nsims<-1000
+nsims<-10
 
 
 #history matrix for true estimates
