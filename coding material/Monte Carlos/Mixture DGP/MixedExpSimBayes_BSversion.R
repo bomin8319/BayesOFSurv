@@ -104,19 +104,19 @@ tru.est[i,6]<-1
 
 myrates <- exp(tru.est[i,1]+(tru.est[i,2]*x)) 
 y <- rexp(n, rate = myrates) # generates the r.v.
-cen <- rexp(n, rate = 1 )
+cen <- rexp(n, rate = 0.01)
 ycen <- pmin(y, cen)
 di <- as.numeric(y <= cen)
 tru.est[i,7]<-table(di)[1]
 
 #create parameters for ZG
-phi<-1/(1+exp(-(tru.est[i,3]+tru.est[i,4]*z+tru.est[i,5]*x)))
-yzero<-matrix(1,n,1)
-error<--1*rlogis(n)
-flag<-error<qlogis(phi)
-yzero[flag]<-error[flag]
-flag<-yzero==1
-di[flag]<-ifelse(di[flag]==0,yzero[flag],di[flag])
+#phi<-1/(1+exp(-(tru.est[i,3]+tru.est[i,4]*z+tru.est[i,5]*x)))
+#yzero<-matrix(1,n,1)
+#error<--1*rlogis(n)
+#flag<-error<qlogis(phi)
+#yzero[flag]<-error[flag]
+#flag<-yzero==1
+#di[flag]<-ifelse(di[flag]==0,yzero[flag],di[flag])
 tru.est[i,8]<-table(di)[1]
 
 data<-cbind(ycen,di,x,z)
@@ -300,7 +300,7 @@ ZExponential<- function(est,Y,C,X,Z,data) {
 	XB<-X%*%beta
 	ZG<-Z%*%gamma
 	phi<-1/(1+exp(-ZG))
-	llik<-C*(log((1-phi)+phi*exp(XB)*exp(-exp(XB)*Y)))+(1-C)*(log(phi)+-exp(XB)*Y)
+	llik<-C*(log((1-phi)+phi*exp(XB)*exp(-exp(XB)*Y)))+(1-C)*(log(1-phi)+-exp(XB)*Y)
 	llik<--1*sum(llik)
 	return(llik)
 	
@@ -383,7 +383,7 @@ ZWeibull<- function(est,Y,C,X,Z,data) {
 	XB<-X%*%beta
 	ZG<-Z%*%gamma
 	phi<-1/(1+exp(-(ZG+1/p)))
-	llik<-C*(log((1-phi)+phi*exp(XB+1/p)*p*((exp(XB+1/p)*Y)^(p-1))*exp(-(exp(XB+1/p)*Y)^p)))+(1-C)*(log(phi)+-(exp(XB+1/p)*Y)^p)
+	llik<-C*(log((1-phi)+phi*exp(XB+1/p)*p*((exp(XB+1/p)*Y)^(p-1))*exp(-(exp(XB+1/p)*Y)^p)))+(1-C)*(log(1-phi)+-(exp(XB+1/p)*Y)^p)
 	llik<--1*sum(llik)
 	return(llik)
 	

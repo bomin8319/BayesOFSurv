@@ -87,15 +87,13 @@ where
 \end{equation}
 The likeihood function of the Parametric OF Survival Model is defined as 
 \begin{equation}
-L=\dprod\limits_{i=1}^{N}[\alpha _{i}S(t_{i}|\mathbf{X,}%
-\mathbf{\beta})+(1-\alpha _{i})f(t_{i}|\mathbf{X},\mathbf{\beta}
-)]^{C_{i}}[\alpha _{i}S(t_{i}|\mathbf{X,}\mathbf{\beta})]^{1-C_{i}}
+L=\dprod\limits_{i=1}^{N}[\alpha _{i}+(1-\alpha _{i})f(t_{i}|\mathbf{X},\mathbf{\beta}
+)]^{C_{i}}[(1-\alpha _{i})S(t_{i}|\mathbf{X,}\mathbf{\beta})]^{1-C_{i}}
 \end{equation}
 And the log likelihood is%
 \begin{equation}
-lnL=\dsum\limits_{i=1}^{N}\{C_{i}\ln [\alpha _{i}S(t_{i}|\mathbf{X,}%
-\mathbf{\beta})+(1-\alpha
-_{i})f(t_{i}|\mathbf{X},\mathbf{\beta})]+(1-C_{i})\ln [\alpha _{i}S(t_{i}|\mathbf{X,}%
+lnL=\dsum\limits_{i=1}^{N}\{C_{i}\ln [\alpha _{i}+(1-\alpha
+_{i})f(t_{i}|\mathbf{X},\mathbf{\beta})]+(1-C_{i})\ln [(1-\alpha _{i})S(t_{i}|\mathbf{X,}%
 \mathbf{\beta})]\}.
 \end{equation}
 \section{Posterior Distribution of Parametric OF Survival Models}
@@ -112,7 +110,7 @@ S(t_i|X_i, \mathbf{\beta}) &= \mbox{exp}(- \mbox{exp}(X_i\mathbf{\beta})t_i).
 Then, the likelihood function of Exponential OF survival model is
 \begin{equation}
 \begin{aligned}
-L(\mathbf{\beta}, \mathbf{\gamma})=&\dprod\limits_{i=1}^{N}[\alpha _{i}\mbox{exp}(- \mbox{exp}(X_i\mathbf{\beta})t_i)+(1-\alpha _{i})\mbox{exp}(X_i\mathbf{\beta})\mbox{exp}(- \mbox{exp}(X_i\mathbf{\beta})t_i)]^{C_{i}}\\&\quad \times[\alpha _{i}\mbox{exp}(- \mbox{exp}(X_i\mathbf{\beta})t_i)]^{1-C_{i}}
+L(\mathbf{\beta}, \mathbf{\gamma})=&\dprod\limits_{i=1}^{N}[\alpha _{i}+(1-\alpha _{i})\mbox{exp}(X_i\mathbf{\beta})\mbox{exp}(- \mbox{exp}(X_i\mathbf{\beta})t_i)]^{C_{i}} \times[(1-\alpha _{i})\mbox{exp}(- \mbox{exp}(X_i\mathbf{\beta})t_i)]^{1-C_{i}}
 \end{aligned}
 \end{equation}
 where $X_i$ is the $i^{th}$ row of the covariate matrix $\mathbf{X}$.\\ \newline
@@ -144,7 +142,7 @@ S(t_i|\lambda, X_i, \mathbf{\beta}) &= \mbox{exp}(-(\mbox{exp}(X_i\mathbf{\beta}
 which shows that $\lambda=1$ reduces to Exponential survival model, which is a well-known property. The likelihood function of Weibull OF survival model is
 \begin{equation}
 \begin{aligned}
-L(\lambda, \mathbf{\beta}, \mathbf{\gamma})=&\prod\limits_{i=1}^{N}[\alpha _{i}\mbox{exp}(-(\mbox{exp}(X_i\mathbf{\beta})t_i)^{\lambda})+(1-\alpha _{i})\lambda(\mbox{exp}(X_i\mathbf{\beta})) (\mbox{exp}(X_i\mathbf{\beta})t_i)^{\lambda - 1} \mbox{exp}(-(\mbox{exp}(X_i\mathbf{\beta})t_i)^{\lambda})]^{C_{i}}\\&\quad\times [\alpha _{i}\mbox{exp}(-(\mbox{exp}(X_i\mathbf{\beta})t_i)^{\lambda})]^{1-C_{i}}.
+L(\lambda, \mathbf{\beta}, \mathbf{\gamma})=&\prod\limits_{i=1}^{N}[\alpha _{i}+(1-\alpha _{i})\lambda(\mbox{exp}(X_i\mathbf{\beta})) (\mbox{exp}(X_i\mathbf{\beta})t_i)^{\lambda - 1} \mbox{exp}(-(\mbox{exp}(X_i\mathbf{\beta})t_i)^{\lambda})]^{C_{i}}\\&\quad\times [(1-\alpha _{i})\mbox{exp}(-(\mbox{exp}(X_i\mathbf{\beta})t_i)^{\lambda})]^{1-C_{i}}.
 \end{aligned}
 \end{equation}
 For the two parameters $\lambda$ and $\mathbf{\beta}=\{\beta_1,...,\beta_{p_1}\}$, we assign prior to each parameter as
