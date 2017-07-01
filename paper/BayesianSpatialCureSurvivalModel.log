@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  30 JUN 2017 18:03
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015) (preloaded format=pdflatex 2015.5.24)  1 JUL 2017 16:22
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -530,31 +530,54 @@ LaTeX Font Info:    Font shape `U/lasy/b/n' in size <8> not available
 (Font)              Font shape `U/lasy/m/n' tried instead on input line 106.
 LaTeX Font Info:    Font shape `U/lasy/b/n' in size <6> not available
 (Font)              Font shape `U/lasy/m/n' tried instead on input line 106.
-
-Overfull \hbox (0.2439pt too wide) detected at line 127
-[] []
- []
-
 [2]
-Overfull \hbox (21.44748pt too wide) detected at line 134
+Overfull \hbox (18.64886pt too wide) detected at line 134
 [] []
  []
 
 
-Overfull \hbox (27.63806pt too wide) detected at line 139
+Overfull \hbox (25.44502pt too wide) detected at line 139
 [] []
  []
 
-[3] [4] (./BayesianSpatialCureSurvivalModel.aux) )
+
+Underfull \hbox (badness 10000) in paragraph at lines 159--163
+
+ []
+
+[3] [4]
+Underfull \hbox (badness 10000) in paragraph at lines 181--187
+
+ []
+
+[5]
+Underfull \hbox (badness 10000) in paragraph at lines 201--204
+
+ []
+
+
+Overfull \hbox (14.95226pt too wide) in paragraph at lines 207--208
+[]\T1/cmr/bx/n/12 Step 2. \T1/cmr/m/n/12 Up-date $[] \OMS/cmsy/m/n/12 ^^X []\OM
+L/cmm/m/it/12 ^^Y\OT1/cmr/m/n/12 ([]\OMS/cmsy/m/n/12 j\OT1/cmr/bx/n/12 C\OML/cm
+m/m/it/12 ; \OT1/cmr/bx/n/12 X\OML/cmm/m/it/12 ; \OT1/cmr/bx/n/12 Z\OML/cmm/m/i
+t/12 ; \OT1/cmr/bx/n/12 t\OML/cmm/m/it/12 ; \OT1/cmr/bx/n/12 W\OML/cmm/m/it/12 
+; []; []^^Z; [][]; \OT1/cmr/m/n/12 ^^F[])$\T1/cmr/m/n/12 , $[] \OMS/cmsy/m/n/12
+ ^^X []\OML/cmm/m/it/12 ^^Y\OT1/cmr/m/n/12 ([]\OMS/cmsy/m/n/12 j\OT1/cmr/bx/n/1
+2 C\OML/cmm/m/it/12 ; \OT1/cmr/bx/n/12 X\OML/cmm/m/it/12 ; \OT1/cmr/bx/n/12 Z\O
+ML/cmm/m/it/12 ; \OT1/cmr/bx/n/12 t\OML/cmm/m/it/12 ; \OT1/cmr/bx/n/12 W\OML/cm
+m/m/it/12 ; []; []^^Z; [][]; \OT1/cmr/m/n/12 ^^F[])$\T1/cmr/m/n/12 ,
+ []
+
+[6] [7] (./BayesianSpatialCureSurvivalModel.aux) )
 (\end occurred when \ifx on line 678 was incomplete) 
 Here is how much of TeX's memory you used:
- 5711 strings out of 493089
- 80456 string characters out of 6134842
- 156327 words of memory out of 5000000
- 9036 multiletter control sequences out of 15000+600000
- 24137 words of font info for 82 fonts, out of 8000000 for 9000
+ 5713 strings out of 493089
+ 80478 string characters out of 6134842
+ 157327 words of memory out of 5000000
+ 9037 multiletter control sequences out of 15000+600000
+ 24913 words of font info for 83 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 44i,12n,42p,419b,247s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 44i,12n,42p,605b,247s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2015/te
 xmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}</usr/local/texlive/2015/texm
 f-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2015/texmf
@@ -567,19 +590,21 @@ fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/2015/texmf-dist/fo
 nts/type1/public/amsfonts/cm/cmr6.pfb></usr/local/texlive/2015/texmf-dist/fonts
 /type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/2015/texmf-dist/fonts/ty
 pe1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2015/texmf-dist/fonts/typ
-e1/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1
-/public/cm-super/sfbx1095.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/p
-ublic/cm-super/sfbx1440.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/pub
-lic/cm-super/sfrm1095.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/publi
-c/cm-super/sfrm1200.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/
-cm-super/sfrm1440.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/cm
--super/sfrm2074.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/cm-s
-uper/sfti1200.pfb>
-Output written on BayesianSpatialCureSurvivalModel.pdf (5 pages, 216725 bytes).
+e1/public/amsfonts/cm/cmsy6.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1
+/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/p
+ublic/cm-super/sfbx1095.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/pub
+lic/cm-super/sfbx1200.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/publi
+c/cm-super/sfbx1440.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/
+cm-super/sfrm1095.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/cm
+-super/sfrm1200.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/cm-s
+uper/sfrm1440.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/cm-sup
+er/sfrm2074.pfb></usr/local/texlive/2015/texmf-dist/fonts/type1/public/cm-super
+/sfti1200.pfb>
+Output written on BayesianSpatialCureSurvivalModel.pdf (8 pages, 251989 bytes).
 
 PDF statistics:
- 93 PDF objects out of 1000 (max. 8388607)
- 67 compressed objects within 1 object stream
+ 112 PDF objects out of 1000 (max. 8388607)
+ 81 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 
