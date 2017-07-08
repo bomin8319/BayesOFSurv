@@ -28,6 +28,7 @@ library(verification)
 library(corpcor)
 library(Design)
 library(coda)
+library(mcmcse)
 #library(devtools)
 #install_github('bomin8319/BayesOFsurv/pkg')
 library(BayesOFsurv)
@@ -43,7 +44,7 @@ setwd("/Users/bomin8319/Desktop/BayesOFsurv/coding material/Monte Carlos/Mixture
 set.seed(3)   
 
 #set the number of observations
-n<-1000
+n<-2000
 
 #set the number of simulations, and create matrices to store the results
 nsims<-1000
@@ -97,9 +98,9 @@ for(i in 1:nsims){
 #Assign parameter values
 tru.est[i,1]<-1
 tru.est[i,2]<-3.5
-tru.est[i,3]<--0.5
-tru.est[i,4]<-1.965
-tru.est[i,5]<--0.5
+tru.est[i,3]<--2
+tru.est[i,4]<-2
+tru.est[i,5]<-3
 tru.est[i,6]<-1
 
 myrates <- exp(tru.est[i,1]+(tru.est[i,2]*x)) 
@@ -481,7 +482,7 @@ X<-cbind(1,x)
 Z<-cbind(1,z,x)
 BayesZExponential = mcmcOF2(Y, C, X, Z, N = 400, burn = 100, thin = 1,  w = c(1, 1, 1), m = 10, form = "Exponential")
 output.BayesZExponential = list(par = c(summary(mcmc(BayesZExponential$beta))[[1]][,1], summary(mcmc(BayesZExponential$gamma))[[1]][,1]), 
-                                se = c(summary(mcmc(BayesZExponential$beta))[[1]][,2], summary(mcmc(BayesZExponential$gamma))[[1]][,2]),
+                                se = c(summary(mcmc(BayesZExponential$beta))[[1]][,4], summary(mcmc(BayesZExponential$gamma))[[1]][,4]),
                                 CI = rbind(summary(mcmc(BayesZExponential$beta))[[2]], summary(mcmc(BayesZExponential$gamma))[[2]]))
 exp.est[i,15]<-output.BayesZExponential$par[1]
 exp.est[i,16]<-output.BayesZExponential$se[1]
@@ -501,26 +502,26 @@ exp.rmse[i,10]<-sqrt((tru.est[i,5]-exp.est[i,19])^2)
 exp.rmse[i,11]<-sqrt((tru.est[i,1]-exp.est[i,21])^2)
 exp.rmse[i,12]<-sqrt((tru.est[i,2]-exp.est[i,23])^2)
 ##calculate upper and lower 95% CI's
-## b0.lower<-output.BayesZExponential$CI[1,1]
-## b0.upper<-output.BayesZExponential$CI[1,5]
-## b1.lower<-output.BayesZExponential$CI[2,1]
-## b1.upper<-output.BayesZExponential$CI[2,5]
-## g0.lower<-output.BayesZExponential$CI[3,1]
-## g0.upper<-output.BayesZExponential$CI[3,5]
-## g1.lower<-output.BayesZExponential$CI[4,1]
-## g1.upper<-output.BayesZExponential$CI[4,5]
-## g2.lower<-output.BayesZExponential$CI[5,1]
-## g2.upper<-output.BayesZExponential$CI[5,5]
-b0.lower<-exp.est[i,15]-(1.959964*exp.est[i,16])
-b0.upper<-exp.est[i,15]+(1.959964*exp.est[i,16])
-b1.lower<-exp.est[i,17]-(1.959964*exp.est[i,18])
-b1.upper<-exp.est[i,17]+(1.959964*exp.est[i,18])
-g0.lower<-exp.est[i,19]-(1.959964*exp.est[i,20])
-g0.upper<-exp.est[i,19]+(1.959964*exp.est[i,20])
-g1.lower<-exp.est[i,21]-(1.959964*exp.est[i,22])
-g1.upper<-exp.est[i,21]+(1.959964*exp.est[i,22])
-g2.lower<-exp.est[i,23]-(1.959964*exp.est[i,24])
-g2.upper<-exp.est[i,23]+(1.959964*exp.est[i,24])
+b0.lower<-output.BayesZExponential$CI[1,1]
+b0.upper<-output.BayesZExponential$CI[1,5]
+b1.lower<-output.BayesZExponential$CI[2,1]
+b1.upper<-output.BayesZExponential$CI[2,5]
+g0.lower<-output.BayesZExponential$CI[3,1]
+g0.upper<-output.BayesZExponential$CI[3,5]
+g1.lower<-output.BayesZExponential$CI[4,1]
+g1.upper<-output.BayesZExponential$CI[4,5]
+g2.lower<-output.BayesZExponential$CI[5,1]
+g2.upper<-output.BayesZExponential$CI[5,5]
+#b0.lower<-exp.est[i,15]-(1.959964*exp.est[i,16])
+#b0.upper<-exp.est[i,15]+(1.959964*exp.est[i,16])
+#b1.lower<-exp.est[i,17]-(1.959964*exp.est[i,18])
+#b1.upper<-exp.est[i,17]+(1.959964*exp.est[i,18])
+#g0.lower<-exp.est[i,19]-(1.959964*exp.est[i,20])
+#g0.upper<-exp.est[i,19]+(1.959964*exp.est[i,20])
+#g1.lower<-exp.est[i,21]-(1.959964*exp.est[i,22])
+#g1.upper<-exp.est[i,21]+(1.959964*exp.est[i,22])
+#g2.lower<-exp.est[i,23]-(1.959964*exp.est[i,24])
+#g2.upper<-exp.est[i,23]+(1.959964*exp.est[i,24])
 
 
 #store coverage parameters
@@ -542,8 +543,8 @@ Z<-cbind(1,z,x)
 BayesZWeibull = mcmcOF2(Y, C, X, Z, N = 400, burn = 100, thin = 1,  w = c(1, 1, 1), m = 10, form = "Weibull")
 output.BayesZWeibull = list(par = c(summary(mcmc(BayesZWeibull$beta))[[1]][,1], summary(mcmc(BayesZWeibull$gamma))[[1]][,1], 
                                     summary(mcmc(BayesZWeibull$lambda))[[1]][1]), 
-                            se = c(summary(mcmc(BayesZWeibull$beta))[[1]][,2], summary(mcmc(BayesZWeibull$gamma))[[1]][,2], 
-                                   summary(mcmc(BayesZWeibull$lambda))[[1]][2]),
+                            se = c(summary(mcmc(BayesZWeibull$beta))[[1]][,4], summary(mcmc(BayesZWeibull$gamma))[[1]][,4], 
+                                   summary(mcmc(BayesZWeibull$lambda))[[1]][4]),
                             CI = rbind(summary(mcmc(BayesZWeibull$beta))[[2]], summary(mcmc(BayesZWeibull$gamma))[[2]], 
                                        summary(mcmc(BayesZWeibull$lambda))[[2]]))
 weib.est[i,19]<-output.BayesZWeibull$par[1]
@@ -568,30 +569,30 @@ weib.rmse[i,14]<-sqrt((tru.est[i,2]-weib.est[i,27])^2)
 weib.rmse[i,15]<-sqrt((tru.est[i,6]-weib.est[i,29])^2)
 
 #calculate upper and lower 95% CI's
-# b0.lower<-output.BayesZWeibull$CI[1,1]
-# b0.upper<-output.BayesZWeibull$CI[1,5]
-# b1.lower<-output.BayesZWeibull$CI[2,1]
-# b1.upper<-output.BayesZWeibull$CI[2,5]
-# g0.lower<-output.BayesZWeibull$CI[3,1]
-# g0.upper<-output.BayesZWeibull$CI[3,5]
-# g1.lower<-output.BayesZWeibull$CI[4,1]
-# g1.upper<-output.BayesZWeibull$CI[4,5]
-# g2.lower<-output.BayesZWeibull$CI[5,1]
-# g2.upper<-output.BayesZWeibull$CI[5,5]
-# p.lower<-output.BayesZWeibull$CI[6,1]
-# p.upper<-output.BayesZWeibull$CI[6,2]
-g0.lower<-weib.est[i,19]-(1.959964*weib.est[i,20])
-g0.upper<-weib.est[i,19]+(1.959964*weib.est[i,20])
-g1.lower<-weib.est[i,21]-(1.959964*weib.est[i,22])
-g1.upper<-weib.est[i,21]+(1.959964*weib.est[i,22])
-g2.lower<-weib.est[i,23]-(1.959964*weib.est[i,24])
-g2.upper<-weib.est[i,23]+(1.959964*weib.est[i,24])
-b0.lower<-weib.est[i,25]-(1.959964*weib.est[i,26])
-b0.upper<-weib.est[i,25]+(1.959964*weib.est[i,26])
-b1.lower<-weib.est[i,27]-(1.959964*weib.est[i,28])
-b1.upper<-weib.est[i,27]+(1.959964*weib.est[i,28])
-p.lower<-weib.est[i,29]-(1.959964*weib.est[i,30])
-p.upper<-weib.est[i,29]+(1.959964*weib.est[i,30])
+b0.lower<-output.BayesZWeibull$CI[1,1]
+b0.upper<-output.BayesZWeibull$CI[1,5]
+b1.lower<-output.BayesZWeibull$CI[2,1]
+b1.upper<-output.BayesZWeibull$CI[2,5]
+g0.lower<-output.BayesZWeibull$CI[3,1]
+g0.upper<-output.BayesZWeibull$CI[3,5]
+g1.lower<-output.BayesZWeibull$CI[4,1]
+g1.upper<-output.BayesZWeibull$CI[4,5]
+g2.lower<-output.BayesZWeibull$CI[5,1]
+g2.upper<-output.BayesZWeibull$CI[5,5]
+p.lower<-output.BayesZWeibull$CI[6,1]
+p.upper<-output.BayesZWeibull$CI[6,2]
+# g0.lower<-weib.est[i,19]-(1.959964*weib.est[i,20])
+# g0.upper<-weib.est[i,19]+(1.959964*weib.est[i,20])
+# g1.lower<-weib.est[i,21]-(1.959964*weib.est[i,22])
+# g1.upper<-weib.est[i,21]+(1.959964*weib.est[i,22])
+# g2.lower<-weib.est[i,23]-(1.959964*weib.est[i,24])
+# g2.upper<-weib.est[i,23]+(1.959964*weib.est[i,24])
+# b0.lower<-weib.est[i,25]-(1.959964*weib.est[i,26])
+# b0.upper<-weib.est[i,25]+(1.959964*weib.est[i,26])
+# b1.lower<-weib.est[i,27]-(1.959964*weib.est[i,28])
+# b1.upper<-weib.est[i,27]+(1.959964*weib.est[i,28])
+# p.lower<-weib.est[i,29]-(1.959964*weib.est[i,30])
+# p.upper<-weib.est[i,29]+(1.959964*weib.est[i,30])
 
 #store coverage parameters
 weib.cp[i,10]<-ifelse(tru.est[i,3]>g0.lower & tru.est[i,3]<g0.upper, 1,0)
@@ -607,7 +608,7 @@ main.data[i, ]<-c(tru.est[i, ],cox.est[i, ],exp.est[i, ],weib.est[i, ],cox.rmse[
 
 }
 #save dataset
-main.data1000_10<-as.data.frame(main.data)
-write.dta(main.data1000_10,"main.data1000_10.dta", )
+main.data2000<-as.data.frame(main.data)
+write.dta(main.data2000,"main.data2000.dta", )
 
 #the end

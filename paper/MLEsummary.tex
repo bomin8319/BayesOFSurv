@@ -29,35 +29,70 @@
 \begin{document}
 	\begin{landscape}
 	\begin{table}[h]
-\caption{Comparison of Monte Carlo Simulation Maximum Likelihood Estimates (BFGS): for each number of observations, we used 1,000 number of simulations and the true parameter values are $\beta_0= 1$, $\beta_1 = 3.5$, $\gamma_0 = -2$, $\gamma_1 = 2$ and $\gamma_2 = 3$.} % title name of the table
+\caption{Comparison of Monte Carlo Simulation Maximum Likelihood Estimates (BFGS) and Markov Chain Monte Carlo Estimates (MCMC) : for each number of observations, we used 1,000 number of simulations and the true parameter values are $\beta_0= 1$, $\beta_1 = 3.5$, $\gamma_0 = -2$, $\gamma_1 = 2$ and $\gamma_2 = 3$.} % title name of the table
 \centering
-\scalebox{0.75}{
-\begin{tabular}{l| c |cccc|cccc|cccc|cccc|cccc} \hline\hline
+\scalebox{0.85}{
+\begin{tabular}{l| c |ccccc|ccccc} \hline\hline
 % centering table
 % creating 10 columns
 % inserting double-line 
-\#Obs. & Model &$\hat\beta_0$ & SE($\hat\beta_0$)&RMSE($\hat\beta_0$) &CP($\hat\beta_0$)&$\hat\beta_1$ & SE($\hat\beta_1$)&RMSE($\hat\beta_1$) &CP($\hat\beta_1$)&  $\hat\gamma_0$ &  SE($\hat\gamma_0$)&RMSE($\hat\gamma_0$) &CP($\hat\gamma_0$)& $\hat\gamma_1$ & SE($\hat\gamma_1$)&RMSE($\hat\gamma_1$) &CP($\hat\gamma_1$)& $\hat\gamma_2$& SE($\hat\gamma_2$)&RMSE($\hat\gamma_2$) &CP($\hat\gamma_2$)
+\#Obs. & Model &$\hat\beta_0$ & SE($\hat\beta_0$)& MCSE($\hat\beta_0$)&RMSE($\hat\beta_0$) &CP($\hat\beta_0$)&$\hat\beta_1$ & SE($\hat\beta_1$)&MCSE($\hat\beta_1$)&RMSE($\hat\beta_1$) &CP($\hat\beta_1$)
 \\ [0.5ex]
 \hline % inserts single-line
 % Entering 1st row
- &Exp&1.238&0.061& 0.238 & 0.035&3.468&0.009&0.032&0.089&&&&&&&&&&&&\\
- {1,000} &Wei& 1.311 & 0.072 &0.311&0.007& 3.467 & 0.011&0.033&0.116 &&&&&&&&&&&&\\
-   &OF-Exp&1.006&0.067&0.053&0.944&3.499&0.010&0.008&0.938&-1.710&1.230&0.970&0.960&2.144 & 0.496 &0.412&0.962& 3.452& 0.724&0.640&0.971\\
-&OF-Wei& 1.006 & 0.067 &0.054&0.950& 3.499 & 0.010 &0.008&0.942& -1.708 & 1.227 &0.969&0.958& 2.135 & 0.494&0.416&0.956 & 3.435 & 0.721&0.649&0.964\\\hline
+ &Exp&1.238&0.061&& 0.239 & 0.036&3.468&0.009&&0.032&0.083\\
+&Wei& 1.311 & 0.072& &0.311&0.009& 3.467 & 0.011&&0.034&0.100 \\
+  {1,000}  &OF-Exp&1.008&0.067&&0.053&0.944&3.499&0.010&&0.008&0.946\\
+ &OF-Wei& 1.007 & 0.067 &&0.054&0.947& 3.499 & 0.010 &&0.008&0.942\\
+ &B-OF-Exp&1.006&&4.80e-04&3.006&0.285&3.499&&6.52e-05&1.499&0.273\\
+ &B-OF-Wei& 0.008& &4.80e-04&2.008&0.392& 3.499 & &6.85e-05&1.499&0.247\\\hline
 % Entering 2nd row 
-&Exp&1.243&0.049&0.243&0.002&3.467&0.008&0.034&0.011&&&&&&&&&&&&\\
- {1,500} & Wei&1.321 & 0.059 &0.321&0.000& 3.465& 0.009&0.035&0.012 &&&&&&&&&&&&\\
- &OF-Exp&1.003&0.054&0.044&0.944&3.500&0.008&0.006&0.951&-1.475&0.977&0.799&0.936&2.047& 0.382 &0.296&0.958& 3.385& 0.572&0.522&0.968\\
-&OF-Wei&1.004 & 0.055 &0.044 & 0.948& 3.500 & 0.008&0.006&0.949& -1.476 &  0.975 &0.797&0.936& 2.040 & 0.381 &0.297&0.957& 3.369 & 0.569&0.525&0.962\\\hline
+&Exp&1.243&0.049&&0.244&0.002&3.467&0.008&&0.033&0.018\\
+& Wei&1.321 & 0.059&&0.321&0.000& 3.465& 0.009&&0.035&0.023 \\
+ {1,500}  &OF-Exp&1.006&0.054&&0.043&0.944&3.500&0.008&&0.006&0.945\\
+&OF-Wei&1.006 & 0.054&&0.043 & 0.947& 3.500 & 0.008&&0.006&0.949\\
+&B-OF-Exp&1.005&&2.96e-04&3.005&0.188&3.500&&4.24e-05&1.500&0.236\\
+&B-OF-Wei& 0.006 & &3.02e-04&2.006&0.326& 3.500& &4.38e-05&1.500&0.242\\\hline
+\hline
 % Entering 3rd row 
-&Exp&1.224&0.043&0.224&0.004&3.470&0.007&0.030&0.007&&&&&&&&&&&&\\
- {2,000} & Wei &1.290 & 0.050&0.290&0.000& 3.469 & 0.008&0.031&0.008 &&&&&&&&&&&&\\
-&OF-Exp&1.006&0.047&0.038&0.951&3.499&0.007&0.005&0.958&-1.576&0.914&0.764& 0.931&2.067& 0.363&0.289&0.953 & 3.360& 0.517&0.463&0.963\\
- &OF-Wei& 1.006 & 0.048&0.038& 0.955& 3.499 & 0.007&0.005&0.959& -1.573 & 0.914 &0.764&0.932& 2.065& 0.363 &0.288&0.955& 3.359 & 0.517&0.460&0.962\\\hline
+&Exp&1.224&0.043&&0.227&0.002&3.470&0.007&&0.031&0.007\\
+ & Wei &1.290 & 0.050&&0.293&0.000& 3.469 & 0.008&&0.032&0.011\\
+ {2,000}&OF-Exp&1.009&0.048&&0.038&0.945&3.499&0.007&&0.005&0.944\\
+ &OF-Wei& 1.006 & 0.048&&0.038& 0.943& 3.499 & 0.007&&0.005&0.959\\
+ &B-OF-Exp&1.008&&2.46e-04&3.008&0.201&3.499&&3.37e-05&1.499&0.271\\
+ &B-OF-Wei& 0.008 & &2.43e-04&2.008&0.311& 3.499 & &3.53e-05&1.499&0.260\\\hline
+ \hline
 % [1ex] adds vertical space
-\hline % inserts single-line 
-\end{tabular}}
-\label{tab:MonteCarlo}
-\end{table}
+ % inserts single-line 
+\end{tabular}}\\
+\vspace*{0.5 cm}
+		\scalebox{0.85}{
+			\begin{tabular}{l| c |ccccc|ccccc|ccccc} \hline\hline
+				% centering table
+				% creating 10 columns
+				% inserting double-line 
+				\#Obs. & Model &$\hat\gamma_0$ &  SE($\hat\gamma_0$)&MCSE($\hat\gamma_0$)&RMSE($\hat\gamma_0$) &CP($\hat\gamma_0$)& $\hat\gamma_1$ & SE($\hat\gamma_1$)&MCSE($\hat\gamma_1$)&RMSE($\hat\gamma_1$) &CP($\hat\gamma_1$)& $\hat\gamma_2$& SE($\hat\gamma_2$)&MCSE($\hat\gamma_2$)&RMSE($\hat\gamma_2$) &CP($\hat\gamma_2$)
+				\\ [0.5ex]
+				\hline % inserts single-line
+				% Entering 1st row
+				&OF-Exp&-1.781&1.233&&0.933&0.967&2.166& 0.501& &0.410&0.954& 3.450& 0.726&&0.642&0.963\\
+					{1,000} &OF-Wei& -1.778 & 1.230 &&0.931&0.967& 2.159& 0.500&&0.414&0.953 & 3.438 & 0.723&&0.649&0.962\\
+					&B-OF-Exp&-1.286&&0.083&4.286&0.335&1.855& &0.044&0.856&0.072& 3.077& &0.051&0.624&0.061\\
+					&B-OF-Wei&-2.150& &0.088&5.150&0.329&1.843& &0.045&0.844&0& 3.123& &0.050&0.604&0.065\\\hline
+				% Entering 2nd row 
+				&OF-Exp&-1.457&0.980&&0.835&0.941&2.050& 0.383 &&0.314&0.949& 3.406& 0.578&&0.541&0.953\\
+				1,500&OF-Wei& -1.458&  0.978&&0.834&0.940& 2.040 & 0.381& &0.315&0.945& 3.389 & 0.574&&0.539&0.948\\
+				&B-OF-Exp&-1.166&&0.057&4.166&0.291&1.864 & &0.029&0.864&0.046& 3.163& &0.036&0.507&0.050\\
+				&B-OF-Wei&-2.069& &0.060&5.069&0.262&1.858 &  &0.030&0.858&0& 3.202& & 0.037&0.489&0.058\\\hline
+				% Entering 3rd row 
+				&OF-Exp&-1.554&0.917&&0.792& 0.938&2.066& 0.363&&0.292&0.959 & 3.374& 0.517&&0.481&0.948\\
+				2,000&OF-Wei& -1.550& 0.917 &&0.793&0.937& 2.065& 0.363& &0.293&0.958& 3.378 & 0.518&&0.481&0.951\\
+				&B-OF-Exp&-1.256&&0.070&4.256&0.280&1.890 & &0.038&0.890&0.054& 3.165& &0.042&0.475&0.040\\
+				&B-OF-Wei&-2.180& &0.074&5.180&0.272&1.885& &0.041&0.885&0& 3.197& &0.046&0.466&0.036\\\hline
+				% [1ex] adds vertical space
+				\hline % inserts single-line 
+			\end{tabular}}
+			\label{tab:MonteCarlo}
+		\end{table}
 \end{landscape}
 \end{document}
