@@ -44,10 +44,10 @@ setwd("/Users/bomin8319/Desktop/BayesOFsurv/coding material/Monte Carlos/Mixture
 set.seed(3)   
 
 #set the number of observations
-n<-2000
+n<-1000
 
 #set the number of simulations, and create matrices to store the results
-nsims<-1000
+nsims<-10
 
 
 #history matrix for true estimates
@@ -480,7 +480,7 @@ Y<-ycen
 C<-di
 X<-cbind(1,x)
 Z<-cbind(1,z,x)
-BayesZExponential = mcmcOF2(Y, C, X, Z, N = 400, burn = 100, thin = 1,  w = c(1, 1, 1), m = 10, form = "Exponential")
+BayesZExponential = mcmcOF2(Y, C, X, Z, N = 400, burn = 100, thin = 1,  w = c(5, 5, 5), m = 100, form = "Exponential")
 output.BayesZExponential = list(par = c(summary(mcmc(BayesZExponential$beta))[[1]][,1], summary(mcmc(BayesZExponential$gamma))[[1]][,1]), 
                                 se = c(summary(mcmc(BayesZExponential$beta))[[1]][,4], summary(mcmc(BayesZExponential$gamma))[[1]][,4]),
                                 CI = rbind(summary(mcmc(BayesZExponential$beta))[[2]], summary(mcmc(BayesZExponential$gamma))[[2]]))
@@ -540,7 +540,7 @@ Y<-ycen
 C<-di
 X<-cbind(1,x)
 Z<-cbind(1,z,x)
-BayesZWeibull = mcmcOF2(Y, C, X, Z, N = 400, burn = 100, thin = 1,  w = c(1, 1, 1), m = 10, form = "Weibull")
+BayesZWeibull = mcmcOF2(Y, C, X, Z, N = 400, burn = 100, thin = 1,  w = c(5, 5, 5), m = 100, form = "Weibull")
 output.BayesZWeibull = list(par = c(summary(mcmc(BayesZWeibull$beta))[[1]][,1], summary(mcmc(BayesZWeibull$gamma))[[1]][,1], 
                                     summary(mcmc(BayesZWeibull$lambda))[[1]][1]), 
                             se = c(summary(mcmc(BayesZWeibull$beta))[[1]][,4], summary(mcmc(BayesZWeibull$gamma))[[1]][,4], 
