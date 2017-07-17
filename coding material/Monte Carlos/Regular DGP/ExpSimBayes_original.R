@@ -43,7 +43,7 @@ setwd("/Users/bomin8319/Desktop/BayesOFsurv/coding material/Monte Carlos/Regular
 set.seed(3)   
 
 #set the number of observations
-n<-1500
+n<-1000
 
 #set the number of simulations, and create matrices to store the results
 nsims<-1000
@@ -483,11 +483,11 @@ exp.est[i,23]<-output.BayesZExponential$par[5]
 exp.est[i,24]<-output.BayesZExponential$se[5]
 
 #store rmse
-exp.rmse[i,8]<-sqrt((tru.est[i,3]-exp.est[i,15])^2)
-exp.rmse[i,9]<-sqrt((tru.est[i,4]-exp.est[i,17])^2)
-exp.rmse[i,10]<-sqrt((tru.est[i,5]-exp.est[i,19])^2)
-exp.rmse[i,11]<-sqrt((tru.est[i,1]-exp.est[i,21])^2)
-exp.rmse[i,12]<-sqrt((tru.est[i,2]-exp.est[i,23])^2)
+exp.rmse[i,8]<-sqrt((tru.est[i,1]-exp.est[i,15])^2)
+exp.rmse[i,9]<-sqrt((tru.est[i,2]-exp.est[i,17])^2)
+exp.rmse[i,10]<-sqrt((tru.est[i,3]-exp.est[i,19])^2)
+exp.rmse[i,11]<-sqrt((tru.est[i,4]-exp.est[i,21])^2)
+exp.rmse[i,12]<-sqrt((tru.est[i,5]-exp.est[i,23])^2)
 
 #calculate upper and lower 95% CI's
 # b0.lower<-output.BayesZExponential$CI[1,1]
@@ -550,11 +550,11 @@ weib.est[i,29]<-output.BayesZWeibull$par[6]
 weib.est[i,30]<-output.BayesZWeibull$se[6]
 
 #store rmse
-weib.rmse[i,10]<-sqrt((tru.est[i,3]-weib.est[i,19])^2)
-weib.rmse[i,11]<-sqrt((tru.est[i,4]-weib.est[i,21])^2)
-weib.rmse[i,12]<-sqrt((tru.est[i,5]-weib.est[i,23])^2)
-weib.rmse[i,13]<-sqrt((tru.est[i,1]-weib.est[i,25])^2)
-weib.rmse[i,14]<-sqrt((tru.est[i,2]-weib.est[i,27])^2)
+weib.rmse[i,10]<-sqrt((tru.est[i,1]-weib.est[i,19])^2)
+weib.rmse[i,11]<-sqrt((tru.est[i,2]-weib.est[i,21])^2)
+weib.rmse[i,12]<-sqrt((tru.est[i,3]-weib.est[i,23])^2)
+weib.rmse[i,13]<-sqrt((tru.est[i,4]-weib.est[i,25])^2)
+weib.rmse[i,14]<-sqrt((tru.est[i,5]-weib.est[i,27])^2)
 weib.rmse[i,15]<-sqrt((tru.est[i,6]-weib.est[i,29])^2)
 
 #calculate upper and lower 95% CI's
@@ -599,7 +599,7 @@ main.data[i, ]<-c(tru.est[i, ],cox.est[i, ],exp.est[i, ],weib.est[i, ],cox.rmse[
 }
 
 #save dataset
-main.data1500_2<-as.data.frame(main.data)
-write.dta(main.data1500_2,"main.data1500_2.dta", )
+main.data1000_2<-as.data.frame(main.data)
+write.dta(main.data1000_2,"main.data1000_2.dta", )
 
 #the end
