@@ -253,7 +253,7 @@ par(new=FALSE)
 
 Results<-read.dta("/Users/bomin8319/Desktop/BayesOFsurv/coding material/Monte Carlos/Mixture DGP/main.data1500.dta")
 Results<-as.matrix(Results, )
-
+Results <- Results[-82,]
 resize.win <- function(Width=6, Height=6)
 {
         # works for windows
@@ -271,8 +271,8 @@ par(mar=c(5.1,4.1,2.1,2.1))
 #sets the bottom, left, top and right 
 
 #B0
-local.xlim<-c(-0.4,1.6)
-local.ylim<-c(0,18)
+local.xlim<-c(-0.8,1.6)
+local.ylim<-c(0,8)
 plot(density(Results[,11],na.rm=TRUE), main = "",  ylab = "", xlab = "", xlim=local.xlim, ylim=local.ylim,col="blue", xaxt='n', yaxt='n')
 abline(v=1,lty=3)
 par(new=TRUE)
@@ -285,12 +285,12 @@ par(new=TRUE)
 plot(density(Results[,53],na.rm=TRUE), main = "",  ylab = "", xlab = "",xlim=local.xlim, ylim=local.ylim,col="orange", xaxt='n', yaxt='n')
 par(new=TRUE)
 plot(density(Results[,35],na.rm=TRUE), main = "", xlab = "Beta 0",xlim=local.xlim, ylim=local.ylim,col="purple")
-text (x=.7, y =6.4, "BFGS.MF.Exp",col="red")
-text (x=.7, y =6, "BFGS.MF.Wei",col="forestgreen")
+text (x=.5, y =6.4, "BFGS.MF.Exp",col="red")
+text (x=.5, y =6, "BFGS.MF.Wei",col="forestgreen")
 text (x=1.5, y =6.75, "Exp",col="blue")
 text (x=1.5, y =6.25, "Wei",col="purple")
-text (x=0.7, y =5.5, "Bayes.MF.Exp",col="pink")
-text (x=-0.25, y =6.25, "Bayes.MF.Wei",col="orange")
+text (x=0.5, y =5.5, "Bayes.MF.Exp",col="pink")
+text (x=-0.5, y =6.25, "Bayes.MF.Wei",col="orange")
 par(new=FALSE)
  
 
@@ -361,9 +361,9 @@ par(new=TRUE)
 plot(density(Results[,43],na.rm=TRUE), main = "", xlab = "",xlim=local.xlim, ylim=local.ylim,col="purple")
 par(new=TRUE)
 plot(density(Results[,59],na.rm=TRUE), main = "", xlab = "",xlim=local.xlim, ylim=local.ylim,col="orange")
-text (x=2.75, y =.86, "BFGS.MF.Exp",col="red")
+text (x=3, y =.86, "BFGS.MF.Exp",col="red")
 text (x=1, y =.86, "Bayes.MF.Exp",col="pink")
-text (x=2.75, y =.80, "BFGS.MF.Wei",col="purple")
+text (x=3, y =.80, "BFGS.MF.Wei",col="purple")
 text (x=1, y =.92, "Bayes.MF.Wei",col="orange")
 par(new=FALSE)
 
@@ -378,10 +378,10 @@ par(new=TRUE)
 plot(density(Results[,45],na.rm=TRUE), main = "", xlab = "",xlim=local.xlim, ylim=local.ylim,col="purple")
 par(new=TRUE)
 plot(density(Results[,61],na.rm=TRUE), main = "", xlab = "",xlim=local.xlim, ylim=local.ylim,col="orange")
-text (x=4.4, y =.6, "BFGS.MF.Exp",col="red")
-text (x=4.4, y =.65, "Bayes.MF.Exp",col="pink")
-text (x=4.4, y =.55, "BFGS.MF.Wei",col="purple")
-text (x=4.4, y =.70, "Bayes.MF.Wei",col="orange")
+text (x=4.8, y =.6, "BFGS.MF.Exp",col="red")
+text (x=4.8, y =.65, "Bayes.MF.Exp",col="pink")
+text (x=4.8, y =.55, "BFGS.MF.Wei",col="purple")
+text (x=4.8, y =.70, "Bayes.MF.Wei",col="orange")
 par(new=FALSE)
 
 
@@ -477,7 +477,7 @@ par(new=FALSE)
 
 Results<-read.dta("/Users/bomin8319/Desktop/BayesOFsurv/coding material/Monte Carlos/Mixture DGP/main.data2000.dta")
 Results<-as.matrix(Results, )
-
+Results <- Results[-c(36, 969),]
 resize.win <- function(Width=6, Height=6)
 {
         # works for windows
@@ -495,7 +495,7 @@ par(mar=c(5.1,4.1,2.1,2.1))
 #sets the bottom, left, top and right 
 
 #B0
-local.xlim<-c(-0.45,1.6)
+local.xlim<-c(-0.8,1.6)
 local.ylim<-c(0,9.5)
 plot(density(Results[,11],na.rm=TRUE), main = "",  ylab = "", xlab = "", xlim=local.xlim, ylim=local.ylim,col="blue", xaxt='n', yaxt='n')
 abline(v=1,lty=3)
@@ -509,12 +509,12 @@ par(new=TRUE)
 plot(density(Results[,53],na.rm=TRUE), main = "",  ylab = "", xlab = "",xlim=local.xlim, ylim=local.ylim,col="orange", xaxt='n', yaxt='n')
 par(new=TRUE)
 plot(density(Results[,35],na.rm=TRUE), main = "", xlab = "Beta 0",xlim=local.xlim, ylim=local.ylim,col="purple")
-text (x=.7, y =6.4, "BFGS.MF.Exp",col="red")
-text (x=.7, y =6, "BFGS.MF.Wei",col="forestgreen")
+text (x=.5, y =6.4, "BFGS.MF.Exp",col="red")
+text (x=.5, y =6, "BFGS.MF.Wei",col="forestgreen")
 text (x=1.5, y =6.75, "Exp",col="blue")
 text (x=1.5, y =6.25, "Wei",col="purple")
-text (x=0.7, y =5.5, "Bayes.MF.Exp",col="pink")
-text (x=-0.25, y =6.25, "Bayes.MF.Wei",col="orange")
+text (x=0.5, y =5.5, "Bayes.MF.Exp",col="pink")
+text (x=-0.5, y =6.25, "Bayes.MF.Wei",col="orange")
 par(new=FALSE)
  
 
@@ -543,7 +543,7 @@ text (x=3.55, y =42, "Bayes.MF.Wei",col="orange")
 par(new=FALSE)
 
 #B1
-local.ylim<-c(0,25)
+local.ylim<-c(0,28)
 local.xlim<-c(0.75,1.2)
 plot(density(Results[,39],na.rm=TRUE), main = "",  ylab = "", xlab = "",xlim=local.xlim, ylim=local.ylim,col="forestgreen", xaxt='n', yaxt='n')
 abline(v=1,lty=3)
@@ -585,9 +585,9 @@ par(new=TRUE)
 plot(density(Results[,43],na.rm=TRUE), main = "", xlab = "",xlim=local.xlim, ylim=local.ylim,col="purple")
 par(new=TRUE)
 plot(density(Results[,59],na.rm=TRUE), main = "", xlab = "",xlim=local.xlim, ylim=local.ylim,col="orange")
-text (x=2.75, y =.9, "BFGS.MF.Exp",col="red")
+text (x=3, y =.9, "BFGS.MF.Exp",col="red")
 text (x=1, y =.82, "Bayes.MF.Exp",col="pink")
-text (x=2.75, y =.80, "BFGS.MF.Wei",col="purple")
+text (x=3, y =.80, "BFGS.MF.Wei",col="purple")
 text (x=1, y =.92, "Bayes.MF.Wei",col="orange")
 par(new=FALSE)
 
@@ -602,10 +602,10 @@ par(new=TRUE)
 plot(density(Results[,45],na.rm=TRUE), main = "", xlab = "",xlim=local.xlim, ylim=local.ylim,col="purple")
 par(new=TRUE)
 plot(density(Results[,61],na.rm=TRUE), main = "", xlab = "",xlim=local.xlim, ylim=local.ylim,col="orange")
-text (x=4.4, y =.6, "BFGS.MF.Exp",col="red")
-text (x=4.4, y =.65, "Bayes.MF.Exp",col="pink")
-text (x=4.4, y =.55, "BFGS.MF.Wei",col="purple")
-text (x=4.4, y =.70, "Bayes.MF.Wei",col="orange")
+text (x=4.8, y =.6, "BFGS.MF.Exp",col="red")
+text (x=4.8, y =.65, "Bayes.MF.Exp",col="pink")
+text (x=4.8, y =.55, "BFGS.MF.Wei",col="purple")
+text (x=4.8, y =.70, "Bayes.MF.Wei",col="orange")
 par(new=FALSE)
 
 

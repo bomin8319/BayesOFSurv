@@ -41,10 +41,10 @@ setwd("/Users/bomin8319/Desktop/BayesOFsurv/coding material/Monte Carlos/Mixture
 ##########################################################################
 
 #set seed
-set.seed(3)   
+set.seed(100)   
 
 #set the number of observations
-n<-1500
+n<-2000
 
 #set the number of simulations, and create matrices to store the results
 nsims<-1000
@@ -608,7 +608,7 @@ main.data[i, ]<-c(tru.est[i, ],cox.est[i, ],exp.est[i, ],weib.est[i, ],cox.rmse[
 
 }
 #save dataset
-main.data1500<-as.data.frame(main.data)
-write.dta(main.data1500,"main.data1500.dta", )
+main.data2000<-as.data.frame(main.data)
+write.dta(main.data2000,"main.data2000.dta", )
 
 #the end
