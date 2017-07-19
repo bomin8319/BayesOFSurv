@@ -43,7 +43,7 @@ setwd("/Users/bomin8319/Desktop/BayesOFsurv/coding material/Monte Carlos/Regular
 set.seed(3)   
 
 #set the number of observations
-n<-1000
+n<-2000
 
 #set the number of simulations, and create matrices to store the results
 nsims<-1000
@@ -599,7 +599,7 @@ main.data[i, ]<-c(tru.est[i, ],cox.est[i, ],exp.est[i, ],weib.est[i, ],cox.rmse[
 }
 
 #save dataset
-main.data1000_2<-as.data.frame(main.data)
-write.dta(main.data1000_2,"main.data1000_2.dta", )
+main.data2000_2<-as.data.frame(main.data)
+write.dta(main.data2000_2,"main.data2000_2.dta", )
 
 #the end

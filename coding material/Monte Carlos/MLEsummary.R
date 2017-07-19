@@ -18,3 +18,12 @@ Results2000<-read.dta("/Users/bomin8319/Desktop/BayesOFsurv/coding material/Mont
 summary = rbind(colMeans(Results1000), colMeans(Results1500), colMeans(Results2000))
 summary = summary[,c(11:114)]
 rownames(summary)= c("1000", "1500", "2000")
+
+
+Results1000<-read.dta("/Users/bomin8319/Desktop/BayesOFsurv/coding material/Monte Carlos/Regular DGP/main.data1000_2.dta")
+Results1500<-read.dta("/Users/bomin8319/Desktop/BayesOFsurv/coding material/Monte Carlos/Regular DGP/main.data1500_2.dta")
+Results2000<-read.dta("/Users/bomin8319/Desktop/BayesOFsurv/coding material/Monte Carlos/Regular DGP/main.data2000_2.dta")
+
+summary = rbind(colMeans(Results1000), colMeans(Results1500), colMeans(Results2000))
+summary = summary[,c(11:114)]
+rownames(summary)= c("1000", "1500", "2000")
