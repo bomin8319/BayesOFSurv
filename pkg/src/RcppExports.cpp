@@ -8,7 +8,7 @@ using namespace Rcpp;
 
 // llikWeibull
 double llikWeibull(arma::vec Y, arma::vec eXB, arma::vec alpha, arma::vec C, double lambda);
-RcppExport SEXP BayesOFsurv_llikWeibull(SEXP YSEXP, SEXP eXBSEXP, SEXP alphaSEXP, SEXP CSEXP, SEXP lambdaSEXP) {
+RcppExport SEXP _BayesOFsurv_llikWeibull(SEXP YSEXP, SEXP eXBSEXP, SEXP alphaSEXP, SEXP CSEXP, SEXP lambdaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -23,7 +23,7 @@ END_RCPP
 }
 // llikWeibull2
 double llikWeibull2(arma::vec Y, arma::vec eXB, arma::vec alpha, arma::vec C, double lambda);
-RcppExport SEXP BayesOFsurv_llikWeibull2(SEXP YSEXP, SEXP eXBSEXP, SEXP alphaSEXP, SEXP CSEXP, SEXP lambdaSEXP) {
+RcppExport SEXP _BayesOFsurv_llikWeibull2(SEXP YSEXP, SEXP eXBSEXP, SEXP alphaSEXP, SEXP CSEXP, SEXP lambdaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -38,8 +38,8 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"BayesOFsurv_llikWeibull", (DL_FUNC) &BayesOFsurv_llikWeibull, 5},
-    {"BayesOFsurv_llikWeibull2", (DL_FUNC) &BayesOFsurv_llikWeibull2, 5},
+    {"_BayesOFsurv_llikWeibull", (DL_FUNC) &_BayesOFsurv_llikWeibull, 5},
+    {"_BayesOFsurv_llikWeibull2", (DL_FUNC) &_BayesOFsurv_llikWeibull2, 5},
     {NULL, NULL, 0}
 };
 

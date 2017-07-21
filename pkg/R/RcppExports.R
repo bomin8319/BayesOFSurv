@@ -2,10 +2,10 @@
 # Generator token: 10BE3573-1514-4C36-9D1C-5A225CD40393
 
 llikWeibull <- function(Y, eXB, alpha, C, lambda) {
-    .Call('BayesOFsurv_llikWeibull', PACKAGE = 'BayesOFsurv', Y, eXB, alpha, C, lambda)
+    .Call('_BayesOFsurv_llikWeibull', PACKAGE = 'BayesOFsurv', Y, eXB, alpha, C, lambda)
 }
 
 llikWeibull2 <- function(Y, eXB, alpha, C, lambda) {
-    .Call('BayesOFsurv_llikWeibull2', PACKAGE = 'BayesOFsurv', Y, eXB, alpha, C, lambda)
+    .Call('_BayesOFsurv_llikWeibull2', PACKAGE = 'BayesOFsurv', Y, eXB, alpha, C, lambda)
 }
 

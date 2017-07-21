@@ -9,6 +9,7 @@
 #' @importFrom mvtnorm rmvnorm dmvnorm
 NULL
 
+
 #' @title betas.slice.sampling2
 #' @description slice sampling for betas
 #'
