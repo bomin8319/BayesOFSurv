@@ -347,11 +347,11 @@ betas.post2 = function(betas.p, p, Sigma.b, Y, X, betas, alpha, C, lambda, form)
 #' @export
 gammas.post2 = function(gammas.p, p, Sigma.g, Y, eXB, Z, gammas, C, lambda, form) {
   gammas[p] = gammas.p
-  #if (form %in% "Weibull") {
-  #  alpha = 1 / (1 + exp(-Z %*% gammas - 1/lambda))
-  #} else {
+  if (form %in% "Weibull") {
+    alpha = 1 / (1 + exp(-Z %*% gammas - 1/lambda))
+  } else {
     alpha = 1 / (1 + exp(-Z %*% gammas))
-  #}
+  }
   lprior = dmvnorm(gammas, rep(0, length(gammas)), Sigma.g, log = TRUE)
   lpost = llikWeibull2(Y, eXB, alpha, C, lambda) + lprior
   return(lpost)
@@ -402,11 +402,11 @@ mcmcOF2 <- function(Y, C, X, Z, N, burn, thin, w = c(1, 1, 1), m = 10, form) {
   betas = rep(0, p1)
   gammas = rep(0, p2)
   lambda = 1
-  #if (form %in% "Weibull") {
-  #  alpha = 1 / (1 + exp(-Z %*% gammas - 1/lambda))
-  #} else {
+  if (form %in% "Weibull") {
+    alpha = 1 / (1 + exp(-Z %*% gammas - 1/lambda))
+  } else {
     alpha = 1 / (1 + exp(-Z %*% gammas))
-  #}
+  }
   Sigma.b = 10 * p1 * diag(p1)
   Sigma.g = 10 * p2 * diag(p2)
   betas.samp = matrix(NA, nrow = (N - burn) / thin, ncol = p1)
@@ -425,11 +425,11 @@ mcmcOF2 <- function(Y, C, X, Z, N, burn, thin, w = c(1, 1, 1), m = 10, form) {
       eXB = exp(X %*% betas)
     #}
     gammas = gammas.slice.sampling2(Sigma.g, Y, eXB, Z, gammas, C, lambda, w[2], m, form = form)
-    #if (form %in% "Weibull") {
-    #  alpha = 1 / (1 + exp(-Z %*% gammas - 1/lambda))
-    #} else {
+    if (form %in% "Weibull") {
+      alpha = 1 / (1 + exp(-Z %*% gammas - 1/lambda))
+    } else {
       alpha = 1 / (1 + exp(-Z %*% gammas))
-    #}
+    }
     if (form %in% "Weibull") {
       lambda = lambda.slice.sampling2(Y, eXB, alpha, C, lambda, w[3], m)
     } 
