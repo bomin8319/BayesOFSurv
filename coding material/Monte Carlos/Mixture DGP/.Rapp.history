@@ -3338,7 +3338,6 @@ try1
 document()
 setwd('/Users/bomin8319/Desktop/BayesOFsurv/pkg')
 document()
-document()
 install()
 library(BayesOFsurv)
 library(BayesOFsurv)#
