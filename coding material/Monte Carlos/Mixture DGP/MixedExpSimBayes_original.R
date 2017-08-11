@@ -150,57 +150,56 @@ data<-cbind(ycen,di,x,z)
 # #############################################################################
 
 
-# Exponential<- function(est,Y,C,X,data) {					      
-	# n=nrow(data)							      					  
-	# llik <- matrix(0, nrow=n, ncol = 1)
-	# beta<-est[1:length(est)]
-	# XB<-X%*%beta
-	# llik<-C*(XB-exp(XB)*Y)+(1-C)*(-exp(XB)*Y)
-	# llik<--1*sum(llik)
-	# return(llik)
+ Exponential<- function(est,Y,C,X,data) {					      
+	 n=nrow(data)							      					  
+	 llik <- matrix(0, nrow=n, ncol = 1)
+	 beta<-est[1:length(est)]
+	 XB<-X%*%beta
+	 llik<-C*(XB-exp(XB)*Y)+(1-C)*(-exp(XB)*Y)
+	 llik<--1*sum(llik)
+	 return(llik)
 	
-	# }
+	 }
 
 
 
-# #set starting parameters
-# est<-rbind(.01,.01)
+ #set starting parameters
+ est<-rbind(.01,.01)
 
-# #set data, Y and X
-# data<-data
-# Y<-ycen
-# C<-di
-# X<-cbind(1,x)
+ #set data, Y and X
+ data<-data
+ Y<-ycen
+ C<-di
+ X<-cbind(1,x)
 
+ #optimize
+ output.Exponential<-try(optim(f=Exponential,  p=est, X=X,Y=Y,C=C, method="BFGS", control=list(maxit=10000),  data=data, hessian=TRUE), TRUE)
 
-# #optimize
-# output.Exponential<-try(optim(f=Exponential,  p=est, X=X,Y=Y,C=C, method="BFGS", control=list(maxit=10000),  data=data, hessian=TRUE), TRUE)
+ if(class(output.Exponential)=="list"){
+	 ifelse(is.positive.definite(output.Exponential$hessian)==TRUE,vcv<-solve(output.Exponential$hessian),vcv<-matrix(data=NA,nrow=2,ncol=2))
 
-# if(class(output.Exponential)=="list"){
-	# ifelse(is.positive.definite(output.Exponential$hessian)==TRUE,vcv<-solve(output.Exponential$hessian),vcv<-matrix(data=NA,nrow=2,ncol=2))
+ #store betas and ses
+ exp.est[i,1]<-output.Exponential$par[1]
+ exp.est[i,2]<-sqrt(vcv[1,1])
+ exp.est[i,3]<-output.Exponential$par[2]
+ exp.est[i,4]<-sqrt(vcv[2,2])
 
-# #store betas and ses
-# exp.est[i,1]<-output.Exponential$par[1]
-# exp.est[i,2]<-sqrt(vcv[1,1])
-# exp.est[i,3]<-output.Exponential$par[2]
-# exp.est[i,4]<-sqrt(vcv[2,2])
+ #store rmse
+ exp.rmse[i,1]<-sqrt((tru.est[i,1]-exp.est[i,1])^2)#
+exp.rmse[i,2]<-sqrt((tru.est[i,2]-exp.est[i,3])^2)
 
-# #store rmse
-# exp.rmse[i,1]<-sqrt((tru.est[i,1]-exp.est[i,1])^2)
-# exp.rmse[i,2]<-sqrt((tru.est[i,2]-exp.est[i,3])^2)
-
-# #calculate upper and lower 95% CI's
-# b0.lower<-exp.est[i,1]-(1.959964*exp.est[i,2])
-# b0.upper<-exp.est[i,1]+(1.959964*exp.est[i,2])
-# b1.lower<-exp.est[i,3]-(1.959964*exp.est[i,4])
-# b1.upper<-exp.est[i,3]+(1.959964*exp.est[i,4])
+ #calculate upper and lower 95% CI's
+ b0.lower<-exp.est[i,1]-(1.959964*exp.est[i,2])
+ b0.upper<-exp.est[i,1]+(1.959964*exp.est[i,2])
+ b1.lower<-exp.est[i,3]-(1.959964*exp.est[i,4])
+b1.upper<-exp.est[i,3]+(1.959964*exp.est[i,4])
 
 
 # #store coverage parameters
-# exp.cp[i,1]<-ifelse(tru.est[i,1]>b0.lower & tru.est[i,1]<b0.upper, 1,0)
-# exp.cp[i,2]<-ifelse(tru.est[i,2]>b1.lower & tru.est[i,2]<b1.upper, 1,0)
+ exp.cp[i,1]<-ifelse(tru.est[i,1]>b0.lower & tru.est[i,1]<b0.upper, 1,0)
+ exp.cp[i,2]<-ifelse(tru.est[i,2]>b1.lower & tru.est[i,2]<b1.upper, 1,0)
 
-# }
+}
 
 # ################################################################################
 # #########################Simple Weibull Model ##################################
@@ -212,33 +211,32 @@ data<-cbind(ycen,di,x,z)
 # summary(test)
 
 
-# Weibull<- function(est,Y,C,X,data) {					      
-	# n=nrow(data)							      					  
-	# llik <- matrix(0, nrow=n, ncol = 1)
-	# beta<-est[1:length(est)-1]
-	# p<-est[length(est)]
-	# p<-exp(p)
-	# XB<-X%*%beta
-	# llik<-C*(log(exp(XB+1/p)*p*((exp(XB+1/p)*Y)^(p-1))*exp(-(exp(XB+1/p)*Y)^p)))+(1-C)*log(exp(-(exp(XB+1/p)*Y)^p))
-	# llik<--1*sum(llik)
-	# return(llik)
+ Weibull<- function(est,Y,C,X,data) {					      
+	 n=nrow(data)							      					  
+	 llik <- matrix(0, nrow=n, ncol = 1)
+	 beta<-est[1:length(est)-1]
+	 p<-est[length(est)]
+	 p<-exp(p)
+	 XB<-X%*%beta
+	 llik<-C*(log(exp(XB+1/p)*p*((exp(XB+1/p)*Y)^(p-1))*exp(-(exp(XB+1/p)*Y)^p)))+(1-C)*log(exp(-(exp(XB+1/p)*Y)^p))
+	 llik<--1*sum(llik)
+	 return(llik)
 	
-	# }
+	 }
 
 
 
 # #set starting parameters
-# est<-rbind(exp.est[i,1],exp.est[i,3],.01)
+ est<-rbind(exp.est[i,1],exp.est[i,3],.01)
 
 # #set data, Y and X
-# data<-data
-# Y<-ycen
-# C<-di
-# X<-cbind(1,x)
-
+ data<-data
+ Y<-ycen
+ C<-di
+ X<-cbind(1,x)
 
 # #optimize
-# output.Weibull<-try(optim(f=Weibull,  p=est, X=X,Y=Y,C=C, method="BFGS", control=list(maxit=10000),  data=data, hessian=TRUE), TRUE)
+ output.Weibull<-try(optim(f=Weibull,  p=est, X=X,Y=Y,C=C, method="BFGS", control=list(maxit=10000),  data=data, hessian=TRUE), TRUE)
 
 # if(class(output.Weibull)=="list"){
 	# ifelse(is.positive.definite(output.Weibull$hessian)==TRUE,vcv<-solve(output.Weibull$hessian),vcv<-matrix(data=NA,nrow=3,ncol=3))
@@ -375,44 +373,44 @@ data<-cbind(ycen,di,x,z)
 
 # #This program estimates the Exponential loglikelihood function returning hazard rate form coefficients
 
-# ZWeibull<- function(est,Y,C,X,Z,data) {					      
-	# n=nrow(data)							      					  
-	# llik <- matrix(0, nrow=n, ncol = 1)
-	# gamma<-est[1:ncol(Z)]
-	# beta<-est[(ncol(Z)+1):(length(est)-1)]
-	# p<-est[length(est)]
-	# p<-exp(p)
-	# XB<-X%*%beta
-	# ZG<-Z%*%gamma
-	# phi<-1/(1+exp(-(ZG+1/p)))
-	# llik<-C*(log((1-phi)+phi*exp(XB+1/p)*p*((exp(XB+1/p)*Y)^(p-1))*exp(-(exp(XB+1/p)*Y)^p)))+(1-C)*(log(phi)+-(exp(XB+1/p)*Y)^p)
-	# llik<--1*sum(llik)
-	# return(llik)
+ZWeibull<- function(est,Y,C,X,Z,data) {					      
+ n=nrow(data)							      					  
+	 llik <- matrix(0, nrow=n, ncol = 1)
+	 gamma<-est[1:ncol(Z)]
+	 beta<-est[(ncol(Z)+1):(length(est)-1)]
+	 p<-est[length(est)]
+	 p<-exp(p)
+	 XB<-X%*%beta
+	 ZG<-Z%*%gamma
+	 phi<-1/(1+exp(-(ZG+1/p)))
+	 llik<-C*(log((1-phi)+phi*exp(XB+1/p)*p*((exp(XB+1/p)*Y)^(p-1))*exp(-(exp(XB+1/p)*Y)^p)))+(1-C)*(log(phi)+-(exp(XB+1/p)*Y)^p)
+	 llik<--1*sum(llik)
+	 return(llik)
 	
-	# }
+	 }
 
 
 
 # #set starting parameters
-# est<-rbind(.01,.01,.01,output.Weibull$par[1],output.Weibull$par[2],output.Weibull$par[3])
+ est<-rbind(.01,.01,.01,output.Weibull$par[1],output.Weibull$par[2],output.Weibull$par[3])
 
 # #set data, Y and X
-# data<-data
-# Y<-ycen
-# C<-di
-# X<-cbind(1,x)
-# Z<-cbind(1,z,x)
+ data<-data
+ Y<-ycen
+ C<-di
+ X<-cbind(1,x)
+ Z<-cbind(1,z,x)
 
 
 # #optimize
-# output.ZWeibull<-try(optim(f=ZWeibull,  p=est, X=X,Y=Y,C=C,Z=Z, method="BFGS", control=list(maxit=10000),  data=data, hessian=TRUE), TRUE)
+ output.ZWeibull<-try(optim(f=ZWeibull,  p=est, X=X,Y=Y,C=C,Z=Z, method="BFGS", control=list(maxit=10000),  data=data, hessian=TRUE), TRUE)
 
-# if(class(output.ZWeibull)=="list"){
-	# ifelse(is.positive.definite(output.ZWeibull$hessian)==TRUE,vcv<-solve(output.ZWeibull$hessian),vcv<-matrix(data=NA,nrow=6,ncol=6))
+ if(class(output.ZWeibull)=="list"){
+	 ifelse(is.positive.definite(output.ZWeibull$hessian)==TRUE,vcv<-solve(output.ZWeibull$hessian),vcv<-matrix(data=NA,nrow=6,ncol=6))
 
 # #store betas and ses
-# weib.est[i,7]<-output.ZWeibull$par[1]+1/exp(output.ZWeibull$par[6])
-# coeff<-c(weib.est[i,7],output.ZWeibull$par[6])
+ weib.est[i,7]<-output.ZWeibull$par[1]+1/exp(output.ZWeibull$par[6])
+ coeff<-c(weib.est[i,7],output.ZWeibull$par[6])
 # varcov<-matrix(NA,2,2)
 # varcov[1,1]<-vcv[1,1]
 # varcov[1,2]<-vcv[1,6]
