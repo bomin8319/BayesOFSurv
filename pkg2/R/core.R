@@ -450,9 +450,11 @@ bayes.mfdur.est <- function(Y, C, X, Z, N, burn, thin, w, m, form, na.action) {
               thinning=thin, betan=nrow(betas), gamman=nrow(gammas), distribution=form))
 }
 
-#' @title Mis-classified Failure-event Survival Model
+
+#' @title bayes.mfdur
 #' @description Markov Chain Monte Carlo (MCMC) to run Bayesian parametric MF model
 #' @param formula a formula in the form Y ~ X1 + X2... | C ~ Z1 + Z2 ... where Y is the duration until failure or censoring, and C is a binary indicator of observed failure.
+#' @param data list object of data.
 #' @param N number of MCMC iterations.
 #' @param burn burn-in to be discarded.
 #' @param thin thinning to prevent autocorrelation.
@@ -464,7 +466,8 @@ bayes.mfdur.est <- function(Y, C, X, Z, N, burn, thin, w, m, form, na.action) {
 #' 
 #'
 #' @export
-bayes.mfdur <-function(x, ...) UseMethod("bayes.mfdur")
+bayes.mfdur <-function(formula, data=list(), N, burn, thin, w=c(1,1,1), m=10, form=c("Weibull", "Exponential"), 
+                       na.action=c("na.omit","na.fail")) UseMethod("bayes.mfdur")
 
 bayes.mfdur.default<-function(Y, C, X, Z, N, burn, thin, w, m , form, na.action, ...)
 {
@@ -498,9 +501,8 @@ summary.bayes.mfdur <- function(object, ...)
 }
 
 
-
 bayes.mfdur.formula <- function(formula, data=list(), N, burn, thin, w=c(1,1,1), m=10, form=c("Weibull", "Exponential"), 
-                          na.action=c("na.omit","na.fail"), ...)
+                                na.action=c("na.omit","na.fail"), ...)
 {	
   if (missing(na.action)){na.action <- "na.omit"}
   if (missing(N))warning("N: number of iterations missing")
@@ -518,7 +520,7 @@ bayes.mfdur.formula <- function(formula, data=list(), N, burn, thin, w=c(1,1,1),
   Z <- model.matrix(attr(mf2, "terms"), data=mf2)
   C <- model.response(mf2)
   Y <- model.response(mf1)
-
+  
   dataset <- as.data.frame(cbind(Y,C,X,Z))
   
   if(na.action=="na.omit"){
@@ -575,4 +577,5 @@ bayes.mfdur.formula <- function(formula, data=list(), N, burn, thin, w=c(1,1,1),
     }
   } 
 }
+
 
