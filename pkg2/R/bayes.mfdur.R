@@ -391,7 +391,7 @@ lambda.post2 = function(Y, eXB, alpha, C, lambda, a = 1, b = 1) {
 #' 
 #'
 #' @export
-bayes.mfdur.est <- function(Y, C, X, Z, N, burn, thin, w, m, form, na.action) {
+bayes.mfsurv.est <- function(Y, C, X, Z, N, burn, thin, w, m, form, na.action) {
   # na.action
   na.action <- na.action
   
@@ -451,7 +451,7 @@ bayes.mfdur.est <- function(Y, C, X, Z, N, burn, thin, w, m, form, na.action) {
 }
 
 
-#' @title bayes.mfdur
+#' @title bayes.mfsurv
 #' @description Markov Chain Monte Carlo (MCMC) to run Bayesian parametric MF model
 #' @param formula a formula in the form Y ~ X1 + X2... | C ~ Z1 + Z2 ... where Y is the duration until failure or censoring, and C is a binary indicator of observed failure.
 #' @param data list object of data.
@@ -466,10 +466,10 @@ bayes.mfdur.est <- function(Y, C, X, Z, N, burn, thin, w, m, form, na.action) {
 #' 
 #'
 #' @export
-bayes.mfdur <-function(formula, data=list(), N, burn, thin, w=c(1,1,1), m=10, form=c("Weibull", "Exponential"), 
-                       na.action=c("na.omit","na.fail")) UseMethod("bayes.mfdur")
+bayes.mfsurv <-function(formula, data=list(), N, burn, thin, w=c(1,1,1), m=10, form=c("Weibull", "Exponential"), 
+                       na.action=c("na.omit","na.fail")) UseMethod("bayes.mfsurv")
 
-bayes.mfdur.default<-function(Y, C, X, Z, N, burn, thin, w, m , form, na.action, ...)
+bayes.mfsurv.default<-function(Y, C, X, Z, N, burn, thin, w, m , form, na.action, ...)
 {
   Y <- as.numeric(Y)
   C <- as.numeric(C)
@@ -482,13 +482,13 @@ bayes.mfdur.default<-function(Y, C, X, Z, N, burn, thin, w, m , form, na.action,
   w <- as.vector(w)
   form <- form
   na.action <- na.action
-  est <- bayes.mfdur.est(Y, C, X, Z, N, burn, thin, w, m, form, na.action)
+  est <- bayes.mfsurv.est(Y, C, X, Z, N, burn, thin, w, m, form, na.action)
   est$call <- match.call()
-  class(est) <- "bayes.mfdur"
+  class(est) <- "bayes.mfsurvf"
   est
 }
 
-summary.bayes.mfdur <- function(object, ...)
+summary.bayes.mfsurv <- function(object, ...)
 {
   betasum <- summary(mcmc(object$betas))
   gammasum <- summary(mcmc(object$gammas))
@@ -496,12 +496,12 @@ summary.bayes.mfdur <- function(object, ...)
   
   res<- list(betasum=betasum, gammasum=gammasum, lambdasum=lambdasum)
   
-  class(res) <-"summary.bayes.mfdur"
+  class(res) <-"summary.bayes.mfsurv"
   res
 }
 
 
-bayes.mfdur.formula <- function(formula, data=list(), N, burn, thin, w=c(1,1,1), m=10, form=c("Weibull", "Exponential"), 
+bayes.mfsurv.formula <- function(formula, data=list(), N, burn, thin, w=c(1,1,1), m=10, form=c("Weibull", "Exponential"), 
                                 na.action=c("na.omit","na.fail"), ...)
 {	
   if (missing(na.action)){na.action <- "na.omit"}
@@ -539,7 +539,7 @@ bayes.mfdur.formula <- function(formula, data=list(), N, burn, thin, w=c(1,1,1),
     form <- form
     na.action <- na.action
     
-    est <- bayes.mfdur.default(Y, C, X, Z, N, burn, thin, w, m, form, na.action)
+    est <- bayes.mfsurv.default(Y, C, X, Z, N, burn, thin, w, m, form, na.action)
     est$call <- match.call()
     est$formula <- formula
     est
@@ -560,7 +560,7 @@ bayes.mfdur.formula <- function(formula, data=list(), N, burn, thin, w=c(1,1,1),
         form <- form
         na.action <- na.action
         
-        est <- bayes.mfdur.default(Y, C, X, Z, N, burn, thin, w, m, form, na.action, ...)
+        est <- bayes.mfsurv.default(Y, C, X, Z, N, burn, thin, w, m, form, na.action, ...)
         est$call <- match.call()
         est$formula <- formula
         est
